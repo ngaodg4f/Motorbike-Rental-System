@@ -1,5 +1,5 @@
-#ifndef _GUEST_H_
-#define _GUEST_H_
+#ifndef GUEST_H
+#define GUEST_H
 
 #include <iostream>
 #include "User.h"

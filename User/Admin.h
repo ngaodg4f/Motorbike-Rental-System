@@ -1,5 +1,5 @@
-#ifndef _ADMIN_H_
-#define _ADMIN_H_
+#ifndef ADMIN_H
+#define ADMIN_H
 
 #include <iostream>
 #include "User.h"

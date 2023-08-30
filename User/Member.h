@@ -1,5 +1,5 @@
-#ifndef _MEMBER_H_
-#define _MEMBER_H_
+#ifndef MEMBER_H
+#define MEMBER_H
 
 #include <iostream>
 #include "User.h"
