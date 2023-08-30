@@ -1,16 +1,12 @@
 #include "User.h"
 
-using std::string;
-
 /* 
     No Exception Handling 
     No Getter
 */
 
-User::User(string username = "default", string password = "Abc@1234") {
-    this->username = username;
-    this->password = password;
-}
+User::User(string username, string password)
+: username(username), password(password) {}
 
 User::~User() {
 
@@ -32,8 +28,8 @@ void User::set_phone(string phone) {
     this->phone = phone;
 }
 
-void User::set_id_type(string id_type) { 
-    this->id_type = id_type;
+void User::set_idType(string idType) { 
+    this->idType = idType;
 }
 
 void User::set_id(string id) {
