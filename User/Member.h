@@ -3,7 +3,7 @@
 
 #include "User.h"
 
-class Member : public User{
+class Member : public User {
     public:
         void list_vehicle() override;
 };

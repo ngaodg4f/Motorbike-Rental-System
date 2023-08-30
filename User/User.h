@@ -6,7 +6,6 @@ using std::cout, std::string;
 
 class User {
     private:
-        int user_id;
         string fullname {};
         string username {};
         string password;
@@ -17,6 +16,7 @@ class User {
         // Date expiry_date; // wait for Date class
         // vehicle_list // wait for Motorbike class
         // int credit_point; // wait for uml
+
     public:
         User() = default;
         User(string username, string password);
@@ -29,6 +29,7 @@ class User {
         void set_id(string id);
         void set_driver_license(string driver_license);
         // void set_expiry_date(Date expiry_date); // wait for Date class
+        
         virtual void list_vehicle() = 0;
 };
 

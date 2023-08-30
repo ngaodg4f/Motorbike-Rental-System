@@ -8,9 +8,7 @@
 User::User(string username, string password)
 : username(username), password(password) {}
 
-User::~User() {
-
-}
+User::~User() {}
 
 void User::set_fullname(string fullname) {
     this->fullname = fullname;

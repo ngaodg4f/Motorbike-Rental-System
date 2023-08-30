@@ -2,27 +2,7 @@
 #define APPLICATION_H
 
 #include <iostream>
-using std::cout, std::cin, std::string;
-
-/*
-EEET2482/COSC2082 ASSIGNMENT
-MOTORBIKE RENTAL APPLICATION
-Instructor: Dr. Ling Huo Chong
-Group: Group No.
-sXXXXXXX, Student Name
-sXXXXXXX, Student Name
-sXXXXXXX, Student Name
-sXXXXXXX, Student Name
-Use the app as 1. Guest
-Enter your choice: 2
-Enter username:
-...
-This is your menu: 0. Exit
-1. View Information 2. ...
-Enter your choice: 1
-...
-2. Member
-*/
+using std::cout, std::string;
 
 void welcomeScreen(){
     cout << "EEET2482/COSC2082 ASSIGNMENT" << '\n';
