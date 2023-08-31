@@ -1,9 +1,9 @@
-#ifndef USER_H
-#define USER_H
+#ifndef MEMBER_H
+#define MEMBER_H
 
 #include <iostream>
 
-class User {
+class Member {
     private:
         std::string fullname {};
         std::string username {};
@@ -17,9 +17,9 @@ class User {
         // int credit_point; // wait for uml
 
     public:
-        User() = default;
-        User(std::string username, std::string password);
-        ~User();
+        Member() = default;
+        Member(std::string username, std::string password);
+        ~Member();
         void set_fullname(std::string fullname);
         void set_username(std::string username);
         void set_password(std::string password);
