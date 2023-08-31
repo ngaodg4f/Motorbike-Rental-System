@@ -2,7 +2,6 @@
 #define APPLICATION_H
 
 #include <iostream>
-using std::cout, std::string;
 
 void welcomeScreen(){
     cout << "EEET2482/COSC2082 ASSIGNMENT" << '\n';

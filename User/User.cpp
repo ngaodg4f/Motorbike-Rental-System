@@ -1,5 +1,5 @@
 #include "User.h"
-
+using std::cout, std::string;
 /* 
     No Exception Handling 
     No Getter

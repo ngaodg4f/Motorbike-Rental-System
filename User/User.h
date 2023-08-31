@@ -2,7 +2,6 @@
 #define USER_H
 
 #include <iostream>
-using std::cout, std::string;
 
 class User {
     private:
