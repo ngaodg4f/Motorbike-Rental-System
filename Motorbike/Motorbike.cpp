@@ -1,16 +1,18 @@
 #include "Motorbike.h"
-#include <iostream>
 using std::string;
 
 
-Motorbike::Motorbike(int motorbike_id, int made_year, string engine_size, string tranmission_mode, string color, string license_plate, string description):
+Motorbike::Motorbike(int motorbike_id, int made_year, string engine_size, string tranmission_mode, string color, string license_plate, string description, string model, string location):
     motorbike_id(motorbike_id),
     made_year(made_year),
     engine_size(engine_size),
     tranmission_mode(tranmission_mode),
     color(color),
     license_plate(license_plate),
-    description(description){}
+    description(description),
+    model(model),
+    location(location)
+    {}
 
 /*setters & getters*/
 
@@ -28,6 +30,14 @@ void Motorbike::set_license_plate(string license_plate){
 
 void Motorbike::set_description(string description){
     this->description = description;
+}
+
+void Motorbike::set_model(string model){
+    this->model = model;
+}
+
+void Motorbike::set_location(string location){
+    this->location = location;
 }
 
 int Motorbike::get_motorbike_id(){
@@ -56,4 +66,12 @@ string Motorbike::get_license_plate(){
 
 string Motorbike::get_description(){
     return description;
+}
+
+string Motorbike::get_model(){
+    return model;
+}
+
+string Motorbike::get_location(){
+    return location;
 }
