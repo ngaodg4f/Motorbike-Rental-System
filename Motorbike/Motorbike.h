@@ -3,18 +3,27 @@
 
 #include <iostream>
 
-
 class Motorbike {
     private:
         int motorbike_id;
-        int made_year; //only year
-        std::string engine_size; //follow a format
-        std::string tranmission_mode;
+        std::string model;
         std::string color;
+        std::string engine_size;
+        std::string tranmission_mode;
+        int year;
         std::string license_plate;
         std::string description;
+
     public:
-        Motorbike(int motorbike_id, int made_year = 0, std::string engine_size = "", std::string tranmission_mode = "", std::string color = "", std::string license_plate = "", std::string description = "");
+        Motorbike(
+            int motorbike_id, 
+            std::string model = "",
+            std::string color = "", 
+            std::string engine_size = "",
+            std::string tranmission_mode = "",  
+            int year = 0, 
+            std::string license_plate = "", 
+            std::string description = "");
 
     //setters & getters
         void set_engine_size(std::string);
@@ -23,12 +32,14 @@ class Motorbike {
         void set_description(std::string);
 
         int get_motorbike_id();
-        int get_made_year();
+        int get_year();
+        std::string get_model();
         std::string get_engine_size();
         std::string get_tranmission_mode();
         std::string get_color();
         std::string get_license_plate();
         std::string get_description();
+
 };
 
 #endif /* MOTORBIKE_H */
