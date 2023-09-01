@@ -1,0 +1,3 @@
+1,Yamaha YZF-R6,Blue,600cc,Manual,2020,ABC123,The Yamaha YZF-R6 is a high-performance sportbike known for its agility and speed.
+2,Harley Sportster,Black,883cc,Manual,2019,XYZ456,The Harley Sportster is a classic cruiser with a distinctive design and a comfortable ride.
+

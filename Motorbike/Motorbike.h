@@ -1,45 +1,68 @@
 #ifndef MOTORBIKE_H
 #define MOTORBIKE_H
 
+#include "../Member/Member.h"
 #include <iostream>
 
 class Motorbike {
     private:
-        int motorbike_id;
+        int bike_id;
         std::string model;
         std::string color;
         std::string engine_size;
-        std::string tranmission_mode;
+        std::string transmission_mode;
         int year;
         std::string license_plate;
         std::string description;
+        int member_id;
 
     public:
         Motorbike(
-            int motorbike_id, 
-            std::string model = "",
-            std::string color = "", 
-            std::string engine_size = "",
-            std::string tranmission_mode = "",  
-            int year = 0, 
-            std::string license_plate = "", 
-            std::string description = "");
+            int bike_id,
+            int member_id,
+            std::string model,
+            std::string color, 
+            std::string engine_size,
+            std::string transmission_mode,  
+            int year, 
+            std::string license_plate, 
+            std::string description);
 
-    //setters & getters
-        void set_engine_size(std::string);
-        void set_color(std::string);
-        void set_license_plate(std::string);
-        void set_description(std::string);
+    int get_bike_id();
 
-        int get_motorbike_id();
-        int get_year();
-        std::string get_model();
-        std::string get_engine_size();
-        std::string get_tranmission_mode();
-        std::string get_color();
-        std::string get_license_plate();
-        std::string get_description();
+    void set_bike_id(int bike_id);
 
+    std::string get_model();
+
+    void set_model(std::string model);
+
+    std::string get_color();
+
+    void set_color(std::string color);
+
+    std::string get_engine_size();
+
+    void set_engine_size(std::string engine_size);
+
+    std::string get_transmission_mode();
+
+    void set_transmission_mode(std::string transmission_mode);
+
+    int get_year();
+
+    void set_year(int year);
+
+    std::string get_license_plate();
+
+    void set_license_plate(std::string license_plate);
+
+    std::string get_description();
+
+    void set_description(std::string description);
+
+    int get_member_id();
+    
+    void set_member_id(int member_id);
 };
 
 #endif /* MOTORBIKE_H */

@@ -1,0 +1,12 @@
+#ID,MODEL,COLOR,ENGINE_SIZE,TRANSMISSION_MODE,YEAR,LICENSE_PLATE,DESCRIPTION,username
+1,Yamaha YZF-R6,Blue,600cc,Manual,2020,ABC123,The Yamaha YZF-R6 is a high-performance sportbike known for its agility and speed.
+2,Harley Sportster,Black,883cc,Manual,2019,XYZ456,The Harley Sportster is a classic cruiser with a distinctive design and a comfortable ride.
+3,Kawasaki Ninja,Green,400cc,Manual,2022,PQR789,The Kawasaki Ninja is a popular sportbike that offers a perfect balance between power and control.
+4,BMW R1250GS,Silver,1250cc,Automatic,2021,LMN012,The BMW R1250GS is a versatile adventure touring bike with advanced features for long journeys.
+5,Suzuki Hayabusa,Red,1340cc,Manual,2018,DEF345,The Suzuki Hayabusa is a legendary sportbike known for its incredible speed and aerodynamics.
+6,Honda CB500F,White,500cc,Manual,2023,WXY678,The Honda CB500F is a lightweight and nimble bike, perfect for urban commuting and weekend rides.
+7,Ducati Panigale,Red,998cc,Manual,2020,JKL901,The Ducati Panigale is a high-performance Italian super bike that offers both speed and style.
+8,Triumph Bonneville,Orange,900cc,Manual,2017,MNO234,The Triumph Bonneville is a modern classic with a retro look, ideal for riders who appreciate nostalgia.
+9,KTM 390 Duke,Orange,373cc,Manual,2022,RST567,The KTM 390 Duke is a compact street bike that's known for its agile handling and punchy engine.
+10,Vespa Primavera,Yellow,150cc,Automatic,2023,UVW890,The Vespa Primavera is a stylish and iconic scooter, perfect for zipping around the city in style.
+
