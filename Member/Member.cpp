@@ -31,16 +31,46 @@ Member::Member(
         username(username),
         password(password) {}
 
-void Member::set_fullname(string fullname) { this->fullname = fullname; }
+int Member::get_id() { return id; }
 
-void Member::set_username(string username) { this->username = username; }
+void Member::set_id(int id) { this->id = id; }
 
-void Member::set_password(string password) { this->password = password; }
+std::string Member::get_fullname() { return fullname; }
 
-void Member::set_phone(string phone) { this->phone = phone; }
+void Member::set_fullname(std::string fullname) { this->fullname = fullname; }
 
-void Member::set_id_type(string id_type) {  this->id_type = id_type; }
+std::string Member::get_phone() { return phone; }
 
-void Member::set_id_number(string id_number) { this->id_number = id_number; }
+void Member::set_phone(std::string phone) { this->phone = phone; }
 
-void Member::set_license_number(string license_number) { this->license_number = license_number; }
+std::string Member::get_id_type() { return id_type; }
+
+void Member::set_id_type(std::string id_type) { this->id_type = id_type; }
+
+std::string Member::get_id_number() { return id_number; }
+
+void Member::set_id_number(std::string id_number) { this->id_number = id_number; }
+
+std::string Member::get_license_number() { return license_number; }
+
+void Member::set_license_number(std::string license_number) { this->license_number = license_number; }
+
+Time Member::get_expiry_date() { return expiry_date; }
+
+void Member::set_expiry_date(Time expiry_date) { this->expiry_date = expiry_date; }
+
+int Member::get_credit_point() { return credit_point; }
+
+void Member::set_credit_point(int credit_point) { this->credit_point = credit_point; }
+
+std::string Member::get_username() { return username; }
+
+void Member::set_username(std::string username) { this->username = username; }
+
+std::string Member::get_password() { return password; }
+
+void Member::set_password(std::string password) { this->password = password; }
+
+int Member::get_bike_id() { return bike_id; }
+
+void Member::set_bike_id(int bike_id) { this->bike_id = bike_id; }

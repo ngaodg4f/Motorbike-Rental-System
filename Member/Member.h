@@ -19,6 +19,8 @@ class Member {
         int bike_id;
 
     public:
+        Member(std::string , std::string);
+
         Member(
             int id,
             std::string fullname,
@@ -32,16 +34,49 @@ class Member {
             std::string username,
             std::string password);
 
-        Member(std::string , std::string);
+        int get_id();
+
+        void set_id(int id);
+
+        std::string get_fullname();
 
         void set_fullname(std::string fullname);
-        void set_username(std::string username);
-        void set_password(std::string password);
+
+        std::string get_phone();
+
         void set_phone(std::string phone);
-        void set_id_type(std::string id_type); 
+
+        std::string get_id_type();
+
+        void set_id_type(std::string id_type);
+
+        std::string get_id_number();
+
         void set_id_number(std::string id_number);
+
+        std::string get_license_number();
+
         void set_license_number(std::string license_number);
-        // void set_expiry_date(Time expiry_date);
+
+        Time get_expiry_date();
+
+        void set_expiry_date(Time expiry_date);
+
+        int get_credit_point();
+
+        void set_credit_point(int credit_point);
+
+        std::string get_username();
+
+        void set_username(std::string username);
+
+        std::string get_password();
+
+        void set_password(std::string password);
+
+        int get_bike_id();
+        
+        void set_bike_id(int bike_id);
 };
 
 #endif
