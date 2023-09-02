@@ -1,22 +1,36 @@
 #ifndef MOTORBIKE_H
 #define MOTORBIKE_H
 
-#include "../Member/Member.h"
+// #include "../Member/Member.h"
 #include <iostream>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <fstream>
 
 class Motorbike {
     private:
         int bike_id;
+        int member_id;
         std::string model;
         std::string color;
         std::string engine_size;
         std::string transmission_mode;
         int year;
         std::string license_plate;
-        std::string description;
-        int member_id;
+        std::string description; 
 
     public:
+        Motorbike(
+            int bike_id,
+            std::string model,
+            std::string color, 
+            std::string engine_size,
+            std::string transmission_mode,  
+            int year, 
+            std::string license_plate, 
+            std::string description);
+
         Motorbike(
             int bike_id,
             int member_id,
@@ -28,9 +42,15 @@ class Motorbike {
             std::string license_plate, 
             std::string description);
 
+    void print_info();
+
     int get_bike_id();
 
     void set_bike_id(int bike_id);
+
+    int get_member_id();
+
+    void set_member_id(int member_id);
 
     std::string get_model();
 
@@ -59,10 +79,12 @@ class Motorbike {
     std::string get_description();
 
     void set_description(std::string description);
-
-    int get_member_id();
-    
-    void set_member_id(int member_id);
 };
 
-#endif /* MOTORBIKE_H */
+Motorbike* parse (std::string data);
+
+std::string serialize (Motorbike* bike);
+
+std::vector<Motorbike*> get_all_bike();
+
+#endif
