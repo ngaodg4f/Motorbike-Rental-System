@@ -47,7 +47,7 @@ void input_member_list(){
     while(getline(member_file, str)){
         std::vector<string> tokens;
         tokens = splitStr(str, ';');
-        
+
         Member* member = new Member(
                                 std::stoi(tokens.at(0)), 
                                 tokens.at(1), 
@@ -124,7 +124,7 @@ void guest_to_member(){
 
 int main(){
     // g++ Member/Member.cpp Date/Date.cpp test.cpp -o a.out
-    input_member_list();
+    // input_member_list();
     for(auto e : member_vector){
         cout << "ID " << e->get_id() << " saved" << '\n';
     }
