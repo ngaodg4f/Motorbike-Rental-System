@@ -67,6 +67,8 @@
         "chrono": "cpp",
         "compare": "cpp",
         "concepts": "cpp",
-        "algorithm": "cpp"
-    }
+        "algorithm": "cpp",
+        "*.txt": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

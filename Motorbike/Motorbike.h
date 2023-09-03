@@ -87,4 +87,6 @@ std::string serialize (Motorbike* bike);
 
 std::vector<Motorbike*> get_all_bike();
 
+void view_bike_info();
+
 #endif

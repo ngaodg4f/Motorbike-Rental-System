@@ -1,7 +1,7 @@
 #ifndef MEMBER_H
 #define MEMBER_H
 
-#include "../Time/Time.h"
+#include "../Date/Date.h"
 #include <iostream>
 
 class Member {
@@ -12,7 +12,7 @@ class Member {
         std::string id_type;
         std::string id_number;
         std::string license_number;
-        Time expiry_date;
+        Date expiry_date;
         int credit_point;
         std::string username;
         std::string password;
@@ -25,14 +25,14 @@ class Member {
             int id,
             std::string fullname,
             std::string phone,
-            string id_type,
-            string id_number,
+            std::string id_type,
+            std::string id_number,
             std::string license_number,
-            Time expiry_date,
+            Date expiry_date,
             int credit_point,
-            int bike_id,
             std::string username,
-            std::string password);
+            std::string password,
+            int bike_id);
 
         int get_id();
 
@@ -58,9 +58,9 @@ class Member {
 
         void set_license_number(std::string license_number);
 
-        Time get_expiry_date();
+        Date get_expiry_date();
 
-        void set_expiry_date(Time expiry_date);
+        void set_expiry_date(Date expiry_date);
 
         int get_credit_point();
 

@@ -8,17 +8,17 @@ Member::Member(string username = " ", string password = " ")
 : username(username), password(password) {}
 
 Member::Member(
-            int id = 0,
-            std::string fullname = "",
-            std::string phone = "",
-            string id_type = "",
-            string id_number = "",
-            std::string license_number = "",
-            Time expiry_date,
-            int credit_point = 20,
-            int bike_id = 0,
-            std::string username = "",
-            std::string password = ""): 
+            int id,
+            std::string fullname,
+            std::string phone,
+            string id_type,
+            string id_number,
+            std::string license_number,
+            Date expiry_date,
+            int credit_point,
+            std::string username,
+            std::string password,
+            int bike_id): 
         id(id),
         fullname(fullname),
         phone(phone),
@@ -55,9 +55,9 @@ std::string Member::get_license_number() { return license_number; }
 
 void Member::set_license_number(std::string license_number) { this->license_number = license_number; }
 
-Time Member::get_expiry_date() { return expiry_date; }
+Date Member::get_expiry_date() { return expiry_date; }
 
-void Member::set_expiry_date(Time expiry_date) { this->expiry_date = expiry_date; }
+void Member::set_expiry_date(Date expiry_date) { this->expiry_date = expiry_date; }
 
 int Member::get_credit_point() { return credit_point; }
 

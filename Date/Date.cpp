@@ -1,7 +1,9 @@
 #include "Date.h"
-using std::cout;
+using std::cout, std::string;
 
-Date::Date(int day = 0, int month = 0, int year = 0)
+Date::Date(){}
+
+Date::Date(int day, int month, int year )
 : day(day), month(month), year(year){}
 
 void Date::set_date(int day, int month, int year){
@@ -15,6 +17,10 @@ int Date::get_day() { return day; }
 int Date::get_month() { return month; }
 
 int Date::get_year() { return year; }
+
+string Date::to_string(){
+    return std::to_string(day) + "/" + std::to_string(month) + "/" + std::to_string(year);
+}
 
 void Date::print_date(){
     cout << "Date: " 

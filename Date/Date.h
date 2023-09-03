@@ -10,6 +10,7 @@ class Date {
         int year;
 
     public:
+        Date();
 
         Date(int day, int month, int year);
 
@@ -20,6 +21,8 @@ class Date {
         int get_month();
 
         int get_year();
+
+        std::string to_string();
 
         void print_date();
 };

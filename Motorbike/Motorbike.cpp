@@ -4,14 +4,14 @@
 using std::cout, std::string;
 
 Motorbike::Motorbike(
-        int bike_id = 0, 
-        string model = "",
-        string color = "", 
-        string engine_size = "",
-        string tranmission_mode = "",  
-        int year = 0, 
-        string license_plate = "",
-        string description = "")
+        int bike_id, 
+        string model,
+        string color, 
+        string engine_size,
+        string tranmission_mode,  
+        int year, 
+        string license_plate,
+        string description)
     : bike_id(bike_id),
     model(model),
     color(color),
@@ -22,15 +22,15 @@ Motorbike::Motorbike(
     description(description){}
 
 Motorbike::Motorbike(
-        int bike_id = 0, 
-        int member_id = 0,
-        string model = "",
-        string color = "", 
-        string engine_size = "",
-        string tranmission_mode = "",  
-        int year = 0, 
-        string license_plate = "",
-        string description = "")
+        int bike_id, 
+        int member_id,
+        string model,
+        string color, 
+        string engine_size,
+        string tranmission_mode,  
+        int year, 
+        string license_plate,
+        string description)
     : bike_id(bike_id),
     member_id(member_id),
     model(model),
@@ -90,6 +90,8 @@ string Motorbike::get_description() { return description; }
 
 void Motorbike::set_description(string description) { this->description = description; }
 
+
+
 Motorbike* parse (string data){
     if(data.empty() || data[0] == '#'){ return NULL; }
 
@@ -142,11 +144,9 @@ std::vector<Motorbike*> get_all_bike() {
     return list;
 }
 
-int main(){
-    std::vector<Motorbike*> list;
-    list = get_all_bike();
-    for(int i = 0; i < list.size(); i++){
-        list.at(i)->print_info();
-        delete list.at(i);
+void view_bike_info(){
+    std::vector<Motorbike*> list = get_all_bike();
+    for(auto e : list){
+        e->print_info();
     }
 }
