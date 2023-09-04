@@ -16,6 +16,8 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include <regex>
+#include <cstring>
 
 class Member;
 
@@ -33,9 +35,23 @@ class System {
         void update_member_file();
 
         // Tool Function 
-        bool validate_fullname();
+        bool validate_fullname(std::string& str);
+
+        bool validate_phone(std::string& str);
+
+        bool validate_id_type(std::string& str);
+
+        bool validate_id_license_number(std::string& str);
+
+        bool validate_date(std::string& str);
+
+        bool is_leap_year(int& year);
+
+        bool validate_username(std::string& str);
 
         std::vector<std::string> splitStr(std::string& str, char ch);
+
+        std::string trim(std::string& str);
 
         Date* to_object(std::string& str);
 
@@ -48,7 +64,7 @@ class System {
 
         void guest_login();
 
-        void guest_to_member();
+        void member_registration();
 };
 
 #endif

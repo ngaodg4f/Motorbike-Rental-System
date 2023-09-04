@@ -64,6 +64,117 @@ void System::update_member_file(){
 /**
  * Tool Function
 */
+bool System::validate_fullname(string& str){
+    if(str.empty()){
+        cout << "`Full name` is empty." << '\n';
+        return false;
+    }
+    std::regex reg { "^[a-zA-Z0-9]{5,20}$" };
+    string trim_string = trim(str);
+
+    if(!std::regex_match(trim_string, reg)){
+        cout << "`Full name` must contain 8 - 20 characters with no special characters." << '\n';
+        return false;
+    }
+
+    return true;
+}
+
+bool System::validate_phone(string& str){
+    if(str.empty()){
+        cout << "`Phone` is empty." << '\n';
+        return false;
+    }
+
+    std::regex reg { "^(0|84)[0-9]{9}$" };
+    string trim_string = trim(str);
+  
+    if(!std::regex_match(trim_string, reg)){
+        cout << "`Phone` must contain 10 numbers with no special character." << '\n';
+        cout << "Either start with 0 or 84." << '\n';
+        return false;
+    }
+
+    return true;
+}
+
+bool System::validate_id_type(string& str){
+    if(str.empty()){
+        cout << "`ID TYPE` is empty." << '\n';
+        return false;
+    }
+
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    if(str != "id" && str != "passport"){
+        cout << "Wrong format. `Id` or `Passport` is available." << '\n';
+        return false;
+    }
+
+    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+    return true;
+}
+
+bool System::validate_id_license_number(string& str){
+    if(str.empty()){
+        cout << "`Number` is empty." << '\n';
+        return false;
+    }
+
+    std::regex reg { "^[a-zA-Z0-9]*$" };
+    if(!std::regex_match(str, reg)){
+        cout << "`Number` contains special characters including `blank_space`." << '\n';
+        return false;
+    }
+
+    return true;
+}
+
+bool System::validate_date(string& str){
+    if(str.empty()){
+        cout << "`Date` is empty." << '\n';
+        return false;
+    }
+
+    std::regex reg { "^([0-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/([0-9]{4})$" };
+    if(!std::regex_match(str, reg)){
+        cout << "`Date` format dd/mm/yyyy." << '\n';
+        cout << "Ex: 01/01/2023" << '\n';
+        return false;
+    }
+
+    int day, month, year;
+    sscanf(str.c_str(), "%d/%d/%d", &day, &month, &year);
+
+    if((month == 4 || month == 6 || month == 9 || month == 11) && (day > 30)){
+        cout << "`Day` " << day << " in `Month` " << month << '\n';
+        return false;
+
+    } else if (month == 2){
+        if((is_leap_year(year)) && (day > 29)){
+            cout << "`Day` " << day << " February, `Year` " << year << '\n';
+            return false;
+
+        } else if ((!is_leap_year(year)) && (day > 28)){
+            cout << "`Day` " << day << " February, `Year` " << year << '\n';
+            return false;
+        }
+
+    } else if (day > 31){
+        return false;
+    }
+
+    return true;
+
+}
+
+bool System::is_leap_year(int& year){
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+}
+
+bool System::validate_username(string& str){
+    return true;
+}
+
 std::vector<string> System::splitStr(string& str, char ch){
     std::vector<string> data_list;
     std::stringstream ss { str };
@@ -75,6 +186,17 @@ std::vector<string> System::splitStr(string& str, char ch){
     }
 
     return data_list;
+}
+
+string System::trim(string& str){
+    string new_string;
+    for(auto ch : str){
+        if(ch != ' '){
+            new_string += ch;
+        }
+    }
+
+    return new_string;
 }
 
 Date* System::to_object(string& str){
@@ -160,7 +282,7 @@ void System::guest_login(){
             break;
 
         case 2:
-            guest_to_member();
+            member_registration();
             break;
 
         case 3:
@@ -168,25 +290,46 @@ void System::guest_login(){
     }
 }
 
-void System::guest_to_member(){
+void System::member_registration(){
     int id, bike_id;
     string username, fullname, phone;
     string id_type, id_number, license_number, expiry_date, password;
     double credit_point;
+
     id = member_vector.size() + 1;
     
-    cout << "- Fullname: ";
-    getline(cin >> std::ws, fullname);
-    cout << "- Phone: ";
-    getline(cin >> std::ws, phone);
-    cout << "- ID Type: ";
-    getline(cin >> std::ws, id_type);
-    cout << "- ID Number: ";
-    getline(cin >> std::ws, id_number);
-    cout << "- License Number: ";
-    getline(cin >> std::ws, license_number);
-    cout << "- Expiry Date: ";
-    getline(cin >> std::ws, expiry_date);
+    cin.ignore();
+    do {
+        cout << "- Full Name: ";
+        getline(cin, fullname);
+    } while ( !validate_fullname(fullname) );
+
+    do {
+        cout << "- Phone: ";
+        getline(cin, phone);
+    } while ( !validate_phone(phone) );
+
+    do {
+        cout << "- ID Type (Id/Passport): ";
+        getline(cin, id_type);
+    } while ( !validate_id_type(id_type) );
+    
+    do {
+        cout << "- ID Number: ";
+        getline(cin, id_number);
+    } while ( !validate_id_license_number(id_number) );
+
+    do {
+        cout << "- License Number: ";
+        getline(cin, license_number);
+    } while ( !validate_id_license_number(license_number) );
+    
+    do {
+        cout << "- Expiry Date: ";
+        getline(cin, expiry_date);
+    } while ( !validate_date(expiry_date) );
+
+    
     cout << "- Usename: ";
     getline(cin >> std::ws, username);
     cout << "- Password: ";
