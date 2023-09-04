@@ -35,7 +35,7 @@ class System {
         // Feat Function 
         std::vector<std::string> splitStr(std::string& str, char ch);
 
-        Date to_object(std::string& str);
+        Date* to_object(std::string& str);
 
         int choice_selection(int a, int b);
 

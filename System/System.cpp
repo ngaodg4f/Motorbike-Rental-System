@@ -8,23 +8,24 @@ System::System(){}
 */
 void System::input_member_list(){
     member_vector.clear();
-    string str;
     std::ifstream member_file (ACCOUNT_FILE);
     if(!member_file.is_open()){
         std::cerr << "Error: Can't open " << ACCOUNT_FILE << '\n';
         return;
     }
+    string str;
 
-    while( getline(member_file, str) ){
+    while(getline(member_file, str)){
         std::vector<string> tokens;
         tokens = splitStr(str, ';');
+        
         Member* member = new Member(
                                 std::stoi(tokens.at(0)), 
                                 tokens.at(1), 
                                 tokens.at(2), 
                                 tokens.at(3), 
                                 tokens.at(4), 
-                                tokens.at(5),
+                                tokens.at(5),   
                                 to_object(tokens.at(6)),
                                 std::stoi(tokens.at(7)),
                                 tokens.at(8),
@@ -33,6 +34,7 @@ void System::input_member_list(){
 
         member_vector.push_back(member);
     }
+    member_file.close();
 }
 
 void System::update_member_file(){
@@ -49,7 +51,7 @@ void System::update_member_file(){
                     << mem->get_id_type() << ";"
                     << mem->get_id_number() << ";"
                     << mem->get_license_number() << ";"
-                    << mem->get_expiry_date().to_string() << ";"
+                    << mem->get_expiry_date()->to_string() << ";"
                     << std::to_string(mem->get_credit_point()) << ";"
                     << mem->get_username() << ";"
                     << mem->get_password() << ";"
@@ -60,30 +62,29 @@ void System::update_member_file(){
 }
 
 /**
- * Feature Function
+ * Tool Function
 */
 std::vector<string> System::splitStr(string& str, char ch){
     std::vector<string> data_list;
-    std::stringstream ss;
-    string tokens;
+    std::stringstream ss { str };
+    string token;
 
     while(!ss.eof()){
-        getline(ss, tokens, ch);
-        data_list.push_back(tokens);
+        getline(ss, token, ch);
+        data_list.push_back(token);
     }
 
     return data_list;
 }
 
-Date System::to_object(string& str){
-    std::stringstream ss;
-    int day, month, year;
+Date* System::to_object(string& str){
+    std::vector<string> tokens = splitStr(str, '/');
+    Date* converted_date = new Date(
+                                std::stoi(tokens.at(0)), 
+                                std::stoi(tokens.at(1)), 
+                                std::stoi(tokens.at(2)));
 
-    string input;
-    char slash;
-    ss >> day >> slash >> month >> slash >> year;
-
-    return Date (day, month, year);
+    return converted_date;
 }
 
 int System::choice_selection(int a, int b){
@@ -100,6 +101,9 @@ int System::choice_selection(int a, int b){
     return choice;
 }
 
+/**
+ * Feature Function
+*/
 void System::welcome_screen(){
     cout << "EEET2482/COSC2082 ASSIGNMENT" << '\n';
     cout << "MOTORBIKE RENTAL APPLICATION" << '\n';
@@ -173,17 +177,17 @@ void System::guest_to_member(){
     getline(cin >> std::ws, fullname);
     cout << "- Phone: ";
     getline(cin >> std::ws, phone);
-    cout << "ID Type: ";
+    cout << "- ID Type: ";
     getline(cin >> std::ws, id_type);
-    cout << "ID Number: ";
+    cout << "- ID Number: ";
     getline(cin >> std::ws, id_number);
-    cout << "License Number: ";
+    cout << "- License Number: ";
     getline(cin >> std::ws, license_number);
     cout << "- Expiry Date: ";
     getline(cin >> std::ws, expiry_date);
     cout << "- Usename: ";
     getline(cin >> std::ws, username);
-    cout << "Password: ";
+    cout << "- Password: ";
     getline(cin >> std::ws, password);
     
     credit_point = 20;
@@ -198,5 +202,5 @@ void System::guest_to_member(){
 int main(){
     System sys;
     sys.input_member_list();
-    // sys.welcome_screen();
+    sys.welcome_screen();
 }
