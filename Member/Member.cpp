@@ -14,7 +14,7 @@ Member::Member(
             string id_type,
             string id_number,
             std::string license_number,
-            Date expiry_date,
+            Date* expiry_date,
             int credit_point,
             std::string username,
             std::string password,
@@ -55,9 +55,9 @@ std::string Member::get_license_number() { return license_number; }
 
 void Member::set_license_number(std::string license_number) { this->license_number = license_number; }
 
-Date Member::get_expiry_date() { return expiry_date; }
+Date* Member::get_expiry_date() { return expiry_date; }
 
-void Member::set_expiry_date(Date expiry_date) { this->expiry_date = expiry_date; }
+void Member::set_expiry_date(Date* expiry_date) { this->expiry_date = expiry_date; }
 
 int Member::get_credit_point() { return credit_point; }
 

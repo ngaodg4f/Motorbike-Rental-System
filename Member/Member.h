@@ -12,7 +12,7 @@ class Member {
         std::string id_type;
         std::string id_number;
         std::string license_number;
-        Date expiry_date;
+        Date* expiry_date;
         int credit_point;
         std::string username;
         std::string password;
@@ -28,7 +28,7 @@ class Member {
             std::string id_type,
             std::string id_number,
             std::string license_number,
-            Date expiry_date,
+            Date* expiry_date,
             int credit_point,
             std::string username,
             std::string password,
@@ -58,9 +58,9 @@ class Member {
 
         void set_license_number(std::string license_number);
 
-        Date get_expiry_date();
+        Date* get_expiry_date();
 
-        void set_expiry_date(Date expiry_date);
+        void set_expiry_date(Date* expiry_date);
 
         int get_credit_point();
 

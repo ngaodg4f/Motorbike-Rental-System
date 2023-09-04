@@ -13,26 +13,22 @@ std::vector<Member*> member_vector;
 
 std::vector<string> splitStr(string& str, char ch){
     std::vector<string> data_list;
-    std::stringstream ss;
-    string tokens;
+    std::stringstream ss { str };
+    string token;
 
     while(!ss.eof()){
-        getline(ss, tokens, ch);
-        data_list.push_back(tokens);
+        getline(ss, token, ch);
+        data_list.push_back(token);
     }
 
     return data_list;
 }
 
-Date to_object(string& str){
-    std::stringstream ss;
-    int day, month, year;
+Date* to_object(string& str){
+    std::vector<string> tokens = splitStr(str, '/');
+    Date *convertedDate = new Date(std::stoi(tokens.at(0)), std::stoi(tokens.at(1)), std::stoi(tokens.at(2)));
 
-    string input;
-    char slash;
-    ss >> day >> slash >> month >> slash >> year;
-
-    return Date (day, month, year);
+    return convertedDate;
 }
 
 void input_member_list(){
@@ -47,14 +43,14 @@ void input_member_list(){
     while(getline(member_file, str)){
         std::vector<string> tokens;
         tokens = splitStr(str, ';');
-
+        
         Member* member = new Member(
                                 std::stoi(tokens.at(0)), 
                                 tokens.at(1), 
                                 tokens.at(2), 
                                 tokens.at(3), 
                                 tokens.at(4), 
-                                tokens.at(5),
+                                tokens.at(5),   
                                 to_object(tokens.at(6)),
                                 std::stoi(tokens.at(7)),
                                 tokens.at(8),
@@ -79,7 +75,7 @@ void update_member_file(){
                     << mem->get_id_type() << ";"
                     << mem->get_id_number() << ";"
                     << mem->get_license_number() << ";"
-                    << mem->get_expiry_date().to_string() << ";"
+                    << mem->get_expiry_date()->to_string() << ";"
                     << std::to_string(mem->get_credit_point()) << ";"
                     << mem->get_username() << ";"
                     << mem->get_password() << ";"
@@ -124,7 +120,8 @@ void guest_to_member(){
 
 int main(){
     // g++ Member/Member.cpp Date/Date.cpp test.cpp -o a.out
-    // input_member_list();
+    input_member_list();
+    // update_member_file();
     for(auto e : member_vector){
         cout << "ID " << e->get_id() << " saved" << '\n';
     }
