@@ -89,40 +89,42 @@ void guest_to_member(){
     int id, credit_point, bike_id;
     string username, fullname, phone;
     string id_type, id_number, license_number, expiry_date, password;
-    
-    id = member_vector.size();
-    
-    cout << "- Fullname: ";
-    getline(cin >> std::ws, fullname);
-    cout << "- Phone: ";
-    getline(cin >> std::ws, phone);
-    cout << "ID Type: ";
-    getline(cin >> std::ws, id_type);
-    cout << "ID Number: ";
-    getline(cin >> std::ws, id_number);
-    cout << "License Number: ";
-    getline(cin >> std::ws, license_number);
-    cout << "- Expiry Date: ";
-    getline(cin >> std::ws, expiry_date);
-    cout << "- Usename: ";
-    getline(cin >> std::ws, username);
-    cout << "Password: ";
-    getline(cin >> std::ws, password);
-    
-    credit_point = 20;
-    bike_id = 0;
-    
-    Member* new_member = new Member(id, fullname, phone, id_type, id_number, license_number, 
-                                    to_object(expiry_date), credit_point, username, password, bike_id);
+    cout << member_vector.size() << '\n';
+    // id = member_vector.size() + 1;
 
-    member_vector.push_back(new_member);
+    
+    // cout << "- Fullname: ";
+    // getline(cin >> std::ws, fullname);
+    // cout << "- Phone: ";
+    // getline(cin >> std::ws, phone);
+    // cout << "ID Type: ";
+    // getline(cin >> std::ws, id_type);
+    // cout << "ID Number: ";
+    // getline(cin >> std::ws, id_number);
+    // cout << "License Number: ";
+    // getline(cin >> std::ws, license_number);
+    // cout << "- Expiry Date: ";
+    // getline(cin >> std::ws, expiry_date);
+    // cout << "- Usename: ";
+    // getline(cin >> std::ws, username);
+    // cout << "Password: ";
+    // getline(cin >> std::ws, password);
+    
+    // credit_point = 20;
+    // bike_id = 0;
+    
+    // Member* new_member = new Member(id, fullname, phone, id_type, id_number, license_number, 
+    //                                 to_object(expiry_date), credit_point, username, password, bike_id);
+
+    // member_vector.push_back(new_member);
 }
 
 int main(){
     // g++ Member/Member.cpp Date/Date.cpp test.cpp -o a.out
     input_member_list();
+    cout << member_vector.size() << '\n';
     // update_member_file();
-    for(auto e : member_vector){
-        cout << "ID " << e->get_id() << " saved" << '\n';
-    }
+    // for(auto e : member_vector){
+    //     cout << "ID " << e->get_id() << " saved" << '\n';
+    // }
 }

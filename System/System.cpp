@@ -27,7 +27,7 @@ void System::input_member_list(){
                                 tokens.at(4), 
                                 tokens.at(5),   
                                 to_object(tokens.at(6)),
-                                std::stoi(tokens.at(7)),
+                                std::stod(tokens.at(7)),
                                 tokens.at(8),
                                 tokens.at(9),
                                 std::stoi(tokens.at(10)) );
@@ -45,17 +45,17 @@ void System::update_member_file(){
     }
 
     for(auto* mem : member_vector){
-        update_file << std::to_string(mem->get_id()) << ";"
-                    << mem->get_fullname() << ";"
-                    << mem->get_phone() << ";"
-                    << mem->get_id_type() << ";"
-                    << mem->get_id_number() << ";"
-                    << mem->get_license_number() << ";"
-                    << mem->get_expiry_date()->to_string() << ";"
-                    << std::to_string(mem->get_credit_point()) << ";"
-                    << mem->get_username() << ";"
-                    << mem->get_password() << ";"
-                    << std::to_string(mem->get_bike_id()) << '\n';
+        update_file << mem->id << ";"
+                    << mem->fullname << ";"
+                    << mem->phone << ";"
+                    << mem->id_type << ";"
+                    << mem->id_number << ";"
+                    << mem->license_number << ";"
+                    << mem->expiry_date->to_string() << ";"
+                    << mem->credit_point << ";"
+                    << mem->bike_id << ";"
+                    << mem->username << ";"
+                    << mem->password << '\n';
     }
 
     update_file.close();
@@ -154,7 +154,9 @@ void System::guest_login(){
     switch(choice){
         case 1:
             cout << "------INFORMATION------" << '\n';
+            // need a fix
             view_bike_info();
+            welcome_screen();
             break;
 
         case 2:
@@ -167,11 +169,11 @@ void System::guest_login(){
 }
 
 void System::guest_to_member(){
-    int id, credit_point, bike_id;
+    int id, bike_id;
     string username, fullname, phone;
     string id_type, id_number, license_number, expiry_date, password;
-    
-    id = member_vector.size();
+    double credit_point;
+    id = member_vector.size() + 1;
     
     cout << "- Fullname: ";
     getline(cin >> std::ws, fullname);
@@ -197,6 +199,8 @@ void System::guest_to_member(){
                                     to_object(expiry_date), credit_point, username, password, bike_id);
 
     member_vector.push_back(new_member);
+
+    welcome_screen();
 }
 
 int main(){

@@ -1,4 +1,4 @@
-1;SonTung;0833958888;ID;ST123;ABC123;1/1/2023;20;tung;tung;1
-2;John Doe;5551234567;License;DL12345;ABC123;1/1/2023;100;johndoe;tung;2
-3;Jane Smith;5559876543;ID;ID67890;XYZ789;1/1/2023;200;janesmith;tung;3
-4;Bob Johnson;5555555555;Passport;PP54321;DEF456;1/1/2023;300;bobjohnson;tung;4
+1;SonTung;0833958888;ID;ST123;ABC123;1/1/2023;20;1;tung;tung
+2;John Doe;5551234567;License;DL12345;ABC123;1/1/2023;100;2;johndoe;tung
+3;Jane Smith;5559876543;ID;ID67890;XYZ789;1/1/2023;200;3;janesmith;tung
+4;Bob Johnson;5555555555;Passport;PP54321;DEF456;1/1/2023;300;4;bobjohnson;tung

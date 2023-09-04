@@ -32,13 +32,16 @@ class System {
 
         void update_member_file();
 
-        // Feat Function 
+        // Tool Function 
+        bool validate_fullname();
+
         std::vector<std::string> splitStr(std::string& str, char ch);
 
         Date* to_object(std::string& str);
 
         int choice_selection(int a, int b);
 
+        // Feature Function
         void welcome_screen();
 
         void user_choice();
