@@ -244,6 +244,26 @@ bool System::validate_username(string& str){
     return true;
 }
 
+bool System::validate_login_username(string& str){
+    if(str.empty()){
+        cout << "`Username` is empty." << '\n';
+        return false;
+    }
+
+    bool is_found = false;
+    for(auto mem : member_vector){
+        if(str == mem->username){
+            is_found = true;
+            break;
+        }
+    }
+    if(!is_found){
+        cout << "`Username` doesn't exist." << '\n';
+    }
+
+    return is_found;
+}
+
 bool System::validate_password(string& str){
     if(str.empty()){
         cout << "`Password` is empty." << '\n';
@@ -256,6 +276,19 @@ bool System::validate_password(string& str){
     }
 
     return true;
+}
+
+bool System::validate_login_password(string& str, string& check){
+    if(str.empty()){
+        cout << "`Password` is empty." << '\n';
+        return false;
+    }
+
+    if(str != check){
+        cout << "`Password` is wrong. Check again." << '\n';
+    }
+
+    return str == check;
 }
 
 bool System::recommend_password(string& str){
@@ -394,6 +427,7 @@ void System::user_choice(){
 
         case 2:
             cout << "LOGIN AS MEMBER" << '\n';
+            member_login();
             break;
 
         case 3:
@@ -404,6 +438,31 @@ void System::user_choice(){
             update_member_file();
             exit(0);
     }
+}
+
+void System::member_login(){
+    string username, password;
+    Member* temp_member;
+
+    do {
+        cout << "Username: ";
+        getline(cin, username);
+    } while( !validate_login_username(username) );
+    
+    for(auto mem : member_vector){
+        if(username == mem->username){
+            temp_member = mem;
+            break;
+        }
+    }
+    string check = temp_member->password;
+    
+    do {
+        cout << "Password: ";
+        getline(cin, password);
+    } while ( !validate_login_password(password, check) );
+
+    current_member = temp_member;
 }
 
 void System::guest_login(){

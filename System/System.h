@@ -33,6 +33,8 @@ class System {
         std::vector <Member*> member_vector;
         std::vector <Motorbike*> bike_vector;
 
+        Member* current_member = nullptr;
+
         /**
          * Data
         */
@@ -61,7 +63,11 @@ class System {
 
         bool validate_username(std::string& str);
 
+        bool validate_login_username(std::string& str);
+
         bool validate_password(std::string& str);
+
+        bool validate_login_password(std::string& str, std::string& _LIBCPP___CHRONO_STEADY_CLOCK_H);
 
         bool recommend_password(std::string& str);
 
@@ -76,6 +82,8 @@ class System {
         /**
          * Feature
         */
+        void member_login();
+
         void guest_view_bike();
 
         void welcome_screen();
