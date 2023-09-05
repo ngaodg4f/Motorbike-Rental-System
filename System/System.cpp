@@ -19,6 +19,10 @@ void System::input_member_list(){
         std::vector<string> tokens;
         tokens = splitStr(str, ';');
         
+        // for(int i = 0; i < tokens.size(); i++){
+        //     cout << i << ": " << tokens.at(i) << '\n';
+        // }
+
         Member* member = new Member(
                                 std::stoi(tokens.at(0)), 
                                 tokens.at(1), 
@@ -53,9 +57,9 @@ void System::update_member_file(){
                     << mem->license_number << ";"
                     << mem->expiry_date->to_string() << ";"
                     << mem->credit_point << ";"
-                    << mem->bike_id << ";"
                     << mem->username << ";"
-                    << mem->password << '\n';
+                    << mem->password << ";"
+                    << mem->bike_id << '\n';
     }
 
     update_file.close();
@@ -172,7 +176,72 @@ bool System::is_leap_year(int& year){
 }
 
 bool System::validate_username(string& str){
+    if(str.empty()){
+        cout << "`Username` is empty." << '\n';
+        return false;
+    }
+
+    std::regex reg1 { "^[a-zA-Z0-9@.]{4,18}$" };
+    std::regex reg2 { "^([^@.]*[@.]?[^@.]*)$" };
+
+    if(!std::regex_match(str, reg1)){
+        cout << "`Username` contains 5 - 18 characters with no special characters." << '\n';
+        cout << "`Username` only available for @ and ." << '\n';
+        return false;
+    } 
+    if (!std::regex_match(str, reg2)){
+        cout << "`Username` contains more than 1 '@' or '.'" << '\n';
+        return false;
+    }
+
+    for(auto mem : member_vector){
+        if(str == mem->username){
+            cout << "`Username` is already taken." << '\n';
+            return false;
+        }
+    }
+
     return true;
+}
+
+bool System::validate_password(string& str){
+    if(str.empty()){
+        cout << "`Password` is empty." << '\n';
+        return false;
+    }
+
+    if(str.length() < 6 || str.find(" ") != std::string::npos){
+        cout << "`Password` must at least 6 characters with no space." << '\n';
+        return false;
+    }
+
+    return true;
+}
+
+bool System::recommend_password(string& str){
+    bool is_recommended = false;
+    cout << "Recommended `Password`: " << '\n';
+    if (!std::regex_search(str, std::regex("[A-Z]"))) {
+        cout << "- Contains at least 1 upper_case." << '\n';
+        is_recommended = true;
+    }
+
+    if (!std::regex_search(str, std::regex("[a-z]"))) {
+        cout << "- Contains at least 1 lower_case." << '\n';
+        is_recommended = true;
+    }
+
+    if (!std::regex_search(str, std::regex("[0-9]"))) {
+        cout << "- Contains at least 1 number." << '\n';
+        is_recommended = true;
+    }
+
+    if (!std::regex_search(str, std::regex("[!@#$%^&*()]"))) {
+        cout << "- Contains at least 1 special character (@, !, $, #, ...)" << '\n';
+        is_recommended = true;
+    }
+
+    return is_recommended;
 }
 
 std::vector<string> System::splitStr(string& str, char ch){
@@ -329,15 +398,37 @@ void System::member_registration(){
         getline(cin, expiry_date);
     } while ( !validate_date(expiry_date) );
 
+    do {
+        cout << "- Usename: ";
+        getline(cin, username);
+    } while ( !validate_username(username) );
     
-    cout << "- Usename: ";
-    getline(cin >> std::ws, username);
-    cout << "- Password: ";
-    getline(cin >> std::ws, password);
+    string confirm;
+    do {
+        do {
+            cout << "- Password: ";
+            getline(cin, password);
+        } while ( !validate_password(password) );
+
+        if( recommend_password(password) ){
+            cout << "Do you want to re-enter password ?" << '\n';
+            do {
+                cout << "> Y/N: ";
+                getline(cin, confirm);
+            } while (confirm != "Y" && confirm != "y" && confirm != "N" && confirm != "n");
+        }
+
+    } while (confirm == "Y" || confirm == "y");
     
     credit_point = 20;
     bike_id = 0;
-    
+
+    cout << "--------------------------------------------" << '\n';
+    cout << "Confirmation: Member-registration completed." << '\n';
+    cout << "You have 20 credits point." << '\n';
+    cout << "--------------------------------------------" << '\n';
+    cout << '\n';
+
     Member* new_member = new Member(id, fullname, phone, id_type, id_number, license_number, 
                                     to_object(expiry_date), credit_point, username, password, bike_id);
 

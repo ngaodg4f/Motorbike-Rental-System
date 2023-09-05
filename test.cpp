@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include <regex>
 
 #include "Member/Member.h"
 
@@ -118,6 +119,8 @@ void guest_to_member(){
 
     // member_vector.push_back(new_member);
 }
+
+
 
 int main(){
     // g++ Member/Member.cpp Date/Date.cpp test.cpp -o a.out

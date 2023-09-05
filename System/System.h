@@ -49,6 +49,10 @@ class System {
 
         bool validate_username(std::string& str);
 
+        bool validate_password(std::string& str);
+
+        bool recommend_password(std::string& str);
+
         std::vector<std::string> splitStr(std::string& str, char ch);
 
         std::string trim(std::string& str);
