@@ -9,10 +9,12 @@
 
 // define file_name
 #define ACCOUNT_FILE "../Data/Account.txt"
+#define MOTORBIKE_FILE "../Data/Motorbike.txt"
 
 
 #include <iostream>
 #include <string>
+#include <iomanip>
 #include <vector>
 #include <sstream>
 #include <fstream>
@@ -23,18 +25,26 @@ class Member;
 
 class System {
     public:
-        // Constructor
         System();
 
-        // Attribute to manage the class
-        std::vector<Member*> member_vector;
+        /**
+         * Attributes
+        */
+        std::vector <Member*> member_vector;
+        std::vector <Motorbike*> bike_vector;
 
-        // Function to input data into attributes
+        /**
+         * Data
+        */
         void input_member_list();
 
         void update_member_file();
 
-        // Tool Function 
+        void input_bike_list();
+
+        /**
+         * Tool
+        */ 
         bool validate_fullname(std::string& str);
 
         bool validate_phone(std::string& str);
@@ -61,7 +71,11 @@ class System {
 
         int choice_selection(int a, int b);
 
-        // Feature Function
+        /**
+         * Feature
+        */
+        void guest_view_bike();
+
         void welcome_screen();
 
         void user_choice();

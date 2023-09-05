@@ -15,13 +15,9 @@ void System::input_member_list(){
     }
     string str;
 
-    while(getline(member_file, str)){
+    while( getline(member_file, str) ){
         std::vector<string> tokens;
         tokens = splitStr(str, ';');
-        
-        // for(int i = 0; i < tokens.size(); i++){
-        //     cout << i << ": " << tokens.at(i) << '\n';
-        // }
 
         Member* member = new Member(
                                 std::stoi(tokens.at(0)), 
@@ -64,6 +60,46 @@ void System::update_member_file(){
 
     update_file.close();
 }
+
+void System::input_bike_list(){
+    bike_vector.clear();
+    std::ifstream bike_file (MOTORBIKE_FILE);
+    if(!bike_file.is_open()){
+        std::cerr << "Error: Can't open " << MOTORBIKE_FILE << '\n';
+        return;
+    }
+
+    string str;
+    while( getline(bike_file, str) ){
+        std::vector<string> tokens;
+        tokens = splitStr(str, ';');
+
+        // cout << std::stoi(tokens.at(0)) << '\n';
+        // cout << std::stoi(tokens.at(1)) << '\n';
+        // cout << std::stoi(tokens.at(6)) << '\n';
+        // cout << tokens.at(2) << '\n';
+        // cout << tokens.at(3) << '\n';
+        // cout << tokens.at(4) << '\n';
+        // cout << tokens.at(5) << '\n';
+        // cout << tokens.at(7) << '\n';
+        // cout << tokens.at(8) << '\n';
+
+        Motorbike* bike = new Motorbike(
+                                    std::stoi(tokens.at(0)),
+                                    std::stoi(tokens.at(1)),
+                                    tokens.at(2),
+                                    tokens.at(3),
+                                    tokens.at(4),
+                                    tokens.at(5),
+                                    std::stoi(tokens.at(6)),
+                                    tokens.at(7),
+                                    tokens.at(8) );
+        bike_vector.push_back(bike);
+    }
+    bike_file.close();
+}
+
+
 
 /**
  * Tool Function
@@ -295,6 +331,25 @@ int System::choice_selection(int a, int b){
 /**
  * Feature Function
 */
+void System::guest_view_bike(){
+    cout << "------INFORMATION------" << '\n';
+    cout << std::left << std::setw(10) << "BIKE_ID" 
+         << std::left << std::setw(13) << "OWNER_ID" 
+         << std::left << std::setw(16) << "MODEL" 
+         << std::left << std::setw(15) << "ENGINE_SIZE"
+         << std::left << std::setw(15) << "YEAR MADE"
+         << std::left << std::setw(15) << "DESCRIPTION" << '\n';
+
+    for(auto bike : bike_vector){
+        cout << std::left << std::setw(10) << bike->bike_id
+             << std::left << std::setw(13) << bike->member_id
+             << std::left << std::setw(16) << bike->model
+             << std::left << std::setw(15) << bike->engine_size
+             << std::left << std::setw(15) << bike->year
+             << std::left << std::setw(15) << bike->description << '\n';
+    }
+}
+
 void System::welcome_screen(){
     cout << "EEET2482/COSC2082 ASSIGNMENT" << '\n';
     cout << "MOTORBIKE RENTAL APPLICATION" << '\n';
@@ -316,6 +371,7 @@ void System::user_choice(){
 
     switch(choice){
         case 1:
+            cout << "LOGIN AS GUEST" << '\n';
             guest_login();
             break;
 
@@ -334,7 +390,6 @@ void System::user_choice(){
 }
 
 void System::guest_login(){
-    cout << "LOGIN AS GUEST" << '\n';
     cout << "-----MENU-----" << '\n';
     cout << "1. View all motorbikes" << '\n';
     cout << "2. Member registration" << '\n';
@@ -344,19 +399,19 @@ void System::guest_login(){
 
     switch(choice){
         case 1:
-            cout << "------INFORMATION------" << '\n';
-            // need a fix
-            view_bike_info();
-            welcome_screen();
+            guest_view_bike();
+            guest_login();
             break;
 
         case 2:
             member_registration();
+            guest_login();
             break;
 
         case 3:
             welcome_screen();
     }
+
 }
 
 void System::member_registration(){
@@ -440,5 +495,6 @@ void System::member_registration(){
 int main(){
     System sys;
     sys.input_member_list();
+    sys.input_bike_list();
     sys.welcome_screen();
 }
