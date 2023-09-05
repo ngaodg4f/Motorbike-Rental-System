@@ -99,11 +99,15 @@ void System::input_bike_list(){
     bike_file.close();
 }
 
-
-
 /**
  * Tool Function
 */
+bool System::is_integer(string& str){
+    std::regex reg { "^[-+]?[0-9]+$" };
+
+    return std::regex_match(str, reg);
+}
+
 bool System::validate_fullname(string& str){
     if(str.empty()){
         cout << "`Full name` is empty." << '\n';
@@ -315,15 +319,28 @@ Date* System::to_object(string& str){
 }
 
 int System::choice_selection(int a, int b){
+    string input_choice;
     int choice;
+    bool is_not_valid = true;
+
     do {
         cout << "> Your choice: ";
-        cin >> choice;
-        if(choice < a || choice > b){
-            std::cerr << "Error with option " << choice << '\n';
+        getline(cin, input_choice);
+
+        if( !is_integer(input_choice) ){
+            cout << "`Choice` is number ONLY." << '\n';
+
+        } else {
+            choice = std::stoi(input_choice);
+            if(choice < a || choice > b){
+                cout << "No option " << choice << '\n';
+                
+            } else {
+                is_not_valid = false;
+            }
         }
 
-    } while(choice < a || choice > b);
+    } while( is_not_valid );
 
     return choice;
 }
@@ -422,7 +439,6 @@ void System::member_registration(){
 
     id = member_vector.size() + 1;
     
-    cin.ignore();
     do {
         cout << "- Full Name: ";
         getline(cin, fullname);
@@ -459,6 +475,7 @@ void System::member_registration(){
     } while ( !validate_username(username) );
     
     string confirm;
+    bool is_valid_input;
     do {
         do {
             cout << "- Password: ";
@@ -470,7 +487,12 @@ void System::member_registration(){
             do {
                 cout << "> Y/N: ";
                 getline(cin, confirm);
-            } while (confirm != "Y" && confirm != "y" && confirm != "N" && confirm != "n");
+                is_valid_input = !(confirm != "Y" && confirm != "y" && confirm != "N" && confirm != "n");
+                // yes
+                if(!is_valid_input){
+                    cout << "`Input` Y or N only." << '\n';
+                }
+            } while ( !is_valid_input );
         }
 
     } while (confirm == "Y" || confirm == "y");

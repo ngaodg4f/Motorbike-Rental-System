@@ -45,6 +45,8 @@ class System {
         /**
          * Tool
         */ 
+        bool is_integer(std::string& str);
+        
         bool validate_fullname(std::string& str);
 
         bool validate_phone(std::string& str);
