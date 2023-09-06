@@ -6,6 +6,16 @@ System::System(){}
 /**
  * Function to input data into attributes
 */
+void System::input_data(){
+    input_member_list();
+    input_bike_list();
+}
+
+void System::update_data(){
+    update_member_file();
+    update_bike_file();
+}
+
 void System::input_member_list(){
     member_vector.clear();
     std::ifstream member_file (ACCOUNT_FILE);
@@ -44,7 +54,7 @@ void System::update_member_file(){
         return;
     }
 
-    for(auto* mem : member_vector){
+    for(auto mem : member_vector){
         update_file << mem->id << ";"
                     << mem->fullname << ";"
                     << mem->phone << ";"
@@ -97,6 +107,28 @@ void System::input_bike_list(){
         bike_vector.push_back(bike);
     }
     bike_file.close();
+}
+
+void System::update_bike_file(){
+    std::ofstream update_file (MOTORBIKE_FILE);
+    if(!update_file.is_open()){
+        std::cerr << "Error: Can't update " << MOTORBIKE_FILE << '\n';
+        return;
+    }
+
+    for(auto bike : bike_vector){
+        update_file << bike->bike_id << ";"
+                    << bike->member_id << ";"
+                    << bike->model << ";"
+                    << bike->color << ";"
+                    << bike->engine_size << ";"
+                    << bike->transmission_mode << ";"
+                    << bike->year << ";"
+                    << bike->license_plate << ";"
+                    << bike->description << '\n';
+    }
+
+    update_file.close();
 }
 
 /**
@@ -317,6 +349,31 @@ bool System::recommend_password(string& str){
     return is_recommended;
 }
 
+bool System::validate_model(string& str){
+    if(str.empty()){
+        cout << "`Model` is empty." << '\n';
+        return false;
+    }
+
+    std::regex reg { "^[a-zA-Z0-9-]+$" };
+    if(!std::regex_match(str, reg)){
+        cout << "`Model` contains special characters including blank_space" << '\n';
+        return false;
+    }
+
+    return true;
+}
+
+bool System::no_special_char_check(string& str){
+    std::regex reg { "^[a-zA-Z0-9]+$" };
+    if(str.empty() || !std::regex_match(str, reg)){
+        cout << "`Input` is empty or contains special characters." << '\n';
+        return false;
+    }
+
+    return true;
+}
+
 std::vector<string> System::splitStr(string& str, char ch){
     std::vector<string> data_list;
     std::stringstream ss { str };
@@ -381,25 +438,6 @@ int System::choice_selection(int a, int b){
 /**
  * Feature Function
 */
-void System::guest_view_bike(){
-    cout << "------INFORMATION------" << '\n';
-    cout << std::left << std::setw(10) << "BIKE_ID" 
-         << std::left << std::setw(13) << "OWNER_ID" 
-         << std::left << std::setw(16) << "MODEL" 
-         << std::left << std::setw(15) << "ENGINE_SIZE"
-         << std::left << std::setw(15) << "YEAR MADE"
-         << std::left << std::setw(15) << "DESCRIPTION" << '\n';
-
-    for(auto bike : bike_vector){
-        cout << std::left << std::setw(10) << bike->bike_id
-             << std::left << std::setw(13) << bike->member_id
-             << std::left << std::setw(16) << bike->model
-             << std::left << std::setw(15) << bike->engine_size
-             << std::left << std::setw(15) << bike->year
-             << std::left << std::setw(15) << bike->description << '\n';
-    }
-}
-
 void System::welcome_screen(){
     cout << "EEET2482/COSC2082 ASSIGNMENT" << '\n';
     cout << "MOTORBIKE RENTAL APPLICATION" << '\n';
@@ -413,16 +451,18 @@ void System::welcome_screen(){
     
     cout << "----------------- LOGIN -----------------" << '\n';
     cout << "1. Guest\t2. Member\t3. Admin\t4. Exit" << '\n'; 
-    user_choice();
+
+    input_data();
+    main_menu();
 }
 
-void System::user_choice(){
+void System::main_menu(){
     int choice = choice_selection(1, 4);
 
     switch(choice){
         case 1:
             cout << "LOGIN AS GUEST" << '\n';
-            guest_login();
+            guest_menu();
             break;
 
         case 2:
@@ -435,11 +475,13 @@ void System::user_choice(){
             break;
 
         case 4:
-            update_member_file();
+            update_data();
             exit(0);
     }
 }
 
+
+// MEMBER
 void System::member_login(){
     string username, password;
     Member* temp_member;
@@ -456,16 +498,165 @@ void System::member_login(){
         }
     }
     string check = temp_member->password;
-    
+    int count = 4;
     do {
+        if(count == 0){
+            cout << "Login as `Member` failed." << '\n';
+            welcome_screen();
+
+        } else if (count != 4){
+            cout << "`Verification` " << count << " times left." << '\n';
+        }
+
         cout << "Password: ";
         getline(cin, password);
-    } while ( !validate_login_password(password, check) );
+        count--;
 
+    } while ( !validate_login_password(password, check) );
+    
     current_member = temp_member;
+    for(auto bike : bike_vector){
+        if(bike->bike_id == current_member->bike_id){
+            current_bike = bike;
+            break;
+        }
+    }
+
+    member_menu();
 }
 
-void System::guest_login(){
+void System::member_menu(){
+    cout << "--------- HELLO `" << current_member->fullname << "` ---------" << '\n';
+    cout << "1. View personal information." << '\n';
+    cout << "2. Add motorbike's details." << '\n';
+    cout << "8. Exit" << '\n';
+
+    int choice = choice_selection(1, 2);
+    switch(choice){
+        case 1:
+            member_view_personal_info();
+            member_menu();
+            break;
+
+        case 2:
+            member_add_bike();
+            member_menu();
+            break;
+
+        case 8: 
+            main_menu();
+    }
+}
+
+void System::member_view_personal_info(){
+    cout << "------PERSONAL INFORMATION------" << '\n';
+    cout << std::left << std::setw(10) << "ID" 
+         << std::left << std::setw(15) << "FULL_NAME" 
+         << std::left << std::setw(15) << "PHONE" 
+         << std::left << std::setw(15) << "ID_TYPE"
+         << std::left << std::setw(15) << "ID_NUMBER"
+         << std::left << std::setw(15) << "LICENSE_NO"
+         << std::left << std::setw(15) << "EXPIRY_DATE"
+         << std::left << std::setw(15) << "CREDITS" << '\n';
+
+    cout << std::left << std::setw(10) << current_member->id
+         << std::left << std::setw(15) << current_member->fullname
+         << std::left << std::setw(15) << current_member->phone
+         << std::left << std::setw(15) << current_member->id_type
+         << std::left << std::setw(15) << current_member->id_number
+         << std::left << std::setw(15) << current_member->license_number
+         << std::left << std::setw(15) << current_member->expiry_date->to_string()
+         << std::left << std::setw(15) << current_member->credit_point << '\n';
+}
+
+void System::member_add_bike(){
+    if(current_member->bike_id != 0){
+        cout << "You already have 1 bike." << '\n';
+        cout << "Do you want to add new one ?" << '\n';
+        string confirm;
+        bool is_valid_input;
+        do {
+            cout << "> Y/N: ";
+            getline(cin, confirm);
+            is_valid_input = !(confirm != "Y" && confirm != "y" && confirm != "N" && confirm != "n");
+            // yes
+            if(!is_valid_input){
+                cout << "`Input` Y or N only." << '\n';
+            }
+        } while ( !is_valid_input );
+
+        if(confirm == "N" || confirm == "n"){
+            member_menu();
+        }
+    }
+
+    int id, member_id;
+    string model, color, engine_size, transmission_mode, license_plate, description;
+    string year;
+
+    id = bike_vector.size() + 1;
+    member_id = current_member->id;
+
+    do {
+        cout << "- Model: ";
+        getline(cin, model);
+    } while ( !validate_model(model) );
+
+    do {
+        cout << "- Color: ";
+        getline(cin, color);
+    } while ( !no_special_char_check(color) );
+
+    do {
+        cout << "- Engine size: ";
+        getline(cin, engine_size);
+    } while ( !no_special_char_check(engine_size) );
+
+    do {
+        cout << "- Transmission mode: ";
+        getline(cin, transmission_mode);
+    } while ( !no_special_char_check(transmission_mode) );
+
+    do {
+        cout << "- Year: ";
+        getline(cin, year);
+    } while ( !is_integer(year) );
+
+    do {
+        cout << "- License plate: ";
+        getline(cin, license_plate);
+    } while ( !no_special_char_check(license_plate) );
+
+    do {
+        cout << "- Description (max 30 characters): ";
+        getline(cin, description);
+    } while ( description.length() > 30);
+
+    Motorbike* bike = new Motorbike(
+                                id,
+                                member_id,
+                                model,
+                                color,
+                                engine_size,
+                                transmission_mode,
+                                std::stoi(year),
+                                license_plate,
+                                description );
+    bike_vector.push_back(bike);
+
+    for(auto mem : member_vector){
+        if(mem->username == current_member->username){
+            mem->bike_id = id;
+            break;
+        }
+    }
+
+    update_data();
+}
+
+
+// GUEST
+void System::guest_menu(){
     cout << "-----MENU-----" << '\n';
     cout << "1. View all motorbikes" << '\n';
     cout << "2. Member registration" << '\n';
@@ -476,21 +667,49 @@ void System::guest_login(){
     switch(choice){
         case 1:
             guest_view_bike();
-            guest_login();
+            guest_menu();
             break;
 
         case 2:
-            member_registration();
-            guest_login();
+            guest_registration();
+            guest_menu();
             break;
 
         case 3:
+            update_data();
             welcome_screen();
     }
 
 }
 
-void System::member_registration(){
+void System::guest_view_bike(){
+    cout << "------INFORMATION------" << '\n';
+    cout << std::left << std::setw(10) << "BIKE_ID" 
+         << std::left << std::setw(20) << "OWNER_NAME" 
+         << std::left << std::setw(16) << "MODEL" 
+         << std::left << std::setw(15) << "ENGINE_SIZE"
+         << std::left << std::setw(15) << "YEAR MADE"
+         << std::left << std::setw(15) << "DESCRIPTION" << '\n';
+
+    for(auto bike : bike_vector){
+        string name;
+        for(auto mem : member_vector){
+            if(bike->member_id == mem->id){
+                name = mem->fullname;
+                break;
+            }
+        }
+        
+        cout << std::left << std::setw(10) << bike->bike_id
+             << std::left << std::setw(20) << name
+             << std::left << std::setw(16) << bike->model
+             << std::left << std::setw(15) << bike->engine_size
+             << std::left << std::setw(15) << bike->year
+             << std::left << std::setw(15) << bike->description << '\n';
+    }
+}
+
+void System::guest_registration(){
     int id, bike_id;
     string username, fullname, phone;
     string id_type, id_number, license_number, expiry_date, password;
@@ -569,13 +788,9 @@ void System::member_registration(){
                                     to_object(expiry_date), credit_point, username, password, bike_id);
 
     member_vector.push_back(new_member);
-
-    welcome_screen();
 }
 
 int main(){
     System sys;
-    sys.input_member_list();
-    sys.input_bike_list();
     sys.welcome_screen();
 }

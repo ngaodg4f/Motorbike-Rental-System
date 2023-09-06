@@ -1,11 +1,15 @@
 #ifndef ADMIN_H
 #define ADMIN_H
+#include <iostream>
+#include <string>
+#include <time.h>
+#include <cstdlib>
 
-#include "../User/User.h"
-
-class Admin : public User{
+class Admin {
     public:
-        void list_vehicle() override;
+        Admin();
+
+
 };
 
 #endif

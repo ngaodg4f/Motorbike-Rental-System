@@ -34,16 +34,22 @@ class System {
         std::vector <Motorbike*> bike_vector;
 
         Member* current_member = nullptr;
+        Motorbike* current_bike = nullptr;
 
         /**
          * Data
         */
+        void input_data();
+
+        void update_data();
+
         void input_member_list();
 
         void update_member_file();
 
         void input_bike_list();
 
+        void update_bike_file();
         /**
          * Tool
         */ 
@@ -71,6 +77,10 @@ class System {
 
         bool recommend_password(std::string& str);
 
+        bool no_special_char_check(std::string& str);
+
+        bool validate_model(std::string& str);
+
         std::vector<std::string> splitStr(std::string& str, char ch);
 
         std::string trim(std::string& str);
@@ -82,17 +92,31 @@ class System {
         /**
          * Feature
         */
-        void member_login();
+        void welcome_screen();
+
+        void main_menu();
+
+        // Guest
+        void guest_menu();
 
         void guest_view_bike();
 
-        void welcome_screen();
+        void guest_registration();
 
-        void user_choice();
+        // Member
+        void member_menu();
 
-        void guest_login();
+        void member_login();
 
-        void member_registration();
+        void member_view_personal_info();
+
+        void member_add_bike();
+
+       
+
+        
+        
+        
 };
 
 #endif

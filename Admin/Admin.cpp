@@ -1,3 +1,7 @@
 #include "Admin.h"
 
-void Admin::list_vehicle() {}
+using std::cout, std::string;
+
+Admin::Admin(){}
+
+
