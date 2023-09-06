@@ -17,6 +17,7 @@ class Member {
         std::string username;
         std::string password;
         int bike_id;
+        std::string location;
 
     public:
         Member(std::string , std::string);
@@ -32,7 +33,8 @@ class Member {
             double credit_point,
             std::string username,
             std::string password,
-            int bike_id);
+            int bike_id,
+            std::string location);
 
         friend class System;
 };

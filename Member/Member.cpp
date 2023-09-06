@@ -18,7 +18,8 @@ Member::Member(
             double credit_point,
             std::string username,
             std::string password,
-            int bike_id): 
+            int bike_id,
+            string location): 
         id(id),
         fullname(fullname),
         phone(phone),
@@ -27,6 +28,7 @@ Member::Member(
         license_number(license_number),
         expiry_date(expiry_date),
         credit_point(credit_point),
-        bike_id(bike_id),
         username(username),
-        password(password) {}
+        password(password),
+        bike_id(bike_id),
+        location(location) {}

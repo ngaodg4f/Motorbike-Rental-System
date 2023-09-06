@@ -40,7 +40,8 @@ void System::input_member_list(){
                                 std::stod(tokens.at(7)),
                                 tokens.at(8),
                                 tokens.at(9),
-                                std::stoi(tokens.at(10)) );
+                                std::stoi(tokens.at(10)),
+                                tokens.at(11) );
 
         member_vector.push_back(member);
     }
@@ -65,7 +66,8 @@ void System::update_member_file(){
                     << mem->credit_point << ";"
                     << mem->username << ";"
                     << mem->password << ";"
-                    << mem->bike_id << '\n';
+                    << mem->bike_id << ";"
+                    << mem->location << '\n';
     }
 
     update_file.close();
@@ -778,6 +780,13 @@ void System::guest_registration(){
     credit_point = 20;
     bike_id = 0;
 
+    cout << "LOCATION: " << '\n';
+    cout << "1. SAIGON" << '\n';
+    cout << "2. HANOI" << '\n';
+    string place[2] = { "SAIGON", "HANOI" };
+    int choice = choice_selection(1, 2);
+    string location = place[choice - 1];
+
     cout << "--------------------------------------------" << '\n';
     cout << "Confirmation: Member-registration completed." << '\n';
     cout << "You have 20 credits point." << '\n';
@@ -785,7 +794,7 @@ void System::guest_registration(){
     cout << '\n';
 
     Member* new_member = new Member(id, fullname, phone, id_type, id_number, license_number, 
-                                    to_object(expiry_date), credit_point, username, password, bike_id);
+                                    to_object(expiry_date), credit_point, username, password, bike_id, location);
 
     member_vector.push_back(new_member);
 }
