@@ -1,3 +1,2 @@
-1;1;Yamaha YZF-R6;Blue;600cc;;2020;ABC123;none
-2;2;Suzuki;Blue;600cc;;2020;ABC123;xe nhu con cac ay
-3;3;Honda;Black;200cc;;2023;ABC123;xe nhu con cac
+1;1;Yamaha YZF-R6;Blue;600cc;Manual;2020;ABC123;none
+2;2;Suzuki;Blue;600cc;Manual;2020;ABC123;xe nhu con cac ay

@@ -51,6 +51,7 @@ class System {
 
         void update_member_file();
         void update_bike_file();
+        void update_rental_file();
         /**
          * Tool
         */ 
@@ -93,6 +94,7 @@ class System {
         void member_add_bike();
         void member_list_rental();
 
+        void print_mode();
 };
 
 #endif

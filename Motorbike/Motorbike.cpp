@@ -28,17 +28,17 @@ void Motorbike::link_owner(Member* owner){
 
 void Motorbike::view_bike_info(){
     cout << "----- YOUR BIKE ------" << '\n';
-    cout << std::left << std::setw(10) << "MODEL" 
-         << std::left << std::setw(20) << "COLOR" 
-         << std::left << std::setw(16) << "ENGINE_SIZE" 
+    cout << std::left << std::setw(15) << "MODEL" 
+         << std::left << std::setw(15) << "COLOR" 
+         << std::left << std::setw(15) << "ENGINE_SIZE" 
          << std::left << std::setw(15) << "TRANSMISSION_MODE"
          << std::left << std::setw(15) << "YEAR"
          << std::left << std::setw(15) << "LICENSE_PLATE"
          << std::left << std::setw(15) << "DESCRIPTION" << '\n';
 
-    cout << std::left << std::setw(10) << model
-         << std::left << std::setw(20) << color
-         << std::left << std::setw(16) << engine_size
+    cout << std::left << std::setw(15) << model
+         << std::left << std::setw(15) << color
+         << std::left << std::setw(15) << engine_size
          << std::left << std::setw(15) << transmission_mode
          << std::left << std::setw(15) << year
          << std::left << std::setw(15) << license_plate

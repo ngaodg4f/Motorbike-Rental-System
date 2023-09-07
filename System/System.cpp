@@ -16,6 +16,7 @@ void System::input_data(){
 void System::update_data(){
     update_member_file();
     update_bike_file();
+    update_rental_file();
 }
 
 void System::input_member_list(){
@@ -65,14 +66,14 @@ void System::input_bike_list(){
 
         // cout << std::stoi(tokens.at(0)) << '\n';
         // cout << std::stoi(tokens.at(1)) << '\n';
-        // cout << std::stoi(tokens.at(6)) << '\n';
         // cout << tokens.at(2) << '\n';
         // cout << tokens.at(3) << '\n';
         // cout << tokens.at(4) << '\n';
         // cout << tokens.at(5) << '\n';
+        // cout << std::stoi(tokens.at(6)) << '\n';
         // cout << tokens.at(7) << '\n';
         // cout << tokens.at(8) << '\n';
-
+        cout << tokens.at(5) << '\n';
         Motorbike* bike = new Motorbike(
                                     std::stoi(tokens.at(0)),
                                     std::stoi(tokens.at(1)),
@@ -83,6 +84,8 @@ void System::input_bike_list(){
                                     std::stoi(tokens.at(6)),
                                     tokens.at(7),
                                     tokens.at(8) );
+
+        cout << bike->transmission_mode << '\n';
         bike_vector.push_back(bike);
     }
     bike_file.close();
@@ -175,7 +178,25 @@ void System::update_bike_file(){
     update_file.close();
 }
 
+void System::update_rental_file(){
+    std::ofstream update_file (RENTAL_FILE);
+    if(!update_file.is_open()){
+        std::cerr << "Error: Can't update " << RENTAL_FILE << '\n';
+        return;
+    }
 
+    for(auto bike : bike_vector){
+        if(bike->status == "AVAILABLE"){
+            update_file << bike->bike_id << ";"
+                        << bike->point_per_day << ";"
+                        << bike->minimum_rating << ";"
+                        << bike->start->to_string() << ";"
+                        << bike->end->to_string() << '\n';
+        }
+    }
+
+    update_file.close();
+}
 /**
  * Tool Function
 */
@@ -637,7 +658,7 @@ void System::member_menu(){
     cout << "4. List motorbike for renting." << '\n';
     cout << "8. Exit" << '\n';
 
-    int choice = choice_selection(1, 4);
+    int choice = choice_selection(1, 8);
     switch(choice){
         case 1:
             current_member->view_personal_info();
@@ -645,7 +666,12 @@ void System::member_menu(){
             break;
 
         case 2:
-            current_bike->view_bike_info(); 
+            if(current_bike == nullptr){
+                cout << "- You have no bike yet." << '\n';
+            } else {
+                current_bike->view_bike_info(); 
+            }
+            
             member_menu();
             break;
 
@@ -681,6 +707,8 @@ void System::member_add_bike(){
 
         if(confirm == "N" || confirm == "n"){
             member_menu();
+        } else {
+            bike_vector.erase(bike_vector.begin() + current_bike->bike_id);
         }
     }
 
@@ -748,6 +776,7 @@ void System::member_add_bike(){
         }
     }
 
+    cout << transmission_mode << '\n';
     update_data();
 }
 
@@ -795,6 +824,8 @@ void System::member_list_rental(){
     } while ( day_count == 0);
 
     current_bike->add_rental( std::stod(point), std::stod(rating), to_object(start), to_object(end) );
+
+    update_data();
 }
 
 // GUEST
@@ -931,7 +962,14 @@ void System::guest_registration(){
     member_vector.push_back(new_member);
 }
 
+void System::print_mode(){
+    for(auto bike : bike_vector){
+        cout << bike->transmission_mode << '\n';
+    }
+}
+
 int main(){
     System sys;
-    sys.welcome_screen();
+    sys.input_bike_list();
+    sys.print_mode();
 }
