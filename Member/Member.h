@@ -2,6 +2,8 @@
 #define MEMBER_H
 
 #include "../Date/Date.h"
+#include "../Motorbike/Motorbike.h"
+
 #include <iostream>
 
 class Member {
@@ -19,6 +21,8 @@ class Member {
         int bike_id;
         std::string location;
 
+        Motorbike* bike;
+
     public:
         Member(std::string , std::string);
 
@@ -35,6 +39,8 @@ class Member {
             std::string password,
             int bike_id,
             std::string location);
+
+        void add_bike(Motorbike* bike);
 
         friend class System;
 };

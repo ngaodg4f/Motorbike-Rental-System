@@ -22,3 +22,6 @@ Motorbike::Motorbike(
     license_plate(license_plate),
     description(description){}
 
+void Motorbike::add_owner(Member* owner){
+    this->owner = owner;
+}

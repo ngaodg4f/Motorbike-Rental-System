@@ -32,3 +32,11 @@ Member::Member(
         password(password),
         bike_id(bike_id),
         location(location) {}
+
+void Member::add_bike(Motorbike* bike){
+    this->bike = bike;
+}
+
+int main(){
+    return;
+}

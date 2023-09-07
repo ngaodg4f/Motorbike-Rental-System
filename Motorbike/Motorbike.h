@@ -1,11 +1,14 @@
 #ifndef MOTORBIKE_H
 #define MOTORBIKE_H
 
+
 #include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <fstream>
+
+class Member;
 
 class Motorbike {
     private:
@@ -19,6 +22,8 @@ class Motorbike {
         std::string license_plate;
         std::string description; 
 
+        Member* owner;
+
     public:
         Motorbike(
             int bike_id,
@@ -31,7 +36,9 @@ class Motorbike {
             std::string license_plate, 
             std::string description);
 
-            friend class System;
+        void add_owner(Member* owner);
+
+        friend class System;
 };
 
 #endif
