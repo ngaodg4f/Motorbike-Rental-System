@@ -970,6 +970,5 @@ void System::print_mode(){
 
 int main(){
     System sys;
-    sys.input_bike_list();
-    sys.print_mode();
+    sys.welcome_screen();
 }

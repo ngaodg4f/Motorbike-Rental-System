@@ -67,7 +67,7 @@ class System {
         bool validate_username(std::string& str);
         bool validate_login_username(std::string& str);
         bool validate_password(std::string& str);
-        bool validate_login_password(std::string& str, std::string& _LIBCPP___CHRONO_STEADY_CLOCK_H);
+        bool validate_login_password(std::string& str, std::string& check);
         bool recommend_password(std::string& str);
         bool no_special_char_check(std::string& str);
         bool validate_model(std::string& str);
