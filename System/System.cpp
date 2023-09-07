@@ -9,6 +9,7 @@ System::System(){}
 void System::input_data(){
     input_member_list();
     input_bike_list();
+    link_member_and_bike();
 }
 
 void System::update_data(){
@@ -46,31 +47,6 @@ void System::input_member_list(){
         member_vector.push_back(member);
     }
     member_file.close();
-}
-
-void System::update_member_file(){
-    std::ofstream update_file (ACCOUNT_FILE);
-    if(!update_file.is_open()){
-        std::cerr << "Error: Can't update " << ACCOUNT_FILE << '\n';
-        return;
-    }
-
-    for(auto mem : member_vector){
-        update_file << mem->id << ";"
-                    << mem->fullname << ";"
-                    << mem->phone << ";"
-                    << mem->id_type << ";"
-                    << mem->id_number << ";"
-                    << mem->license_number << ";"
-                    << mem->expiry_date->to_string() << ";"
-                    << mem->credit_point << ";"
-                    << mem->username << ";"
-                    << mem->password << ";"
-                    << mem->bike_id << ";"
-                    << mem->location << '\n';
-    }
-
-    update_file.close();
 }
 
 void System::input_bike_list(){
@@ -111,6 +87,43 @@ void System::input_bike_list(){
     bike_file.close();
 }
 
+void System::link_member_and_bike(){
+    for(auto mem : member_vector){
+        for(auto bike : bike_vector){
+            if(mem->bike_id == bike->bike_id){
+                mem->add_bike(bike);
+                bike->add_owner(mem);
+                break;
+            }
+        }
+    }
+}
+
+void System::update_member_file(){
+    std::ofstream update_file (ACCOUNT_FILE);
+    if(!update_file.is_open()){
+        std::cerr << "Error: Can't update " << ACCOUNT_FILE << '\n';
+        return;
+    }
+
+    for(auto mem : member_vector){
+        update_file << mem->id << ";"
+                    << mem->fullname << ";"
+                    << mem->phone << ";"
+                    << mem->id_type << ";"
+                    << mem->id_number << ";"
+                    << mem->license_number << ";"
+                    << mem->expiry_date->to_string() << ";"
+                    << mem->credit_point << ";"
+                    << mem->username << ";"
+                    << mem->password << ";"
+                    << mem->bike_id << ";"
+                    << mem->location << '\n';
+    }
+
+    update_file.close();
+}
+
 void System::update_bike_file(){
     std::ofstream update_file (MOTORBIKE_FILE);
     if(!update_file.is_open()){
@@ -132,6 +145,8 @@ void System::update_bike_file(){
 
     update_file.close();
 }
+
+
 
 /**
  * Tool Function
@@ -649,6 +664,9 @@ void System::member_add_bike(){
     for(auto mem : member_vector){
         if(mem->username == current_member->username){
             mem->bike_id = id;
+            
+            mem->add_bike(bike);
+            bike->add_owner(mem);
             break;
         }
     }
@@ -694,16 +712,8 @@ void System::guest_view_bike(){
          << std::left << std::setw(15) << "DESCRIPTION" << '\n';
 
     for(auto bike : bike_vector){
-        string name;
-        for(auto mem : member_vector){
-            if(bike->member_id == mem->id){
-                name = mem->fullname;
-                break;
-            }
-        }
-        
         cout << std::left << std::setw(10) << bike->bike_id
-             << std::left << std::setw(20) << name
+             << std::left << std::setw(20) << bike->owner->fullname
              << std::left << std::setw(16) << bike->model
              << std::left << std::setw(15) << bike->engine_size
              << std::left << std::setw(15) << bike->year

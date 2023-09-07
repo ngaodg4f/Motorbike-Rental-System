@@ -36,7 +36,3 @@ Member::Member(
 void Member::add_bike(Motorbike* bike){
     this->bike = bike;
 }
-
-int main(){
-    return;
-}

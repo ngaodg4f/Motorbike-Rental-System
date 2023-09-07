@@ -45,9 +45,11 @@ class System {
 
         void input_member_list();
 
-        void update_member_file();
+        void link_member_and_bike();
 
         void input_bike_list();
+
+        void update_member_file();
 
         void update_bike_file();
         /**
