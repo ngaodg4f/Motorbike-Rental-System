@@ -10,6 +10,7 @@ void System::input_data(){
     input_member_list();
     input_bike_list();
     link_member_and_bike();
+    input_rental_list();
 }
 
 void System::update_data(){
@@ -97,6 +98,34 @@ void System::link_member_and_bike(){
             }
         }
     }
+}
+
+void System::input_rental_list(){
+    std::ifstream rental_file (RENTAL_FILE);
+    if(!rental_file.is_open()){
+        std::cerr << "Error: Can't open " << RENTAL_FILE << '\n';
+        return;
+    }
+
+    string str;
+    while( getline(rental_file, str) ){
+        std::vector<string> tokens;
+        tokens = splitStr(str, ';');
+
+        for(auto bike : bike_vector){
+            if(std::stoi(tokens.at(0)) == bike->bike_id){
+                bike->add_rental(std::stod(tokens.at(1)),
+                                 std::stod(tokens.at(2)),
+                                 to_object(tokens.at(3)),
+                                 to_object(tokens.at(4)) );
+
+                rental_list.push_back(bike);
+                break;
+            }
+        }  
+    }
+
+    rental_file.close();
 }
 
 void System::update_member_file(){

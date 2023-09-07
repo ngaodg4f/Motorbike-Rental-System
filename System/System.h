@@ -10,7 +10,7 @@
 // define file_name
 #define ACCOUNT_FILE "../Data/Account.txt"
 #define MOTORBIKE_FILE "../Data/Motorbike.txt"
-
+#define RENTAL_FILE "../Data/Rental.txt"
 
 #include <iostream>
 #include <string>
@@ -36,6 +36,8 @@ class System {
         Member* current_member = nullptr;
         Motorbike* current_bike = nullptr;
 
+        std::vector <Motorbike*> rental_list;
+
         /**
          * Data
         */
@@ -45,6 +47,7 @@ class System {
         void input_member_list();
         void input_bike_list();
         void link_member_and_bike();
+        void input_rental_list();
 
         void update_member_file();
         void update_bike_file();
