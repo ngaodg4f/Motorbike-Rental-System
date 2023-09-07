@@ -44,3 +44,12 @@ void Motorbike::view_bike_info(){
          << std::left << std::setw(15) << license_plate
          << std::left << std::setw(15) << description << '\n';
 }
+
+void Motorbike::add_rental(double point_per_day, double minimum_rating, Date* start, Date* end){
+    this->point_per_day = point_per_day;
+    this->minimum_rating = minimum_rating;
+    this->start = start;
+    this->end = end;
+    
+    this->status = "AVAILABLE";
+}

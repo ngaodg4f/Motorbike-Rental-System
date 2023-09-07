@@ -52,7 +52,8 @@ class System {
          * Tool
         */ 
         bool is_integer(std::string& str);
-        
+        bool is_double(std::string& str);
+
         bool validate_fullname(std::string& str);
         bool validate_phone(std::string& str);
         bool validate_id_type(std::string& str);
@@ -71,7 +72,7 @@ class System {
         std::string trim(std::string& str);
         Date* to_object(std::string& str);
         int choice_selection(int a, int b);
-
+        int count_day(Date* start, Date* end);
         /**
          * Feature
         */
@@ -86,8 +87,8 @@ class System {
         // Member
         void member_menu();
         void member_login();
-        void member_view_personal_info();
         void member_add_bike();
+        void member_list_rental();
 
 };
 

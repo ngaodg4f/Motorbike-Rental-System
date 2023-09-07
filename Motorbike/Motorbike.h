@@ -1,12 +1,14 @@
 #ifndef MOTORBIKE_H
 #define MOTORBIKE_H
 
+#include "../Date/Date.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include <iomanip>
 
 class Member;
 
@@ -24,6 +26,13 @@ class Motorbike {
 
         Member* owner;
 
+        std::string status { "NOT_AVAILABLE "};
+
+        Date* start = nullptr;
+        Date* end = nullptr;
+        double point_per_day;
+        double minimum_rating;
+
     public:
         Motorbike(
             int bike_id,
@@ -39,6 +48,8 @@ class Motorbike {
         void link_owner(Member* owner);
 
         void view_bike_info();
+
+        void add_rental(double point_per_day, double minimum_rating, Date* start, Date* end);
 
         friend class System;
 };

@@ -147,12 +147,17 @@ void System::update_bike_file(){
 }
 
 
-
 /**
  * Tool Function
 */
 bool System::is_integer(string& str){
     std::regex reg { "^[-+]?[0-9]+$" };
+
+    return std::regex_match(str, reg);
+}
+
+bool System::is_double(string& str){
+    std::regex reg { "^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$" };
 
     return std::regex_match(str, reg);
 }
@@ -452,6 +457,64 @@ int System::choice_selection(int a, int b){
     return choice;
 }
 
+int System::count_day(Date* start, Date* end){
+    int day = start->day;
+    int month = start->month;
+    int year = start->year;
+    int count_day = 0;
+    int day_of_month;
+
+    if(year > end->year){
+        return -1; 
+
+    } else if (year == end->year){
+        if(month > end->month){
+            return 0;
+
+        } else if (month == end->month){
+            if(day >= end->day){
+                return 0;
+            }
+        }
+    }
+
+    while(year <= end->year){
+        switch(month){
+            case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+                day_of_month = 31;
+                break;
+            
+            case 4: case 6: case 9: case 11:
+                day_of_month = 30;
+                break;
+
+            case 2:
+                if( (start->year% 4 == 0 && start->year% 100 != 0) || (start->year% 400 == 0) ){
+                    day_of_month = 29;
+                } else {
+                    day_of_month = 28;
+                }
+                break;
+        }
+        
+        if(month == end->month && year == end->year){
+            count_day += end->day;
+            break;
+        }
+
+        count_day == 0 ? count_day += (day_of_month - start->day + 1) : count_day += day_of_month;
+        
+        if(month < 12){
+            month++;
+
+        } else {
+            month = 1;
+            year++;
+        }
+    }
+
+    return count_day;
+}
 /**
  * Feature Function
 */
@@ -542,9 +605,10 @@ void System::member_menu(){
     cout << "1. View personal information." << '\n';
     cout << "2. View your motorbike's details." << '\n';
     cout << "3. Add motorbike's details." << '\n';
+    cout << "4. List motorbike for renting." << '\n';
     cout << "8. Exit" << '\n';
 
-    int choice = choice_selection(1, 3);
+    int choice = choice_selection(1, 4);
     switch(choice){
         case 1:
             current_member->view_personal_info();
@@ -560,6 +624,10 @@ void System::member_menu(){
             member_add_bike();
             member_menu();
             break;
+
+        case 4:
+            member_list_rental();
+            member_menu();
 
         case 8: 
             main_menu();
@@ -654,6 +722,51 @@ void System::member_add_bike(){
     update_data();
 }
 
+void System::member_list_rental(){
+    if(current_bike->status == "AVAILABLE"){
+        cout << "`Bike` is currently AVAILABLE." << '\n';
+        cout << "Un-list first." << '\n';
+        return;
+    }
+
+    string point, rating;
+    do {
+        cout << "- Points / day: ";
+        getline(cin, point);
+    } while ( !is_double(point) );
+
+    do {
+        cout << "- Rating: ";
+        getline(cin, rating);
+        if(std::stod(rating) > 10){
+            cout << "`Rating` max is 10." << '\n';
+        }
+
+    } while ( !is_double(rating) || std::stod(rating) > 10);
+
+    string start, end;
+    cout << "Renting Period: " << '\n';
+    do {
+        cout << "- Start: ";
+        getline(cin, start);
+    } while( !validate_date(start) ) ;
+
+    int day_count;
+    do {
+        do {
+            cout << "- End: ";
+            getline(cin, end);
+        } while( !validate_date(end) ) ;
+
+        day_count = count_day(to_object(start), to_object(end));
+        if(day_count <= 0){
+            cout << "`End` is same or earlier than `Start`." << '\n';
+        }
+
+    } while ( day_count == 0);
+
+    current_bike->add_rental( std::stod(point), std::stod(rating), to_object(start), to_object(end) );
+}
 
 // GUEST
 void System::guest_menu(){

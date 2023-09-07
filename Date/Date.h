@@ -25,6 +25,8 @@ class Date {
         std::string to_string();
 
         void print_date();
+
+        friend class System;
 };
 
 #endif
