@@ -40,7 +40,9 @@ class Member {
             int bike_id,
             std::string location);
 
-        void add_bike(Motorbike* bike);
+        void link_bike(Motorbike* bike);
+
+        void view_personal_info();
 
         friend class System;
 };

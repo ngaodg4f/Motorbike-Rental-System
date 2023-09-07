@@ -36,7 +36,9 @@ class Motorbike {
             std::string license_plate, 
             std::string description);
 
-        void add_owner(Member* owner);
+        void link_owner(Member* owner);
+
+        void view_bike_info();
 
         friend class System;
 };

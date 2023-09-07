@@ -22,6 +22,25 @@ Motorbike::Motorbike(
     license_plate(license_plate),
     description(description){}
 
-void Motorbike::add_owner(Member* owner){
+void Motorbike::link_owner(Member* owner){
     this->owner = owner;
+}
+
+void Motorbike::view_bike_info(){
+    cout << "----- YOUR BIKE ------" << '\n';
+    cout << std::left << std::setw(10) << "MODEL" 
+         << std::left << std::setw(20) << "COLOR" 
+         << std::left << std::setw(16) << "ENGINE_SIZE" 
+         << std::left << std::setw(15) << "TRANSMISSION_MODE"
+         << std::left << std::setw(15) << "YEAR"
+         << std::left << std::setw(15) << "LICENSE_PLATE"
+         << std::left << std::setw(15) << "DESCRIPTION" << '\n';
+
+    cout << std::left << std::setw(10) << model
+         << std::left << std::setw(20) << color
+         << std::left << std::setw(16) << engine_size
+         << std::left << std::setw(15) << transmission_mode
+         << std::left << std::setw(15) << year
+         << std::left << std::setw(15) << license_plate
+         << std::left << std::setw(15) << description << '\n';
 }

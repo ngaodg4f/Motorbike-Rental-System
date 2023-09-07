@@ -91,8 +91,8 @@ void System::link_member_and_bike(){
     for(auto mem : member_vector){
         for(auto bike : bike_vector){
             if(mem->bike_id == bike->bike_id){
-                mem->add_bike(bike);
-                bike->add_owner(mem);
+                mem->link_bike(bike);
+                bike->link_owner(mem);
                 break;
             }
         }
@@ -532,12 +532,7 @@ void System::member_login(){
     } while ( !validate_login_password(password, check) );
     
     current_member = temp_member;
-    for(auto bike : bike_vector){
-        if(bike->bike_id == current_member->bike_id){
-            current_bike = bike;
-            break;
-        }
-    }
+    current_bike = current_member->bike;
 
     member_menu();
 }
@@ -545,17 +540,23 @@ void System::member_login(){
 void System::member_menu(){
     cout << "--------- HELLO `" << current_member->fullname << "` ---------" << '\n';
     cout << "1. View personal information." << '\n';
-    cout << "2. Add motorbike's details." << '\n';
+    cout << "2. View your motorbike's details." << '\n';
+    cout << "3. Add motorbike's details." << '\n';
     cout << "8. Exit" << '\n';
 
-    int choice = choice_selection(1, 2);
+    int choice = choice_selection(1, 3);
     switch(choice){
         case 1:
-            member_view_personal_info();
+            current_member->view_personal_info();
             member_menu();
             break;
 
         case 2:
+            current_bike->view_bike_info(); 
+            member_menu();
+            break;
+
+        case 3:
             member_add_bike();
             member_menu();
             break;
@@ -563,27 +564,6 @@ void System::member_menu(){
         case 8: 
             main_menu();
     }
-}
-
-void System::member_view_personal_info(){
-    cout << "------PERSONAL INFORMATION------" << '\n';
-    cout << std::left << std::setw(10) << "ID" 
-         << std::left << std::setw(15) << "FULL_NAME" 
-         << std::left << std::setw(15) << "PHONE" 
-         << std::left << std::setw(15) << "ID_TYPE"
-         << std::left << std::setw(15) << "ID_NUMBER"
-         << std::left << std::setw(15) << "LICENSE_NO"
-         << std::left << std::setw(15) << "EXPIRY_DATE"
-         << std::left << std::setw(15) << "CREDITS" << '\n';
-
-    cout << std::left << std::setw(10) << current_member->id
-         << std::left << std::setw(15) << current_member->fullname
-         << std::left << std::setw(15) << current_member->phone
-         << std::left << std::setw(15) << current_member->id_type
-         << std::left << std::setw(15) << current_member->id_number
-         << std::left << std::setw(15) << current_member->license_number
-         << std::left << std::setw(15) << current_member->expiry_date->to_string()
-         << std::left << std::setw(15) << current_member->credit_point << '\n';
 }
 
 void System::member_add_bike(){
@@ -665,8 +645,8 @@ void System::member_add_bike(){
         if(mem->username == current_member->username){
             mem->bike_id = id;
             
-            mem->add_bike(bike);
-            bike->add_owner(mem);
+            mem->link_bike(bike);
+            bike->link_owner(mem);
             break;
         }
     }

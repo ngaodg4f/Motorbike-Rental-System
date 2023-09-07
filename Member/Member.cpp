@@ -33,6 +33,29 @@ Member::Member(
         bike_id(bike_id),
         location(location) {}
 
-void Member::add_bike(Motorbike* bike){
+void Member::link_bike(Motorbike* bike){
     this->bike = bike;
 }
+
+void Member::view_personal_info(){
+    cout << "------PERSONAL INFORMATION------" << '\n';
+    cout << std::left << std::setw(10) << "ID" 
+         << std::left << std::setw(20) << "FULL_NAME" 
+         << std::left << std::setw(15) << "PHONE" 
+         << std::left << std::setw(15) << "ID_TYPE"
+         << std::left << std::setw(15) << "ID_NUMBER"
+         << std::left << std::setw(15) << "LICENSE_NO"
+         << std::left << std::setw(15) << "EXPIRY_DATE"
+         << std::left << std::setw(15) << "CREDITS" << '\n';
+
+    cout << std::left << std::setw(10) << id
+         << std::left << std::setw(20) << fullname
+         << std::left << std::setw(15) << phone
+         << std::left << std::setw(15) << id_type
+         << std::left << std::setw(15) << id_number
+         << std::left << std::setw(15) << license_number
+         << std::left << std::setw(15) << expiry_date->to_string()
+         << std::left << std::setw(15) << credit_point << '\n';
+}
+
+
