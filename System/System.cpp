@@ -73,7 +73,7 @@ void System::input_bike_list(){
         // cout << std::stoi(tokens.at(6)) << '\n';
         // cout << tokens.at(7) << '\n';
         // cout << tokens.at(8) << '\n';
-        cout << tokens.at(5) << '\n';
+
         Motorbike* bike = new Motorbike(
                                     std::stoi(tokens.at(0)),
                                     std::stoi(tokens.at(1)),
@@ -84,10 +84,9 @@ void System::input_bike_list(){
                                     std::stoi(tokens.at(6)),
                                     tokens.at(7),
                                     tokens.at(8) );
-
-        cout << bike->transmission_mode << '\n';
         bike_vector.push_back(bike);
     }
+
     bike_file.close();
 }
 
@@ -960,12 +959,6 @@ void System::guest_registration(){
                                     to_object(expiry_date), credit_point, username, password, bike_id, location);
 
     member_vector.push_back(new_member);
-}
-
-void System::print_mode(){
-    for(auto bike : bike_vector){
-        cout << bike->transmission_mode << '\n';
-    }
 }
 
 int main(){
