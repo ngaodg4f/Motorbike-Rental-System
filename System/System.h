@@ -93,8 +93,7 @@ class System {
         void member_login();
         void member_add_bike();
         void member_list_rental();
-
-        void print_mode();
+        void member_unlist_rental();
 };
 
 #endif

@@ -17,7 +17,6 @@ void System::update_data(){
     update_member_file();
     update_bike_file();
     update_rental_file();
-
 }
 
 void System::input_member_list(){
@@ -655,6 +654,7 @@ void System::member_menu(){
     cout << "2. View your motorbike's details." << '\n';
     cout << "3. Add motorbike's details." << '\n';
     cout << "4. List motorbike for renting." << '\n';
+    cout << "5. Un-List motorbike from rental." << '\n';
     cout << "8. Exit" << '\n';
 
     int choice = choice_selection(1, 8);
@@ -682,6 +682,12 @@ void System::member_menu(){
         case 4:
             member_list_rental();
             member_menu();
+            break;
+
+        case 5:
+            member_unlist_rental();
+            member_menu();
+            break;
 
         case 8: 
             main_menu();
@@ -823,6 +829,28 @@ void System::member_list_rental(){
     } while ( day_count == 0);
 
     current_bike->add_rental( std::stod(point), std::stod(rating), to_object(start), to_object(end) );
+    rental_list.push_back(current_bike);
+
+    update_data();
+}
+
+void System::member_unlist_rental(){
+    if(current_bike == nullptr){
+        cout << "`Bike` need to be addd first." << '\n';
+        return;
+    }
+    if(current_bike->status == "NOT_AVAILABLE"){
+        cout << "- `Bike` not found in list." << '\n';
+        return;
+    }
+
+    for(int i = 0; i < rental_list.size(); i++){
+        if(rental_list.at(i)->bike_id == current_bike->bike_id){
+            rental_list.at(i)->reset_condition();
+            rental_list.erase(rental_list.begin() + i);
+            break;
+        }
+    }
 
     update_data();
 }

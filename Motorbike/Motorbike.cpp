@@ -53,3 +53,11 @@ void Motorbike::add_rental(double point_per_day, double minimum_rating, Date* st
     
     this->status = "AVAILABLE";
 }
+
+void Motorbike::reset_condition(){
+    status = "NOT_AVAILABLE";
+    point_per_day = 0;
+    minimum_rating = 0;
+    start = nullptr;
+    end = nullptr;
+}

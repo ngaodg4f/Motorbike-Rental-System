@@ -51,6 +51,8 @@ class Motorbike {
 
         void add_rental(double point_per_day, double minimum_rating, Date* start, Date* end);
 
+        void reset_condition();
+
         friend class System;
 };
 
