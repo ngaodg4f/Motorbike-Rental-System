@@ -17,6 +17,7 @@ void System::update_data(){
     update_member_file();
     update_bike_file();
     update_rental_file();
+
 }
 
 void System::input_member_list(){
@@ -577,17 +578,16 @@ void System::welcome_screen(){
     cout << "s3923010, Nguyen Dinh Minh Chau" << '\n';
     cout << "s2924729, Ho Quang Huy" << '\n';
     cout << '\n';
-    
-    cout << "----------------- LOGIN -----------------" << '\n';
-    cout << "1. Guest\t2. Member\t3. Admin\t4. Exit" << '\n'; 
 
     input_data();
     main_menu();
 }
 
 void System::main_menu(){
-    int choice = choice_selection(1, 4);
+    cout << "----------------- LOGIN -----------------" << '\n';
+    cout << "1. Guest\t2. Member\t3. Admin\t4. Exit" << '\n'; 
 
+    int choice = choice_selection(1, 4);
     switch(choice){
         case 1:
             cout << "LOGIN AS GUEST" << '\n';
@@ -775,8 +775,8 @@ void System::member_add_bike(){
         }
     }
 
-    cout << transmission_mode << '\n';
     update_data();
+    input_bike_list();
 }
 
 void System::member_list_rental(){
@@ -829,7 +829,7 @@ void System::member_list_rental(){
 
 // GUEST
 void System::guest_menu(){
-    cout << "-----MENU-----" << '\n';
+    cout << "----- GUEST MENU -----" << '\n';
     cout << "1. View all motorbikes" << '\n';
     cout << "2. Member registration" << '\n';
     cout << "3. Exit" << '\n';
@@ -848,7 +848,6 @@ void System::guest_menu(){
             break;
 
         case 3:
-            update_data();
             welcome_screen();
     }
 
@@ -959,6 +958,9 @@ void System::guest_registration(){
                                     to_object(expiry_date), credit_point, username, password, bike_id, location);
 
     member_vector.push_back(new_member);
+
+    update_data();
+    input_member_list();
 }
 
 int main(){
