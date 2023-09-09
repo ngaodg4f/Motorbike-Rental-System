@@ -426,8 +426,9 @@ bool System::validate_model(string& str){
         return false;
     }
 
-    std::regex reg { "^[a-zA-Z0-9-]+$" };
+    std::regex reg { "^[a-zA-Z0-9-]{1,10}$" };
     if(!std::regex_match(str, reg)){
+        cout << "`Model` contains max 10 characters "<< '\n';
         cout << "`Model` contains special characters including blank_space" << '\n';
         return false;
     }
@@ -655,6 +656,7 @@ void System::member_menu(){
     cout << "3. Add motorbike's details." << '\n';
     cout << "4. List motorbike for renting." << '\n';
     cout << "5. Un-List motorbike from rental." << '\n';
+    cout << "6. Rent a motorbike." << '\n';
     cout << "8. Exit" << '\n';
 
     int choice = choice_selection(1, 8);
@@ -686,6 +688,11 @@ void System::member_menu(){
 
         case 5:
             member_unlist_rental();
+            member_menu();
+            break;
+
+        case 6:
+            view_rental_list();
             member_menu();
             break;
 
@@ -853,6 +860,28 @@ void System::member_unlist_rental(){
     }
 
     update_data();
+}
+
+void System::view_rental_list(){
+    cout << std::left << std::setw(10) << "BIKE_ID" 
+         << std::left << std::setw(13) << "MODEL" 
+         << std::left << std::setw(15) << "ENGINE_SIZE" 
+         << std::left << std::setw(15) << "POINT / DAY"
+         << std::left << std::setw(15) << "MIN_RATING"
+         << std::left << std::setw(15) << "START_DATE"
+         << std::left << std::setw(15) << "END_DATE"
+         << std::left << std::setw(15) << "DESCRIPTION" << '\n';
+
+    for(auto rental : rental_list){
+        cout << std::left << std::setw(10) << rental->bike_id
+             << std::left << std::setw(13) << rental->model
+             << std::left << std::setw(15) << rental->engine_size
+             << std::left << std::setw(15) << rental->point_per_day
+             << std::left << std::setw(15) << rental->minimum_rating
+             << std::left << std::setw(15) << rental->start->to_string()
+             << std::left << std::setw(15) << rental->end->to_string()
+             << std::left << std::setw(15) << rental->description << '\n';
+    }
 }
 
 // GUEST

@@ -36,6 +36,8 @@ class System {
         Member* current_member = nullptr;
         Motorbike* current_bike = nullptr;
 
+        Motorbike* rent_bike = nullptr;
+
         std::vector <Motorbike*> rental_list;
 
         /**
@@ -94,6 +96,8 @@ class System {
         void member_add_bike();
         void member_list_rental();
         void member_unlist_rental();
+        
+        void view_rental_list();
 };
 
 #endif
