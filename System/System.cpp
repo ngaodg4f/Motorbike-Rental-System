@@ -696,7 +696,7 @@ void System::member_menu(){
             break;
 
         case 6:
-            member_search_rent();
+            member_request_rent();
             member_menu();
             break;
 
@@ -902,10 +902,10 @@ void System::member_search_rent(){
     // cout << std::left << std::setw(7) 
     cout << "End: " << to_object(end)->to_string() << '\n';
 
-    view_rental_list(location, to_object(start), to_object(end));
+    member_view_rental_list(location, to_object(start), to_object(end));
 }
 
-void System::view_rental_list(string& search_location, Date* start_date, Date* end_date){
+void System::member_view_rental_list(string& search_location, Date* start_date, Date* end_date){
     cout << std::left << std::setw(10) << "BIKE_ID" 
          << std::left << std::setw(13) << "MODEL" 
          << std::left << std::setw(15) << "ENGINE_SIZE" 
@@ -943,6 +943,8 @@ void System::view_rental_list(string& search_location, Date* start_date, Date* e
                  << std::left << std::setw(15) << rental->start->to_string()
                  << std::left << std::setw(15) << rental->end->to_string()
                  << std::left << std::setw(15) << rental->description << '\n';
+
+            affordable_bike_list.push_back( rental );
         } 
     }
 
@@ -953,6 +955,40 @@ void System::view_rental_list(string& search_location, Date* start_date, Date* e
     }
 }
 
+void System::member_request_rent(){
+    member_search_rent();
+    
+    string input;
+    Motorbike* found_bike;
+    
+    auto f = bike_vector.end();
+    do {
+        do {
+            cout << "Enter `ID` to rent: ";
+            getline(cin, input);
+        } while ( !is_integer(input) );
+
+        for(auto bike : affordable_bike_list){
+            if(bike->bike_id == std::stoi(input)){
+                found_bike = bike;
+                f = std::find(rental_list.begin(), rental_list.end(), found_bike);
+                break;      
+            }
+        }
+
+        if(f != bike_vector.end()){
+            break;
+
+        } else {
+            cout << "`Motorbike` not found." << '\n';
+        }
+
+    } while ( true );
+
+    found_bike->owner->get_request_from( current_member );
+    cout << "`Request` completed" << '\n';
+}   
+    
 // GUEST
 void System::guest_menu(){
     cout << "----- GUEST MENU -----" << '\n';

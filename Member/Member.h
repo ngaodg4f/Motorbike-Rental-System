@@ -24,12 +24,16 @@ class Member {
 
         Motorbike* bike;
 
+        Motorbike* rented_bike;
+        
         // Manage renter who rent bike
         // --> get the score in `review` to define renting_score
         // (owner rates the renters)
         std::vector<Member*> renter_list;
         double renting_score;
         Review* review_for_renter;
+
+        std::vector<Member*> request_list;
 
     public:
         Member(std::string , std::string);
@@ -68,6 +72,8 @@ class Member {
         void view_personal_info();
 
         void add_renter_to_list(Member* renter);
+
+        void get_request_from(Member* renter);
 
         friend class System;
 };

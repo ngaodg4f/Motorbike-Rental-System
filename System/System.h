@@ -20,6 +20,7 @@
 #include <fstream>
 #include <regex>
 #include <cstring>
+#include <algorithm>
 
 class Member;
 
@@ -39,6 +40,7 @@ class System {
         Motorbike* rent_bike = nullptr;
 
         std::vector <Motorbike*> rental_list;
+        std::vector <Motorbike*> affordable_bike_list;
 
         /**
          * Data
@@ -97,8 +99,8 @@ class System {
         void member_list_rental();
         void member_unlist_rental();
         void member_search_rent();
-
-        void view_rental_list(std::string& search_location, Date* start_date, Date* end_date);
+        void member_view_rental_list(std::string& search_location, Date* start_date, Date* end_date);
+        void member_request_rent();
 };
 
 #endif
