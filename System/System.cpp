@@ -44,7 +44,8 @@ void System::input_member_list(){
                                 tokens.at(8),
                                 tokens.at(9),
                                 std::stoi(tokens.at(10)),
-                                tokens.at(11) );
+                                tokens.at(11),
+                                std::stod(tokens.at(12)) );
 
         member_vector.push_back(member);
     }
@@ -149,7 +150,8 @@ void System::update_member_file(){
                     << mem->username << ";"
                     << mem->password << ";"
                     << mem->bike_id << ";"
-                    << mem->location << '\n';
+                    << mem->location << ";"
+                    << mem->renting_score << '\n';
     }
 
     update_file.close();
@@ -519,10 +521,12 @@ int System::count_day(Date* start, Date* end){
 
     } else if (year == end->year){
         if(month > end->month){
-            return 0;
+            return -1;
 
         } else if (month == end->month){
-            if(day >= end->day){
+            if(day > end->day){
+                return -1 ;
+            } else if (day == end->day){
                 return 0;
             }
         }
@@ -656,7 +660,7 @@ void System::member_menu(){
     cout << "3. Add motorbike's details." << '\n';
     cout << "4. List motorbike for renting." << '\n';
     cout << "5. Un-List motorbike from rental." << '\n';
-    cout << "6. Rent a motorbike." << '\n';
+    cout << "6. Request renting a motorbike." << '\n';
     cout << "8. Exit" << '\n';
 
     int choice = choice_selection(1, 8);
@@ -692,7 +696,7 @@ void System::member_menu(){
             break;
 
         case 6:
-            view_rental_list();
+            member_search_rent();
             member_menu();
             break;
 
@@ -833,7 +837,7 @@ void System::member_list_rental(){
             cout << "`End` is same or earlier than `Start`." << '\n';
         }
 
-    } while ( day_count == 0);
+    } while ( day_count <= 0);
 
     current_bike->add_rental( std::stod(point), std::stod(rating), to_object(start), to_object(end) );
     rental_list.push_back(current_bike);
@@ -862,7 +866,46 @@ void System::member_unlist_rental(){
     update_data();
 }
 
-void System::view_rental_list(){
+void System::member_search_rent(){
+    string location = current_member->location;
+    string start, end;
+
+    cout << "~~~~~ FILTER ~~~~~" << '\n';
+    do {
+        cout << "- Start: ";
+        getline(cin, start);
+    } while( !validate_date(start) ) ;
+
+    int day_rent;
+    do {
+        do {
+            cout << "- End: ";
+            getline(cin, end);
+        } while( !validate_date(end) ) ;
+
+        day_rent = count_day(to_object(start), to_object(end));
+        if(day_rent <= 0){
+            cout << "`End` is same or earlier than `Start`." << '\n';
+        }
+
+    } while ( day_rent <= 0);
+
+    cout << "--- YOUR CURRENT STATUS ---" << '\n';
+    cout << "Location: " << location << '\n';
+    cout << "Points: " << current_member->credit_point
+         << std::right << std::setw(15)
+         << "Rating: " << current_member->renting_score << '\n';
+
+    // cout << std::left << std::setw(5) 
+    cout << "Start: " << to_object(start)->to_string()  << '\n';
+
+    // cout << std::left << std::setw(7) 
+    cout << "End: " << to_object(end)->to_string() << '\n';
+
+    view_rental_list(location, to_object(start), to_object(end));
+}
+
+void System::view_rental_list(string& search_location, Date* start_date, Date* end_date){
     cout << std::left << std::setw(10) << "BIKE_ID" 
          << std::left << std::setw(13) << "MODEL" 
          << std::left << std::setw(15) << "ENGINE_SIZE" 
@@ -872,15 +915,41 @@ void System::view_rental_list(){
          << std::left << std::setw(15) << "END_DATE"
          << std::left << std::setw(15) << "DESCRIPTION" << '\n';
 
+    int count = 0;
     for(auto rental : rental_list){
-        cout << std::left << std::setw(10) << rental->bike_id
-             << std::left << std::setw(13) << rental->model
-             << std::left << std::setw(15) << rental->engine_size
-             << std::left << std::setw(15) << rental->point_per_day
-             << std::left << std::setw(15) << rental->minimum_rating
-             << std::left << std::setw(15) << rental->start->to_string()
-             << std::left << std::setw(15) << rental->end->to_string()
-             << std::left << std::setw(15) << rental->description << '\n';
+        double total_consuming = count_day(rental->start, rental->end) * rental->point_per_day;
+        if (rental->owner->location != search_location){
+            continue;
+
+        } else if ( count_day(start_date, rental->start) == 0){
+            continue;
+            
+        } else if ( count_day(end_date, rental->end) == 0){
+            continue;
+
+        } else if (current_member->credit_point < total_consuming){
+            continue;
+
+        } else if (current_member->renting_score < rental->minimum_rating){
+            continue;
+
+        } else {
+            count++;
+            cout << std::left << std::setw(10) << rental->bike_id
+                 << std::left << std::setw(13) << rental->model
+                 << std::left << std::setw(15) << rental->engine_size
+                 << std::left << std::setw(15) << rental->point_per_day
+                 << std::left << std::setw(15) << rental->minimum_rating
+                 << std::left << std::setw(15) << rental->start->to_string()
+                 << std::left << std::setw(15) << rental->end->to_string()
+                 << std::left << std::setw(15) << rental->description << '\n';
+        } 
+    }
+
+    if(count == 0){
+        cout << "- No motorbike is available for your search." << '\n';
+        cout << '\n';
+        member_menu();
     }
 }
 
@@ -933,7 +1002,7 @@ void System::guest_registration(){
     int id, bike_id;
     string username, fullname, phone;
     string id_type, id_number, license_number, expiry_date, password;
-    double credit_point;
+    double credit_point, renting_score;
 
     id = member_vector.size() + 1;
     
@@ -997,6 +1066,7 @@ void System::guest_registration(){
     
     credit_point = 20;
     bike_id = 0;
+    renting_score = 0;
 
     cout << "LOCATION: " << '\n';
     cout << "1. SAIGON" << '\n';
@@ -1012,7 +1082,8 @@ void System::guest_registration(){
     cout << '\n';
 
     Member* new_member = new Member(id, fullname, phone, id_type, id_number, license_number, 
-                                    to_object(expiry_date), credit_point, username, password, bike_id, location);
+                                    to_object(expiry_date), credit_point, username, password, 
+                                    bike_id, location, renting_score);
 
     member_vector.push_back(new_member);
 

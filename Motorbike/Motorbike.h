@@ -2,6 +2,7 @@
 #define MOTORBIKE_H
 
 #include "../Date/Date.h"
+#include "../Review/Review.h"
 
 #include <iostream>
 #include <string>
@@ -33,6 +34,13 @@ class Motorbike {
         double point_per_day;
         double minimum_rating;
 
+        // Manage renter who used the bike
+        // --> get the score in `review` to define `motorbike_score`
+        // (renter rates the bike)
+        std::vector<Member*> renter_list;
+        double motorbike_score = 0;
+        Review* renter_review;
+
     public:
         Motorbike(
             int bike_id,
@@ -52,6 +60,8 @@ class Motorbike {
         void add_rental(double point_per_day, double minimum_rating, Date* start, Date* end);
 
         void reset_condition();
+
+        void add_renter_to_list(Member* renter);
 
         friend class System;
 };

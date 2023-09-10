@@ -61,3 +61,7 @@ void Motorbike::reset_condition(){
     start = nullptr;
     end = nullptr;
 }
+
+void Motorbike::add_renter_to_list(Member* renter){
+    renter_list.push_back(renter);
+}

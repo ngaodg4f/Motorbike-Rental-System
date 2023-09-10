@@ -96,8 +96,9 @@ class System {
         void member_add_bike();
         void member_list_rental();
         void member_unlist_rental();
-        
-        void view_rental_list();
+        void member_search_rent();
+
+        void view_rental_list(std::string& search_location, Date* start_date, Date* end_date);
 };
 
 #endif
