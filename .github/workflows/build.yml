@@ -22,7 +22,7 @@ jobs:
       - name: Build on macOS
         run: |
           # Add macOS build commands here
-          g++ ../src/*.cpp
+          g++ ../src/*.cpp System.cpp
 
   build-windows:
     runs-on: windows-latest
@@ -39,4 +39,4 @@ jobs:
       - name: Build on Windows
         run: |
           # Add Windows build commands here
-          g++ ..\src\*.cpp
+          g++ ../src/*.cpp System.cpp
