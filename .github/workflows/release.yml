@@ -16,28 +16,28 @@ jobs:
         uses: goto-bus-stop/setup-zig@v2
 
       - name: Build for Linux (x86_64)
-        run: zig c++ ./src/*.cpp -o motorbike-rental-linux -target x86_64-linux
+        run: zig c++ ./src/*.cpp -o Motorbike-Rental-System-linux -target x86_64-linux
 
       - name: Build for Windows (x86_64)
-        run: zig c++ ./src/*.cpp -o motorbike-rental-windows.exe -target x86_64-windows
+        run: zig c++ ./src/*.cpp -o Motorbike-Rental-System-windows.exe -target x86_64-windows
 
       - name: Build for macOS (x86_64)
-        run: zig c++ ./src/*.cpp -o motorbike-rental-macos -target x86_64-macos
+        run: zig c++ ./src/*.cpp -o Motorbike-Rental-System-macos -target x86_64-macos
 
       - name: Build for macOS (aarch64)
-        run: zig c++ ./src/*.cpp -o motorbike-rental-macos-arm -target aarch64-macos
+        run: zig c++ ./src/*.cpp -o Motorbike-Rental-System-macos-arm -target aarch64-macos
 
       - name: Generate release tag
         id: tag
         run: |
-          echo "::set-output name=release_tag::motorbike-rental_$(date +"%Y.%m.%d_%H-%M")"
+          echo "::set-output name=release_tag::Motorbike-Rental-System_$(date +"%Y.%m.%d_%H-%M")"
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           files: |
-            motorbike-rental-linux
-            motorbike-rental-windows.exe
-            motorbike-rental-macos
-            motorbike-rental-macos-arm
+            Motorbike-Rental-System-linux
+            Motorbike-Rental-System-windows.exe
+            Motorbike-Rental-System-macos
+            Motorbike-Rental-System-macos-arm
