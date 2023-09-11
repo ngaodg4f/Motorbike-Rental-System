@@ -16,16 +16,16 @@ jobs:
         uses: goto-bus-stop/setup-zig@v2
 
       - name: Build for Linux (x86_64)
-        run: zig c++ ./src/*.cpp -o Motorbike-Rental-System-linux -target x86_64-linux
+        run: g++ ./src/**/*.cpp -o a.out -target x86_64-linux
 
       - name: Build for Windows (x86_64)
-        run: zig c++ ./src/*.cpp -o Motorbike-Rental-System-windows.exe -target x86_64-windows
+        run: g++ ./src/**/*.cpp -o a.out -target x86_64-windows
 
       - name: Build for macOS (x86_64)
-        run: zig c++ ./src/*.cpp -o Motorbike-Rental-System-macos -target x86_64-macos
+        run: g++ ./src/**/*.cpp -o a.out -target x86_64-macos
 
       - name: Build for macOS (aarch64)
-        run: zig c++ ./src/*.cpp -o Motorbike-Rental-System-macos-arm -target aarch64-macos
+        run: g++ ./src/**/*.cpp -o a.out -target aarch64-macos
 
       - name: Generate release tag
         id: tag
