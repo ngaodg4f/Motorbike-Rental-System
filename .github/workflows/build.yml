@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v2
+
+      - name: Set up macOS build environment
+        run: |
+          # Add macOS-specific setup here if needed
+          echo "Setting up macOS environment"
+
+      - name: Build on macOS
+        run: |
+          # Add macOS build commands here
+          g++ ./src/*.cpp
+
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v2
+
+      - name: Set up Windows build environment
+        run: |
+          # Add Windows-specific setup here if needed
+          echo "Setting up Windows environment"
+
+      - name: Build on Windows
+        run: |
+          # Add Windows build commands here
+          g++ .\src\*.cpp
