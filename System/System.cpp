@@ -355,6 +355,10 @@ bool System::validate_login_username(string& str){
         return false;
     }
 
+    if(str == "admin"){
+        return true;
+    }
+
     bool is_found = false;
     for(auto mem : member_vector){
         if(str == mem->username){
@@ -600,11 +604,12 @@ void System::main_menu(){
 
         case 2:
             cout << "LOGIN AS MEMBER" << '\n';
-            member_login();
+            login_session();
             break;
 
         case 3:
             cout << "LOGIN AS ADMIN" << '\n';
+            login_session();
             break;
 
         case 4:
@@ -615,15 +620,34 @@ void System::main_menu(){
 
 
 // MEMBER
-void System::member_login(){
+void System::login_session(){
     string username, password;
     Member* temp_member;
 
     do {
         cout << "Username: ";
         getline(cin, username);
-    } while( !validate_login_username(username) );
+    } while ( !validate_login_username(username) );
     
+    if(username == "admin"){
+        int count = 3;
+        do {
+            cout << "Password: ";
+            getline(cin, password);
+            count--;
+
+            if(count == 0){
+                cout << "`Admin` login failed." << '\n';
+                cout << "Return to menu." << '\n';
+
+                main_menu();
+            }
+        } while ( password != "admin" );
+        
+        admin = new Admin();
+        admin_menu();
+    }
+
     for(auto mem : member_vector){
         if(username == mem->username){
             temp_member = mem;
@@ -1125,6 +1149,75 @@ void System::guest_registration(){
 
     update_data();
     input_member_list();
+}
+
+
+// ADMIN
+void System::admin_menu(){
+    cout << "------- ADMIN DASHBOARD -------" << '\n';
+    cout << "1. View all members' information." << '\n';
+    cout << "2. View all motorbikes' information." << '\n';
+    cout << "3. Exit" << '\n';
+
+    int choice = choice_selection(1, 3);
+    switch(choice){
+        case 1:
+            admin_view_all_members();
+            admin_menu();
+            break;
+
+        case 2:
+            admin_view_all_bikes();
+            admin_menu();
+            break;
+
+        case 3:
+            main_menu();
+    }
+}
+
+void System::admin_view_all_members(){
+    cout << "--------- MEMBERS' DETAILS ---------" << '\n';
+    cout << std::left << std::setw(10) << "ID" 
+         << std::left << std::setw(20) << "FULL_NAME" 
+         << std::left << std::setw(15) << "PHONE" 
+         << std::left << std::setw(15) << "ID_TYPE"
+         << std::left << std::setw(15) << "ID_NUMBER"
+         << std::left << std::setw(15) << "LICENSE_NO"
+         << std::left << std::setw(15) << "EXPIRY_DATE"
+         << std::left << std::setw(15) << "CREDITS" << '\n';
+
+    for(auto mem : member_vector){
+        cout << std::left << std::setw(10) << mem->id
+             << std::left << std::setw(20) << mem->fullname
+             << std::left << std::setw(15) << mem->phone
+             << std::left << std::setw(15) << mem->id_type
+             << std::left << std::setw(15) << mem->id_number
+             << std::left << std::setw(15) << mem->license_number
+             << std::left << std::setw(15) << mem->expiry_date->to_string()
+             << std::left << std::setw(15) << mem->credit_point << '\n';
+    }
+}
+
+void System::admin_view_all_bikes(){
+    cout << "--------- MOTORBIKES' DETAILS ---------" << '\n';
+    cout << std::left << std::setw(15) << "MODEL" 
+         << std::left << std::setw(15) << "COLOR" 
+         << std::left << std::setw(15) << "ENGINE_SIZE" 
+         << std::left << std::setw(20) << "TRANSMISSION_MODE"
+         << std::left << std::setw(8) << "YEAR"
+         << std::left << std::setw(17) << "LICENSE_PLATE"
+         << std::left << std::setw(15) << "DESCRIPTION" << '\n';
+
+    for(auto bike : bike_vector){
+        cout << std::left << std::setw(15) << bike->model
+             << std::left << std::setw(15) << bike->color
+             << std::left << std::setw(15) << bike->engine_size
+             << std::left << std::setw(20) << bike->transmission_mode
+             << std::left << std::setw(8) << bike->year
+             << std::left << std::setw(17) << bike->license_plate
+             << std::left << std::setw(15) << bike->description << '\n';
+    }
 }
 
 int main(){

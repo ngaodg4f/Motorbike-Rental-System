@@ -3,6 +3,7 @@
 
 #include "../Motorbike/Motorbike.h"
 #include "../Member/Member.h"
+#include "../Admin/Admin.h"
 
 // include to check the path ...
 // #include "../Data/Account.txt"
@@ -22,7 +23,7 @@
 #include <cstring>
 #include <algorithm>
 
-class Member;
+class Admin;
 
 class System {
     public:
@@ -36,6 +37,8 @@ class System {
 
         Member* current_member = nullptr;
         Motorbike* current_bike = nullptr;
+
+        Admin* admin;
 
         Motorbike* rent_bike = nullptr;
 
@@ -86,21 +89,29 @@ class System {
         */
         void welcome_screen();
         void main_menu();
+        void login_session();
 
         // Guest
         void guest_menu();
         void guest_view_bike();
         void guest_registration();
 
+        // Admin
+        void admin_menu();
+        void admin_view_all_members();
+        void admin_view_all_bikes();
+
         // Member
         void member_menu();
-        void member_login();
+        
         void member_add_bike();
         void member_list_rental();
         void member_unlist_rental();
         void member_search_rent();
         void member_view_rental_list(std::string& search_location, Date* start_date, Date* end_date);
         void member_request_rent();
+
+        friend class Admin;
 };
 
 #endif
