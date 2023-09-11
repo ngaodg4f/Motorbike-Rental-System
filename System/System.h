@@ -9,9 +9,9 @@
 // #include "../Data/Account.txt"
 
 // define file_name
-#define ACCOUNT_FILE "../Data/Account.txt"
-#define MOTORBIKE_FILE "../Data/Motorbike.txt"
-#define RENTAL_FILE "../Data/Rental.txt"
+#define ACCOUNT_FILE "./Data/Account.txt"
+#define MOTORBIKE_FILE "./Data/Motorbike.txt"
+#define RENTAL_FILE "./Data/Rental.txt"
 
 #include <iostream>
 #include <string>
@@ -111,7 +111,6 @@ class System {
         void member_view_rental_list(std::string& search_location, Date* start_date, Date* end_date);
         void member_request_rent();
 
-        friend class Admin;
 };
 
 #endif

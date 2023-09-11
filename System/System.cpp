@@ -1219,8 +1219,3 @@ void System::admin_view_all_bikes(){
              << std::left << std::setw(15) << bike->description << '\n';
     }
 }
-
-int main(){
-    System sys;
-    sys.welcome_screen();
-}

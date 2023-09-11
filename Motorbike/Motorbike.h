@@ -37,9 +37,9 @@ class Motorbike {
         // Manage renter who used the bike
         // --> get the score in `review` to define `motorbike_score`
         // (renter rates the bike)
-        std::vector<Member*> renter_list;
+        std::vector <Member*> renter_list;
         double motorbike_score = 0;
-        Review* renter_review;
+        std::vector <Review*> renter_review;
 
     public:
         Motorbike(
