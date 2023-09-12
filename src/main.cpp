@@ -1,6 +1,6 @@
-#include <iostream>
-
 #include "./System/System.h"
+
+#include <iostream>
 
 int main(){
     System sys;
