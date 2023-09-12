@@ -91,8 +91,24 @@ void Member::add_renter_to_list(Member* renter){
     bike->add_renter_to_list(renter);
 }
 
-void Member::get_request_from(Member* renter){
-    request_list.push_back(renter);
+void Member::get_new_request(Request* request){
+    request_list.push_back( request );
 }
 
+void Member::view_request(){
+    cout << std::left << std::setw(10) << "ID" 
+         << std::left << std::setw(20) << "FULL_NAME" 
+         << std::left << std::setw(15) << "CREDIT" 
+         << std::left << std::setw(15) << "START_DATE"
+         << std::left << std::setw(15) << "END_DATE"
+         << std::left << std::setw(15) << "RATING" << '\n';
 
+    for(auto request : request_list){
+        cout << std::left << std::setw(10) << request->renter->id
+             << std::left << std::setw(20) << request->renter->fullname
+             << std::left << std::setw(15) << request->renter->credit_point
+             << std::left << std::setw(15) << request->start->to_string()
+             << std::left << std::setw(15) << request->end->to_string()
+             << std::left << std::setw(15) << request->renter->renting_score << '\n';
+    }
+}

@@ -685,6 +685,7 @@ void System::member_menu(){
     cout << "4. List motorbike for renting." << '\n';
     cout << "5. Un-List motorbike from rental." << '\n';
     cout << "6. Request renting a motorbike." << '\n';
+    cout << "7. View others requests." << '\n';
     cout << "8. Exit" << '\n';
 
     int choice = choice_selection(1, 8);
@@ -721,6 +722,11 @@ void System::member_menu(){
 
         case 6:
             member_request_rent();
+            member_menu();
+            break;
+
+        case 7:
+            member_view_request();
             member_menu();
             break;
 
@@ -895,10 +901,7 @@ void System::member_unlist_rental(){
     update_data();
 }
 
-void System::member_search_rent(){
-    string location = current_member->location;
-    string start, end;
-
+void System::member_search_rent(const string& location, string& start, string& end){
     cout << "~~~~~ FILTER ~~~~~" << '\n';
     do {
         cout << "- Start: ";
@@ -934,7 +937,7 @@ void System::member_search_rent(){
     member_view_rental_list(location, to_object(start), to_object(end));
 }
 
-void System::member_view_rental_list(string& search_location, Date* start_date, Date* end_date){
+void System::member_view_rental_list(const string& search_location, Date* start_date, Date* end_date){
     cout << std::left << std::setw(10) << "BIKE_ID" 
          << std::left << std::setw(13) << "MODEL" 
          << std::left << std::setw(15) << "ENGINE_SIZE" 
@@ -985,7 +988,9 @@ void System::member_view_rental_list(string& search_location, Date* start_date, 
 }
 
 void System::member_request_rent(){
-    member_search_rent();
+    string location = current_member->location;
+    string start, end;
+    member_search_rent(location, start, end);
     
     string input;
     Motorbike* found_bike;
@@ -1014,10 +1019,20 @@ void System::member_request_rent(){
 
     } while ( true );
 
-    found_bike->owner->get_request_from( current_member );
-    cout << "`Request` completed" << '\n';
+    Request* request = new Request ( current_member, to_object(start), to_object(end) );
+    found_bike->owner->get_new_request( request );
+    cout << "`Request` rent completed" << '\n';
 }   
     
+void System::member_view_request(){
+    if(current_member->request_list.size() == 0){
+        cout << "- You have no renting `Request`." << '\n';
+        return;
+    }
+
+    current_member->view_request();
+}
+
 // GUEST
 void System::guest_menu(){
     cout << "----- GUEST MENU -----" << '\n';

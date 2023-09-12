@@ -4,6 +4,7 @@
 #include "../Motorbike/Motorbike.h"
 #include "../Member/Member.h"
 #include "../Admin/Admin.h"
+#include "../Request/Request.h"
 
 // include to check the path ...
 // #include "../Data/Account.txt"
@@ -107,9 +108,10 @@ class System {
         void member_add_bike();
         void member_list_rental();
         void member_unlist_rental();
-        void member_search_rent();
-        void member_view_rental_list(std::string& search_location, Date* start_date, Date* end_date);
+        void member_search_rent(const std::string& location, std::string& start, std::string& end);
+        void member_view_rental_list(const std::string& search_location, Date* start_date, Date* end_date);
         void member_request_rent();
+        void member_view_request();
 
 };
 

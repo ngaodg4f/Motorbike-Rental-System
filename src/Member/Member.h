@@ -3,9 +3,12 @@
 
 #include "../Date/Date.h"
 #include "../Motorbike/Motorbike.h"
+#include "../Request/Request.h"
 
 #include <iostream>
 #include <vector>
+
+class Request;
 
 class Member {
     private:
@@ -33,7 +36,7 @@ class Member {
         double renting_score;
         std::vector <Review*> review_for_renter;
 
-        std::vector <Member*> request_list;
+        std::vector <Request*> request_list;
 
     public:
         Member(std::string , std::string);
@@ -73,7 +76,9 @@ class Member {
 
         void add_renter_to_list(Member* renter);
 
-        void get_request_from(Member* renter);
+        void get_new_request(Request* request);
+
+        void view_request();
 
         friend class System;
         friend class Admin;
