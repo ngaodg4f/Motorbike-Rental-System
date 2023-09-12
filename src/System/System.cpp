@@ -821,6 +821,11 @@ void System::member_add_bike(){
 }
 
 void System::member_list_rental(){
+    if(current_bike == nullptr){
+        cout << "`Bike` need to be addd first." << '\n';
+        return;
+    }
+    
     if(current_bike->status == "AVAILABLE"){
         cout << "`Bike` is currently AVAILABLE." << '\n';
         cout << "Un-list first." << '\n';
