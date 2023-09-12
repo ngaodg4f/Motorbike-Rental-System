@@ -1,0 +1,2 @@
+1;5;9;dep vl nhung kh phai motorbike that
+//transaction_id; vehicle_id; car_rating; comment

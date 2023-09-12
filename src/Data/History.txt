@@ -1,0 +1,2 @@
+1;4;2;5;60;12/9/2023;13/9/2023;0;0
+// transaction_id; ownerid; renterid; vehicle_id; total_point; startday; enddate;
