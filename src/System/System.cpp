@@ -422,11 +422,7 @@ bool System::recommend_password(string& str){
         cout << "- Contains at least 1 special character (@, !, $, #, ...)" << '\n';
         is_recommended = true;
     }
-    
-    if( !is_recommended){
-        cout << "`Password` is strong enough." << '\n';
-    }
-    
+
     return is_recommended;
 }
 
@@ -1120,13 +1116,10 @@ void System::guest_registration(){
                 getline(cin, confirm);
                 is_valid_input = !(confirm != "Y" && confirm != "y" && confirm != "N" && confirm != "n");
                 // yes
-                if( !is_valid_input ){
+                if(!is_valid_input){
                     cout << "`Input` Y or N only." << '\n';
                 }
             } while ( !is_valid_input );
-
-        } else {
-            break;
         }
 
     } while (confirm == "Y" || confirm == "y");
@@ -1226,4 +1219,3 @@ void System::admin_view_all_bikes(){
              << std::left << std::setw(15) << bike->description << '\n';
     }
 }
-
