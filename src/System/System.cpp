@@ -402,26 +402,29 @@ bool System::validate_login_password(string& str, string& check){
 
 bool System::recommend_password(string& str){
     bool is_recommended = false;
-    cout << "Recommended `Password`: " << '\n';
+    cout << "Recommended `Password`: ";
     if (!std::regex_search(str, std::regex("[A-Z]"))) {
-        cout << "- Contains at least 1 upper_case." << '\n';
+        cout << "\n- Contains at least 1 upper_case.";
         is_recommended = true;
     }
 
     if (!std::regex_search(str, std::regex("[a-z]"))) {
-        cout << "- Contains at least 1 lower_case." << '\n';
+        cout << "\n- Contains at least 1 lower_case.";
         is_recommended = true;
     }
 
     if (!std::regex_search(str, std::regex("[0-9]"))) {
-        cout << "- Contains at least 1 number." << '\n';
+        cout << "\n- Contains at least 1 number.";
         is_recommended = true;
     }
 
     if (!std::regex_search(str, std::regex("[!@#$%^&*()]"))) {
-        cout << "- Contains at least 1 special character (@, !, $, #, ...)" << '\n';
+        cout << "\n- Contains at least 1 special character (@, !, $, #, ...)";
         is_recommended = true;
     }
+
+    if (!is_recommended)
+        cout << "Good to go\n";
 
     return is_recommended;
 }
@@ -685,7 +688,7 @@ void System::member_menu(){
     cout << "4. List motorbike for renting." << '\n';
     cout << "5. Un-List motorbike from rental." << '\n';
     cout << "6. Request renting a motorbike." << '\n';
-    cout << "8. Exit" << '\n';
+    cout << "8. Sign out" << '\n';
 
     int choice = choice_selection(1, 8);
     switch(choice){
@@ -1023,7 +1026,7 @@ void System::guest_menu(){
     cout << "----- GUEST MENU -----" << '\n';
     cout << "1. View all motorbikes" << '\n';
     cout << "2. Member registration" << '\n';
-    cout << "3. Exit" << '\n';
+    cout << "3. Sign out" << '\n';
 
     int choice = choice_selection(1, 3);
 
@@ -1039,7 +1042,7 @@ void System::guest_menu(){
             break;
 
         case 3:
-            welcome_screen();
+            main_menu();
     }
 
 }
@@ -1106,7 +1109,7 @@ void System::guest_registration(){
         getline(cin, username);
     } while ( !validate_username(username) );
     
-    string confirm;
+    string confirm {};
     bool is_valid_input;
     do {
         do {
@@ -1114,8 +1117,10 @@ void System::guest_registration(){
             getline(cin, password);
         } while ( !validate_password(password) );
 
+        confirm = {};
+
         if( recommend_password(password) ){
-            cout << "Do you want to re-enter password ?" << '\n';
+            cout << "\nDo you want to re-enter password ?" << '\n';
             do {
                 cout << "> Y/N: ";
                 getline(cin, confirm);
@@ -1154,6 +1159,7 @@ void System::guest_registration(){
 
     update_data();
     input_member_list();
+    main_menu();
 }
 
 
@@ -1162,7 +1168,7 @@ void System::admin_menu(){
     cout << "------- ADMIN DASHBOARD -------" << '\n';
     cout << "1. View all members' information." << '\n';
     cout << "2. View all motorbikes' information." << '\n';
-    cout << "3. Exit" << '\n';
+    cout << "3. Sign out" << '\n';
 
     int choice = choice_selection(1, 3);
     switch(choice){
