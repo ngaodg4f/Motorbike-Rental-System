@@ -423,6 +423,10 @@ bool System::recommend_password(string& str){
         is_recommended = true;
     }
 
+    if ( !is_recommended ){
+        cout << "`Password` is strong enough." << '\n';
+    }
+
     return is_recommended;
 }
 
