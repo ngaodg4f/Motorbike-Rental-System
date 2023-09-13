@@ -17,6 +17,7 @@ void System::update_data(){
     update_member_file();
     update_bike_file();
     update_rental_file();
+    update_request_to_file();
 }
 
 void System::input_member_list(){
@@ -1011,6 +1012,11 @@ void System::member_view_rental_list(const string& search_location, Date* start_
 }
 
 void System::member_request_rent(){
+    if(current_member->rented_bike != nullptr){
+        cout << "`Member` can only occupy 1 motorbike." << '\n';
+        member_menu();
+    }
+
     string location = current_member->location;
     string start, end;
     member_search_rent(location, start, end);
@@ -1086,7 +1092,7 @@ void System::member_view_request(){
                     start = request->start;
                     end = request->end;
                 }
-                
+
                 break;
             }
         }
@@ -1102,14 +1108,24 @@ void System::member_view_request(){
             break;
         }
     }
-    current_member->request_list.clear();
+    
+    bool is_declined = false;
+    for(int i = 0; i < current_member->request_list.size(); i++){
+        Request* target = current_member->request_list.at(i);
+        if(count_day(end, target->start) <= 0 || count_day(target->end, start) <= 0){
+            is_declined = true;
+        }
+
+        if(is_declined){
+            current_member->request_list.erase(current_member->request_list.begin() + i);
+        }
+    }
+
     current_bike->status = "NOT_AVAILABLE";
 
     update_data();
     input_data();
 }
-
-
 
 // GUEST
 void System::guest_menu(){

@@ -115,7 +115,6 @@ class System {
         void member_request_rent();
         void member_view_request();
 
-        void update_request_to_file();
 };
 
 #endif
