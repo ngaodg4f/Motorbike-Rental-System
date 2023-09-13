@@ -13,6 +13,7 @@
 #define ACCOUNT_FILE "./Data/Account.txt"
 #define MOTORBIKE_FILE "./Data/Motorbike.txt"
 #define RENTAL_FILE "./Data/Rental.txt"
+#define REQUEST_FILE "./Data/Request.txt"
 
 #include <iostream>
 #include <string>
@@ -60,6 +61,7 @@ class System {
         void update_member_file();
         void update_bike_file();
         void update_rental_file();
+        void update_request_to_file();
         /**
          * Tool
         */ 
@@ -113,6 +115,7 @@ class System {
         void member_request_rent();
         void member_view_request();
 
+        void update_request_to_file();
 };
 
 #endif

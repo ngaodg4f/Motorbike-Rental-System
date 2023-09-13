@@ -80,8 +80,13 @@ class Member {
 
         void view_request();
 
+        void use_credit_point(double point);
+
+        void earn_credit_point(double point);
+
         friend class System;
         friend class Admin;
+        friend class Request;
 };
 
 #endif

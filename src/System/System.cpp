@@ -198,6 +198,25 @@ void System::update_rental_file(){
 
     update_file.close();
 }
+
+void System::update_request_to_file(){
+    std::ofstream update_file (REQUEST_FILE);
+    if(!update_file.is_open()){
+        std::cerr << "Error: Can't update " << REQUEST_FILE << '\n';
+        return;
+    }
+    for(auto mem : member_vector){
+        for(auto request : mem->request_list){
+            update_file << mem->id << ";"
+                        << request->renter->id << ";"
+                        << request->start->to_string() << ";"
+                        << request->end->to_string() << ";"
+                        << request->status << '\n';
+        }
+    }
+
+    update_file.close();
+}
 /**
  * Tool Function
 */
@@ -951,16 +970,16 @@ void System::member_view_rental_list(const string& search_location, Date* start_
          << std::left << std::setw(15) << "END_DATE"
          << std::left << std::setw(15) << "DESCRIPTION" << '\n';
 
-    int count = 0;
+    bool is_found = false;
     for(auto rental : rental_list){
-        double total_consuming = count_day(rental->start, rental->end) * rental->point_per_day;
+        double total_consuming = count_day(start_date, end_date) * rental->point_per_day;
         if (rental->owner->location != search_location){
             continue;
 
-        } else if ( count_day(start_date, rental->start) == 0){
+        } else if ( count_day(start_date, rental->start) > 0){
             continue;
             
-        } else if ( count_day(end_date, rental->end) == 0){
+        } else if ( count_day(end_date, rental->end) < 0){
             continue;
 
         } else if (current_member->credit_point < total_consuming){
@@ -970,7 +989,7 @@ void System::member_view_rental_list(const string& search_location, Date* start_
             continue;
 
         } else {
-            count++;
+            is_found = true;
             cout << std::left << std::setw(10) << rental->bike_id
                  << std::left << std::setw(13) << rental->model
                  << std::left << std::setw(15) << rental->engine_size
@@ -984,7 +1003,7 @@ void System::member_view_rental_list(const string& search_location, Date* start_
         } 
     }
 
-    if(count == 0){
+    if( !is_found ){
         cout << "- No motorbike is available for your search." << '\n';
         cout << '\n';
         member_menu();
@@ -1035,7 +1054,62 @@ void System::member_view_request(){
     }
 
     current_member->view_request();
+    
+    string input;
+    int chosen_id;
+    bool is_found = false;
+    Date* start;
+    Date* end;
+    double total_consuming;
+
+    do {
+        do {
+            cout << "- Enter `id` to accept (0 to exit): ";
+            getline(cin, input);
+
+            if(input == "0"){
+                member_menu();
+            } 
+        } while ( !is_integer(input) );
+
+        chosen_id = std::stoi( input );
+    
+        for(auto request : current_member->request_list){
+            if(chosen_id == request->renter->id){
+                is_found = true;
+
+                if(request->renter->rented_bike != nullptr){
+                    cout << "`Renter` already occupied another bike." << '\n';
+                    is_found = false;
+
+                } else {
+                    start = request->start;
+                    end = request->end;
+                }
+                
+                break;
+            }
+        }
+    } while ( !is_found );
+
+    for(auto mem : member_vector){
+        if(chosen_id == mem->id){
+            mem->rented_bike == current_bike;
+
+            total_consuming = count_day(start, end) * current_bike->point_per_day;
+            mem->use_credit_point( total_consuming );
+            current_member->earn_credit_point( total_consuming) ;
+            break;
+        }
+    }
+    current_member->request_list.clear();
+    current_bike->status = "NOT_AVAILABLE";
+
+    update_data();
+    input_data();
 }
+
+
 
 // GUEST
 void System::guest_menu(){
@@ -1209,7 +1283,8 @@ void System::admin_view_all_members(){
          << std::left << std::setw(15) << "ID_NUMBER"
          << std::left << std::setw(15) << "LICENSE_NO"
          << std::left << std::setw(15) << "EXPIRY_DATE"
-         << std::left << std::setw(15) << "CREDITS" << '\n';
+         << std::left << std::setw(15) << "CREDITS"
+         << std::left << std::setw(15) << "LOCATION"<< '\n';
 
     for(auto mem : member_vector){
         cout << std::left << std::setw(10) << mem->id
@@ -1219,7 +1294,8 @@ void System::admin_view_all_members(){
              << std::left << std::setw(15) << mem->id_number
              << std::left << std::setw(15) << mem->license_number
              << std::left << std::setw(15) << mem->expiry_date->to_string()
-             << std::left << std::setw(15) << mem->credit_point << '\n';
+             << std::left << std::setw(15) << mem->credit_point 
+             << std::left << std::setw(15) << mem->location << '\n';
     }
 }
 

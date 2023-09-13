@@ -74,7 +74,8 @@ void Member::view_personal_info(){
          << std::left << std::setw(15) << "ID_NUMBER"
          << std::left << std::setw(15) << "LICENSE_NO"
          << std::left << std::setw(15) << "EXPIRY_DATE"
-         << std::left << std::setw(15) << "CREDITS" << '\n';
+         << std::left << std::setw(15) << "CREDITS"
+         << std::left << std::setw(15) << "LOCATION" << '\n';
 
     cout << std::left << std::setw(10) << id
          << std::left << std::setw(20) << fullname
@@ -83,7 +84,8 @@ void Member::view_personal_info(){
          << std::left << std::setw(15) << id_number
          << std::left << std::setw(15) << license_number
          << std::left << std::setw(15) << expiry_date->to_string()
-         << std::left << std::setw(15) << credit_point << '\n';
+         << std::left << std::setw(15) << credit_point
+         << std::left << std::setw(15) << location << '\n';
 }
 
 void Member::add_renter_to_list(Member* renter){
@@ -104,11 +106,14 @@ void Member::view_request(){
          << std::left << std::setw(15) << "RATING" << '\n';
 
     for(auto request : request_list){
-        cout << std::left << std::setw(10) << request->renter->id
-             << std::left << std::setw(20) << request->renter->fullname
-             << std::left << std::setw(15) << request->renter->credit_point
-             << std::left << std::setw(15) << request->start->to_string()
-             << std::left << std::setw(15) << request->end->to_string()
-             << std::left << std::setw(15) << request->renter->renting_score << '\n';
+        request->view_request();
     }
+}
+
+void Member::use_credit_point(double point){
+    credit_point -= point;
+}
+
+void Member::earn_credit_point(double point){
+    credit_point += point;
 }
