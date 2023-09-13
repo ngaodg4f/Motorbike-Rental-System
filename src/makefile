@@ -7,7 +7,7 @@
 # When you want to use g++, use $(OUT).
 CC = g++
 OBJS = main.o Motorbike/Motorbike.o Member/Member.o Date/Date.o Review/Review.o Admin/Admin.o Request/Request.o System/System.o 
-OUT = a.out
+OUT = a
 
 # The syntax rule format is as follows: 
 # target : pre-requisites
@@ -16,9 +16,19 @@ OUT = a.out
 # this is to generate the program OUT file (i.e. in this example, prog.out).
 # Target is .out file, and the pre-requisite files needed are all the .o files.
 # Refer to the syntax rule format above.  
-$(OUT) : $(OBJS)
-	$(CC) $(OBJS) -o $(OUT)
+ifeq ($(OS),Windows_NT)
+	EXE_EXTENSION = .exe
+else
+	EXE_EXTENSION = .out
+endif
+
+$(OUT)$(EXE_EXTENSION): $(OBJS)
+	$(CC) $(OBJS) -o $(OUT)$(EXE_EXTENSION)
 	rm -f $(OBJS)
+
+# $(OUT) : $(OBJS)
+# 	$(CC) $(OBJS) -o $(OUT)
+# 	rm -f $(OBJS)
 
 # IMPORTANT: for the gap between the starting line to $(CC) in the above command, 
 # use TAB key only. Do not use space key. 
@@ -29,15 +39,6 @@ $(OUT) : $(OBJS)
 # user-defined header files, then you need to put it as pre-requisite files. 
 # No need to include in the pre-requisite if you are using standard header files, like iostream.
 # If the file is in the folder, specify the folder as well.
-
-# function.o : ./function/function.cpp ./function/function.h
-# 	$(CC) -o ./function/function.cpp
-
-# HouseHold.o : HouseHold.cpp HouseHold.h
-# 	$(CC) -o HouseHold.cpp
-
-# main.o : main.cpp HouseHold.h ./function/function.h
-# 	$(CC) -o main.cpp
 
 Motorbike/Motorbike.o : Motorbike/Motorbike.cpp Motorbike/Motorbike.h
 	$(CC) -c Motorbike/Motorbike.cpp -o Motorbike/Motorbike.o
@@ -70,4 +71,6 @@ clean :
 	rm -f $(OBJS)
 
 clean-out:
-	rm -f $(OUT)
+	rm -f $(OUT)$(EXE_EXTENSION)
+
+
