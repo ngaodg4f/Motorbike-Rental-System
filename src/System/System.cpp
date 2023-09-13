@@ -399,7 +399,8 @@ bool System::validate_password(string& str){
         return false;
     }
 
-    if(str.length() < 6 || str.find(" ") != std::string::npos){
+    std::regex reg { "^[a-zA-Z0-9]{6,}$" };
+    if( std::regex_match(str, reg) ){
         cout << "`Password` must at least 6 characters with no space." << '\n';
         return false;
     }
@@ -611,11 +612,11 @@ void System::welcome_screen(){
     cout << "s2924729, Ho Quang Huy" << '\n';
     cout << '\n';
 
-    input_data();
     main_menu();
 }
 
 void System::main_menu(){
+    input_data();
     cout << "----------------- LOGIN -----------------" << '\n';
     cout << "1. Guest\t2. Member\t3. Admin\t4. Exit" << '\n'; 
 
@@ -755,6 +756,8 @@ void System::member_menu(){
             break;
 
         case 8: 
+            update_data();
+            input_data();
             main_menu();
     }
 }
@@ -1148,7 +1151,7 @@ void System::guest_menu(){
             break;
 
         case 3:
-            welcome_screen();
+            main_menu();
     }
 
 }
