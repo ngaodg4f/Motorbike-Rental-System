@@ -6,9 +6,6 @@
 #include "../Admin/Admin.h"
 #include "../Request/Request.h"
 
-// include to check the path ...
-// #include "../Data/Account.txt"
-
 // define file_name
 #define ACCOUNT_FILE "./Data/Account.txt"
 #define MOTORBIKE_FILE "./Data/Motorbike.txt"
@@ -94,16 +91,6 @@ class System {
         void main_menu();
         void login_session();
 
-        // Guest
-        void guest_menu();
-        void guest_view_bike();
-        void guest_registration();
-
-        // Admin
-        void admin_menu();
-        void admin_view_all_members();
-        void admin_view_all_bikes();
-
         // Member
         void member_menu();
         void member_view_information();
@@ -116,6 +103,15 @@ class System {
         void member_request_rent();
         void member_view_request();
 
+        // Guest
+        void guest_menu();
+        void guest_view_bike();
+        void guest_registration();
+
+        // Admin
+        void admin_menu();
+        void admin_view_all_members();
+        void admin_view_all_bikes();
 };
 
 #endif

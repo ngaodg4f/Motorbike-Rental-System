@@ -629,8 +629,6 @@ void System::main_menu(){
     }
 }
 
-
-// MEMBER
 void System::login_session(){
     string username, password;
     Member* temp_member;
@@ -687,6 +685,8 @@ void System::login_session(){
     member_menu();
 }
 
+
+// MEMBER
 void System::member_menu(){
     cout << "--------- HELLO `" << current_member->fullname << "` ---------" << '\n';
     cout << "1. View personal information." << '\n';
