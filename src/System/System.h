@@ -5,6 +5,7 @@
 #include "../Member/Member.h"
 #include "../Admin/Admin.h"
 #include "../Request/Request.h"
+#include "../define.h"
 
 // define file_name
 #define ACCOUNT_FILE "./Data/Account.txt"
@@ -13,6 +14,7 @@
 #define REQUEST_FILE "./Data/Request.txt"
 
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <iomanip>
 #include <vector>
@@ -68,7 +70,7 @@ class System {
         bool validate_fullname(std::string& str);
         bool validate_phone(std::string& str);
         bool validate_id_type(std::string& str);
-        bool validate_id_license_number(std::string& str);
+        bool validate_number(std::string& str);
         bool validate_date(std::string& str);
         bool is_leap_year(int& year);
         bool validate_username(std::string& str);
@@ -89,7 +91,8 @@ class System {
         */
         void welcome_screen();
         void main_menu();
-        void login_session();
+        void login_as_member();
+        void login_as_admin();
 
         // Member
         void member_menu();

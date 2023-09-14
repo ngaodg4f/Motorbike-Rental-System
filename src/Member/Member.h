@@ -4,6 +4,7 @@
 #include "../Date/Date.h"
 #include "../Motorbike/Motorbike.h"
 #include "../Request/Request.h"
+#include "../define.h"
 
 #include <iostream>
 #include <vector>

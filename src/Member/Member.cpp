@@ -40,7 +40,8 @@ void Member::link_bike(Motorbike* bike){
 }
 
 void Member::view_personal_info(){
-    cout << std::left << std::setw(10) << id
+    cout << YELLOW
+         << std::left << std::setw(10) << id
          << std::left << std::setw(20) << fullname
          << std::left << std::setw(15) << phone
          << std::left << std::setw(15) << id_type
@@ -48,7 +49,8 @@ void Member::view_personal_info(){
          << std::left << std::setw(15) << license_number
          << std::left << std::setw(15) << expiry_date->to_string()
          << std::left << std::setw(15) << credit_point
-         << std::left << std::setw(15) << location << '\n';
+         << std::left << std::setw(15) << location << '\n'
+         << RESET;
 }
 
 void Member::add_renter_to_list(Member* renter){
@@ -61,12 +63,14 @@ void Member::get_new_request(Request* request){
 }
 
 void Member::view_request(){
-    cout << std::left << std::setw(10) << "ID" 
+    cout << YELLOW
+         << std::left << std::setw(10) << "ID" 
          << std::left << std::setw(20) << "FULL_NAME" 
          << std::left << std::setw(15) << "CREDIT" 
          << std::left << std::setw(15) << "START_DATE"
          << std::left << std::setw(15) << "END_DATE"
-         << std::left << std::setw(15) << "RATING" << '\n';
+         << std::left << std::setw(15) << "RATING" << '\n'
+         << RESET;
 
     for(auto request : request_list){
         request->view_request();

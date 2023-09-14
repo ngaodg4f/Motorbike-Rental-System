@@ -3,6 +3,7 @@
 
 #include "../Date/Date.h"
 #include "../Review/Review.h"
+#include "../define.h"
 
 #include <iostream>
 #include <string>
