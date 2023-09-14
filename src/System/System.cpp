@@ -209,7 +209,7 @@ void System::update_request_to_file(){
 */
 bool System::is_integer(string& str){
     std::regex reg { "^[-+]?[0-9]+$" };
-
+    
     return std::regex_match(str, reg);
 }
 
@@ -413,8 +413,7 @@ bool System::validate_password(string& str){
         return false;
     }
 
-    std::regex reg { "^[a-zA-Z0-9]{4,}$" };
-    if( std::regex_match(str, reg) ){
+    if( str.length() < 4 || str.find(" ") != std::string::npos ){
         cout << RED
              << "ERROR: `Password` must contains at least 4 characters with no space." << '\n'
              << RESET;
@@ -438,7 +437,7 @@ bool System::validate_login_password(string& str, string& check){
 bool System::recommend_password(string& str){
     bool is_recommended = false;
     cout << YELLOW
-         << "Recommended password: " << '\n';
+         << "RECOMMEND PASSWORD: " << '\n';
     if (!std::regex_search(str, std::regex("[A-Z]"))) {
         cout << "~ Should contains at least 1 upper_case." << '\n';
         is_recommended = true;
@@ -464,7 +463,7 @@ bool System::recommend_password(string& str){
     }
     cout << RESET;
 
-    return is_recommended;
+    return true;
 }
 
 bool System::validate_model(string& str){
@@ -1112,6 +1111,7 @@ void System::member_search_rent(const string& location, string& start, string& e
         }
     } while ( day_rent <= 0);
 
+    cout << '\n';
     cout << GREEN
          << "YOUR CURRENT STATUS\n"
          << RESET;
@@ -1209,9 +1209,13 @@ void System::member_request_rent(){
     auto f = bike_vector.end();
     do {
         do {
-            cout << MAGENTA << "Enter `ID` to rent: " << RESET;
+            cout << MAGENTA << "Enter `ID` to rent (0 to EXIT): " << RESET;
             getline(cin, input);
         } while ( !is_integer(input) );
+
+        if(input == "0"){
+            member_menu();
+        }
 
         for(auto bike : affordable_bike_list){
             if(bike->bike_id == std::stoi(input)){
