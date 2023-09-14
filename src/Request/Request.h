@@ -14,12 +14,15 @@ class Request {
         Date* start;
         Date* end;
 
-        std::string status { "DECLINED" };
+        std::string status { "WAITING" };
 
     public:
+        Request();
         Request(Member* renter, Date* start, Date* end);
 
         void view_request();
+
+        void get_accepted();
 
         friend class System;
         friend class Member;

@@ -7,32 +7,6 @@ using std::cout, std::string;
 Member::Member(string username = " ", string password = " ")
 : username(username), password(password) {}
 
-// Member::Member(
-//             int id,
-//             std::string fullname,
-//             std::string phone,
-//             string id_type,
-//             string id_number,
-//             std::string license_number,
-//             Date* expiry_date,
-//             double credit_point,
-//             std::string username,
-//             std::string password,
-//             int bike_id,
-//             string location): 
-//         id(id),
-//         fullname(fullname),
-//         phone(phone),
-//         id_type(id_type),
-//         id_number(id_number),
-//         license_number(license_number),
-//         expiry_date(expiry_date),
-//         credit_point(credit_point),
-//         username(username),
-//         password(password),
-//         bike_id(bike_id),
-//         location(location) {}
-
 Member::Member(
             int id,
             std::string fullname,
@@ -66,17 +40,6 @@ void Member::link_bike(Motorbike* bike){
 }
 
 void Member::view_personal_info(){
-    cout << "------ PERSONAL INFORMATION ------" << '\n';
-    cout << std::left << std::setw(10) << "ID" 
-         << std::left << std::setw(20) << "FULL_NAME" 
-         << std::left << std::setw(15) << "PHONE" 
-         << std::left << std::setw(15) << "ID_TYPE"
-         << std::left << std::setw(15) << "ID_NUMBER"
-         << std::left << std::setw(15) << "LICENSE_NO"
-         << std::left << std::setw(15) << "EXPIRY_DATE"
-         << std::left << std::setw(15) << "CREDITS"
-         << std::left << std::setw(15) << "LOCATION" << '\n';
-
     cout << std::left << std::setw(10) << id
          << std::left << std::setw(20) << fullname
          << std::left << std::setw(15) << phone

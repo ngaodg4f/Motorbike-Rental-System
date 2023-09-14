@@ -106,7 +106,8 @@ class System {
 
         // Member
         void member_menu();
-        
+        void member_view_information();
+        void member_view_bike_information();
         void member_add_bike();
         void member_list_rental();
         void member_unlist_rental();
