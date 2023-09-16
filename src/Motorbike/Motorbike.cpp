@@ -27,22 +27,15 @@ void Motorbike::link_owner(Member* owner){
 }
 
 void Motorbike::view_bike_info(){
-    cout << "----- YOUR BIKE ------" << '\n';
-    cout << std::left << std::setw(15) << "MODEL" 
-         << std::left << std::setw(15) << "COLOR" 
-         << std::left << std::setw(15) << "ENGINE_SIZE" 
-         << std::left << std::setw(20) << "TRANSMISSION_MODE"
-         << std::left << std::setw(8) << "YEAR"
-         << std::left << std::setw(17) << "LICENSE_PLATE"
-         << std::left << std::setw(15) << "DESCRIPTION" << '\n';
-
-    cout << std::left << std::setw(15) << model
+    cout << YELLOW
+         << std::left << std::setw(15) << model
          << std::left << std::setw(15) << color
          << std::left << std::setw(15) << engine_size
          << std::left << std::setw(20) << transmission_mode
          << std::left << std::setw(8) << year
          << std::left << std::setw(17) << license_plate
-         << std::left << std::setw(15) << description << '\n';
+         << std::left << std::setw(15) << description << '\n'
+         << RESET;
 }
 
 void Motorbike::add_rental(double point_per_day, double minimum_rating, Date* start, Date* end){

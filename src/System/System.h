@@ -4,16 +4,19 @@
 #include "../Motorbike/Motorbike.h"
 #include "../Member/Member.h"
 #include "../Admin/Admin.h"
-
-// include to check the path ...
-// #include "../Data/Account.txt"
+#include "../Request/Request.h"
+#include "../define.h"
+#include "../Review/Review.h"
 
 // define file_name
 #define ACCOUNT_FILE "./Data/Account.txt"
 #define MOTORBIKE_FILE "./Data/Motorbike.txt"
 #define RENTAL_FILE "./Data/Rental.txt"
+#define REQUEST_FILE "./Data/Request.txt"
+#define HISTORY_FILE "./Data/History.txt"
 
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <iomanip>
 #include <vector>
@@ -55,41 +58,56 @@ class System {
         void input_bike_list();
         void link_member_and_bike();
         void input_rental_list();
+        void input_history_review();
 
         void update_member_file();
         void update_bike_file();
         void update_rental_file();
+        void update_request_to_file();
         /**
          * Tool
         */ 
-        bool is_integer(std::string& str);
-        bool is_double(std::string& str);
+        bool is_integer(std::string&);
+        bool is_double(std::string&);
 
-        bool validate_fullname(std::string& str);
-        bool validate_phone(std::string& str);
-        bool validate_id_type(std::string& str);
-        bool validate_id_license_number(std::string& str);
-        bool validate_date(std::string& str);
-        bool is_leap_year(int& year);
-        bool validate_username(std::string& str);
-        bool validate_login_username(std::string& str);
-        bool validate_password(std::string& str);
-        bool validate_login_password(std::string& str, std::string& check);
-        bool recommend_password(std::string& str);
-        bool no_special_char_check(std::string& str);
-        bool validate_model(std::string& str);
+        bool validate_fullname(std::string&);
+        bool validate_phone(std::string&);
+        bool validate_id_type(std::string&);
+        bool validate_number(std::string&);
+        bool validate_date(std::string&);
+        bool is_leap_year(int&);
+        bool validate_username(std::string&);
+        bool validate_login_username(std::string&);
+        bool validate_password(std::string&);
+        bool validate_login_password(std::string&, std::string&);
+        bool recommend_password(std::string&);
+        bool no_special_char_check(std::string&);
+        bool validate_model(std::string&);
 
-        std::vector<std::string> splitStr(std::string& str, char ch);
-        std::string trim(std::string& str);
-        Date* to_object(std::string& str);
-        int choice_selection(int a, int b);
-        int count_day(Date* start, Date* end);
+        std::vector<std::string> splitStr(std::string&, char);
+        std::string trim(std::string&);
+        Date* to_object(std::string&);
+        int choice_selection(int, int);
+        int count_day(Date*, Date*);
         /**
          * Feature
         */
         void welcome_screen();
-        void main_menu();
-        void login_session();
+        void login_menu();
+        void login_as_member();
+        void login_as_admin();
+
+        // Member
+        void member_menu();
+        void member_view_information();
+        void member_view_bike_information();
+        void member_add_bike();
+        void member_list_rental();
+        void member_unlist_rental();
+        void member_search_rent(const std::string&, std::string&, std::string& );
+        void member_view_rental_list(const std::string&, Date*, Date*);
+        void member_request_rent();
+        void member_view_request();
 
         // Guest
         void guest_menu();
@@ -100,17 +118,6 @@ class System {
         void admin_menu();
         void admin_view_all_members();
         void admin_view_all_bikes();
-
-        // Member
-        void member_menu();
-        
-        void member_add_bike();
-        void member_list_rental();
-        void member_unlist_rental();
-        void member_search_rent();
-        void member_view_rental_list(std::string& search_location, Date* start_date, Date* end_date);
-        void member_request_rent();
-
 };
 
 #endif

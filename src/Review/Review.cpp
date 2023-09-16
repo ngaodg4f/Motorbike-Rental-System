@@ -7,3 +7,5 @@ Review::Review(double score = 0, string comment = "")
 double Review::get_score() { return score; }
 
 void Review::set_score() { this->score = score; }
+
+string Review::get_comment(){ return comment; }

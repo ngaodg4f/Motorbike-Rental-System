@@ -3,6 +3,7 @@
 
 #include "../Date/Date.h"
 #include "../Review/Review.h"
+#include "../define.h"
 
 #include <iostream>
 #include <string>
@@ -10,6 +11,8 @@
 #include <sstream>
 #include <fstream>
 #include <iomanip>
+
+class Review;
 
 class Member;
 
@@ -27,7 +30,7 @@ class Motorbike {
 
         Member* owner;
 
-        std::string status { "NOT_AVAILABLE "};
+        std::string status { "NOT_AVAILABLE"};
 
         Date* start = nullptr;
         Date* end = nullptr;
@@ -64,6 +67,8 @@ class Motorbike {
         void add_renter_to_list(Member* renter);
 
         friend class System;
+        friend class Member;
+        friend class Review;
 };
 
 #endif

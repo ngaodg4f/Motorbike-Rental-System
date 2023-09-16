@@ -8,3 +8,5 @@ int main(){
 
     return 0;
 }
+
+//input `make` in terminal

@@ -17,6 +17,7 @@ void System::update_data(){
     update_member_file();
     update_bike_file();
     update_rental_file();
+    update_request_to_file();
 }
 
 void System::input_member_list(){
@@ -26,8 +27,8 @@ void System::input_member_list(){
         std::cerr << "Error: Can't open " << ACCOUNT_FILE << '\n';
         return;
     }
-    string str;
 
+    string str;
     while( getline(member_file, str) ){
         std::vector<string> tokens;
         tokens = splitStr(str, ';');
@@ -65,16 +66,6 @@ void System::input_bike_list(){
         std::vector<string> tokens;
         tokens = splitStr(str, ';');
 
-        // cout << std::stoi(tokens.at(0)) << '\n';
-        // cout << std::stoi(tokens.at(1)) << '\n';
-        // cout << tokens.at(2) << '\n';
-        // cout << tokens.at(3) << '\n';
-        // cout << tokens.at(4) << '\n';
-        // cout << tokens.at(5) << '\n';
-        // cout << std::stoi(tokens.at(6)) << '\n';
-        // cout << tokens.at(7) << '\n';
-        // cout << tokens.at(8) << '\n';
-
         Motorbike* bike = new Motorbike(
                                     std::stoi(tokens.at(0)),
                                     std::stoi(tokens.at(1)),
@@ -87,7 +78,6 @@ void System::input_bike_list(){
                                     tokens.at(8) );
         bike_vector.push_back(bike);
     }
-
     bike_file.close();
 }
 
@@ -98,6 +88,7 @@ void System::link_member_and_bike(){
                 mem->link_bike(bike);
                 bike->link_owner(mem);
                 break;
+
             }
         }
     }
@@ -127,8 +118,46 @@ void System::input_rental_list(){
             }
         }  
     }
-
     rental_file.close();
+}
+
+void System::input_history_review(){
+    std::ifstream history (HISTORY_FILE);
+    if(!history.is_open()){
+        std::cerr << "Error: Can't open " << HISTORY_FILE << '\n';
+        return;
+    }
+    for(auto mem : member_vector){
+            mem->renting_score = 0;
+    }
+    
+    string str;
+    Review* review;
+    while( getline(history, str) ){
+        std::vector<string> tokens;
+        tokens = splitStr(str, ';');
+        
+        for(auto bike : bike_vector){
+            if(std::stoi(tokens.at(0)) == bike->member_id){
+                review = new Review (std::stod(tokens.at(2)), tokens.at(4));
+                bike->renter_review.push_back( review );
+
+                for(auto mem : member_vector){
+                    if(std::stoi(tokens.at(1)) == mem->id){
+                        review = new Review (std::stod(tokens.at(3)), "");
+                        mem->owner_review.push_back( review );
+                        mem->set_new_renting_score( review->score );
+                    }
+                }
+            }
+        }
+    }
+
+    for(auto mem : member_vector){
+        cout << mem->id << ";"
+             << mem->renting_score << '\n';
+    }
+    history.close();
 }
 
 void System::update_member_file(){
@@ -137,8 +166,22 @@ void System::update_member_file(){
         std::cerr << "Error: Can't update " << ACCOUNT_FILE << '\n';
         return;
     }
-
+    
     for(auto mem : member_vector){
+        // cout << mem->id << ";"
+        //     << mem->fullname << ";"
+        //     << mem->phone << ";"
+        //     << mem->id_type << ";"
+        //     << mem->id_number << ";"
+        //     << mem->license_number << ";"
+        //     << mem->expiry_date->to_string() << ";"
+        //     << mem->credit_point << ";"
+        //     << mem->username << ";"
+        //     << mem->password << ";"
+        //     << mem->bike_id << ";"
+        //     << mem->location << ";"
+        //     << mem->renting_score << '\n';
+
         update_file << mem->id << ";"
                     << mem->fullname << ";"
                     << mem->phone << ";"
@@ -153,7 +196,6 @@ void System::update_member_file(){
                     << mem->location << ";"
                     << mem->renting_score << '\n';
     }
-
     update_file.close();
 }
 
@@ -175,7 +217,6 @@ void System::update_bike_file(){
                     << bike->license_plate << ";"
                     << bike->description << '\n';
     }
-
     update_file.close();
 }
 
@@ -195,15 +236,33 @@ void System::update_rental_file(){
                         << bike->end->to_string() << '\n';
         }
     }
-
     update_file.close();
 }
+
+void System::update_request_to_file(){
+    std::ofstream update_file (REQUEST_FILE);
+    if(!update_file.is_open()){
+        std::cerr << "Error: Can't update " << REQUEST_FILE << '\n';
+        return;
+    }
+    for(auto mem : member_vector){
+        for(auto request : mem->request_list){
+            update_file << mem->id << ";"
+                        << request->renter->id << ";"
+                        << request->start->to_string() << ";"
+                        << request->end->to_string() << ";"
+                        << request->status << '\n';
+        }
+    }
+    update_file.close();
+}
+
 /**
  * Tool Function
 */
 bool System::is_integer(string& str){
     std::regex reg { "^[-+]?[0-9]+$" };
-
+    
     return std::regex_match(str, reg);
 }
 
@@ -215,23 +274,29 @@ bool System::is_double(string& str){
 
 bool System::validate_fullname(string& str){
     if(str.empty()){
-        cout << "`Full name` is empty." << '\n';
+        cout << RED 
+             << "ERROR: `Full name` is empty." << '\n'
+             << RESET; 
         return false;
     }
     std::regex reg { "^[a-zA-Z0-9]{5,20}$" };
     string trim_string = trim(str);
 
     if(!std::regex_match(trim_string, reg)){
-        cout << "`Full name` must contain 8 - 20 characters with no special characters." << '\n';
+        cout << RED
+             << "ERROR: `Full name` must contain 5 - 20 characters. No special characters." << '\n'
+             << RESET;
         return false;
     }
 
     return true;
 }
-
+ 
 bool System::validate_phone(string& str){
     if(str.empty()){
-        cout << "`Phone` is empty." << '\n';
+        cout << RED
+             << "ERROR: `Phone` is empty." << '\n'
+             << RESET;
         return false;
     }
 
@@ -239,8 +304,9 @@ bool System::validate_phone(string& str){
     string trim_string = trim(str);
   
     if(!std::regex_match(trim_string, reg)){
-        cout << "`Phone` must contain 10 numbers with no special character." << '\n';
-        cout << "Either start with 0 or 84." << '\n';
+        cout << RED
+             << "ERROR: `Phone` must contain 10 numbers starting with 0 or 84." << '\n'
+             << RESET;
         return false;
     }
 
@@ -249,13 +315,16 @@ bool System::validate_phone(string& str){
 
 bool System::validate_id_type(string& str){
     if(str.empty()){
-        cout << "`ID TYPE` is empty." << '\n';
+        cout << RED
+             << "ERROR: `ID TYPE` is empty." << '\n';
         return false;
     }
 
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
     if(str != "id" && str != "passport"){
-        cout << "Wrong format. `Id` or `Passport` is available." << '\n';
+        cout << RED 
+             << "ERROR: Wrong format, input `Id` or `Passport`." << '\n'
+             << RESET;
         return false;
     }
 
@@ -263,15 +332,19 @@ bool System::validate_id_type(string& str){
     return true;
 }
 
-bool System::validate_id_license_number(string& str){
+bool System::validate_number(string& str){
     if(str.empty()){
-        cout << "`Number` is empty." << '\n';
+        cout << RED
+             << "ERROR: `Number` is empty." << '\n'
+             << RESET;
         return false;
     }
 
     std::regex reg { "^[a-zA-Z0-9]*$" };
     if(!std::regex_match(str, reg)){
-        cout << "`Number` contains special characters including `blank_space`." << '\n';
+        cout << RED
+             << "ERROR: `Number` contains special characters including `blank_space`." << '\n'
+             << RESET;
         return false;
     }
 
@@ -280,14 +353,17 @@ bool System::validate_id_license_number(string& str){
 
 bool System::validate_date(string& str){
     if(str.empty()){
-        cout << "`Date` is empty." << '\n';
+        cout << RED
+             << "ERROR: `Date` is empty." << '\n'
+             << RESET;
         return false;
     }
 
     std::regex reg { "^([0-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/([0-9]{4})$" };
     if(!std::regex_match(str, reg)){
-        cout << "`Date` format dd/mm/yyyy." << '\n';
-        cout << "Ex: 01/01/2023" << '\n';
+        cout << RED 
+             << "ERROR: `Date` format dd/mm/yyyy. Ex: 01/01/2023" << '\n'
+             << RESET;
         return false;
     }
 
@@ -295,25 +371,25 @@ bool System::validate_date(string& str){
     sscanf(str.c_str(), "%d/%d/%d", &day, &month, &year);
 
     if((month == 4 || month == 6 || month == 9 || month == 11) && (day > 30)){
-        cout << "`Day` " << day << " in `Month` " << month << '\n';
+        cout << RED << "ERROR: In-valid `day` input." << '\n' << RESET;
         return false;
 
     } else if (month == 2){
         if((is_leap_year(year)) && (day > 29)){
-            cout << "`Day` " << day << " February, `Year` " << year << '\n';
+            cout << RED << "ERROR: In-valid `day` input." << '\n' << RESET;
             return false;
 
         } else if ((!is_leap_year(year)) && (day > 28)){
-            cout << "`Day` " << day << " February, `Year` " << year << '\n';
+            cout << RED << "ERROR: In-valid `day` input." << '\n' << RESET;
             return false;
         }
 
     } else if (day > 31){
+        cout << RED << "ERROR: In-valid `day` input." << '\n' << RESET;
         return false;
     }
 
     return true;
-
 }
 
 bool System::is_leap_year(int& year){
@@ -322,7 +398,9 @@ bool System::is_leap_year(int& year){
 
 bool System::validate_username(string& str){
     if(str.empty()){
-        cout << "`Username` is empty." << '\n';
+        cout << RED
+             << "ERROR: `Username` is empty." << '\n'
+             << RESET;
         return false;
     }
 
@@ -330,18 +408,25 @@ bool System::validate_username(string& str){
     std::regex reg2 { "^([^@.]*[@.]?[^@.]*)$" };
 
     if(!std::regex_match(str, reg1)){
-        cout << "`Username` contains 5 - 18 characters with no special characters." << '\n';
-        cout << "`Username` only available for @ and ." << '\n';
+        cout << RED
+             << "ERROR: `Username` must contain 4 - 18 characters. No special characters." << '\n'
+             << "       `Username` only available for @ and ." << '\n'
+             << RESET;
         return false;
     } 
+
     if (!std::regex_match(str, reg2)){
-        cout << "`Username` contains more than 1 '@' or '.'" << '\n';
+        cout << RED
+             << "`Username` contains more than 1 '.' or '@'." << '\n'
+             << RESET;
         return false;
     }
 
     for(auto mem : member_vector){
         if(str == mem->username){
-            cout << "`Username` is already taken." << '\n';
+            cout << RED
+                 << "FAILED: `Username` is already taken." << '\n'
+                 << RESET;
             return false;
         }
     }
@@ -351,12 +436,10 @@ bool System::validate_username(string& str){
 
 bool System::validate_login_username(string& str){
     if(str.empty()){
-        cout << "`Username` is empty." << '\n';
+        cout << RED
+             << "ERROR: `Username` is empty." << '\n'
+             << RESET;
         return false;
-    }
-
-    if(str == "admin"){
-        return true;
     }
 
     bool is_found = false;
@@ -367,7 +450,9 @@ bool System::validate_login_username(string& str){
         }
     }
     if(!is_found){
-        cout << "`Username` doesn't exist." << '\n';
+        cout << RED
+             << "FAILED: `Username` doesn't exist." << '\n'
+             << RESET;
     }
 
     return is_found;
@@ -375,12 +460,16 @@ bool System::validate_login_username(string& str){
 
 bool System::validate_password(string& str){
     if(str.empty()){
-        cout << "`Password` is empty." << '\n';
+        cout << RED
+             << "ERROR: `Password` is empty." << '\n'
+             << RESET;
         return false;
     }
 
-    if(str.length() < 6 || str.find(" ") != std::string::npos){
-        cout << "`Password` must at least 6 characters with no space." << '\n';
+    if( str.length() < 4 || str.find(" ") != std::string::npos ){
+        cout << RED
+             << "ERROR: `Password` must contains at least 4 characters with no space." << '\n'
+             << RESET;
         return false;
     }
 
@@ -389,12 +478,10 @@ bool System::validate_password(string& str){
 
 bool System::validate_login_password(string& str, string& check){
     if(str.empty()){
-        cout << "`Password` is empty." << '\n';
+        cout << RED
+             << "ERROR: `Password` is empty." << '\n'
+             << RESET;
         return false;
-    }
-
-    if(str != check){
-        cout << "`Password` is wrong. Check again." << '\n';
     }
 
     return str == check;
@@ -402,43 +489,49 @@ bool System::validate_login_password(string& str, string& check){
 
 bool System::recommend_password(string& str){
     bool is_recommended = false;
-    cout << "Recommended `Password`: ";
+    cout << YELLOW
+         << "RECOMMEND PASSWORD: " << '\n';
     if (!std::regex_search(str, std::regex("[A-Z]"))) {
-        cout << "\n- Contains at least 1 upper_case.";
+        cout << "~ Should contains at least 1 upper_case." << '\n';
         is_recommended = true;
     }
 
     if (!std::regex_search(str, std::regex("[a-z]"))) {
-        cout << "\n- Contains at least 1 lower_case.";
+        cout << "~ Should contain at least 1 lower_case." << '\n';
         is_recommended = true;
     }
 
     if (!std::regex_search(str, std::regex("[0-9]"))) {
-        cout << "\n- Contains at least 1 number.";
+        cout << "~ Should contain at least 1 number." << '\n';
         is_recommended = true;
     }
 
     if (!std::regex_search(str, std::regex("[!@#$%^&*()]"))) {
-        cout << "\n- Contains at least 1 special character (@, !, $, #, ...)";
+        cout << "~ Should contain at least 1 special character (@, !, $, #, ...)" << '\n';
         is_recommended = true;
     }
 
-    if (!is_recommended)
-        cout << "Good to go\n";
+    if ( !is_recommended ){
+        cout << "NOTICE: `Password` is strong enough." << '\n';
+    }
+    cout << RESET;
 
-    return is_recommended;
+    return true;
 }
 
 bool System::validate_model(string& str){
     if(str.empty()){
-        cout << "`Model` is empty." << '\n';
+        cout << RED
+             << "ERROR: `Model` is empty." << '\n'
+             << RESET;
         return false;
     }
 
     std::regex reg { "^[a-zA-Z0-9-]{1,10}$" };
     if(!std::regex_match(str, reg)){
-        cout << "`Model` contains max 10 characters "<< '\n';
-        cout << "`Model` contains special characters including blank_space" << '\n';
+        cout << RED
+             << "ERROR: `Model` contains max 10 characters. No special characters." << '\n'
+             << RESET;
         return false;
     }
 
@@ -448,7 +541,9 @@ bool System::validate_model(string& str){
 bool System::no_special_char_check(string& str){
     std::regex reg { "^[a-zA-Z0-9]+$" };
     if(str.empty() || !std::regex_match(str, reg)){
-        cout << "`Input` is empty or contains special characters." << '\n';
+        cout << RED
+             << "ERROR: `Input` is empty or contains special characters." << '\n'
+             << RESET;
         return false;
     }
 
@@ -492,26 +587,29 @@ Date* System::to_object(string& str){
 int System::choice_selection(int a, int b){
     string input_choice;
     int choice;
-    bool is_not_valid = true;
+    bool is_valid = false;
 
     do {
-        cout << "> Your choice: ";
+        cout << CYAN 
+             << BOLD
+             << "> Your choice: "
+             << RESET;
         getline(cin, input_choice);
 
         if( !is_integer(input_choice) ){
-            cout << "`Choice` is number ONLY." << '\n';
+            cout << RED << "`Choice` is number ONLY." << RESET << '\n';
 
         } else {
             choice = std::stoi(input_choice);
             if(choice < a || choice > b){
-                cout << "No option " << choice << '\n';
+                cout << RED << "No option " << choice << RESET << '\n';
                 
             } else {
-                is_not_valid = false;
+                is_valid = true;
             }
         }
-
-    } while( is_not_valid );
+    } while( !is_valid );
+    cout << '\n';
 
     return choice;
 }
@@ -562,117 +660,198 @@ int System::count_day(Date* start, Date* end){
             count_day += end->day;
             break;
         }
-
         count_day == 0 ? count_day += (day_of_month - start->day + 1) : count_day += day_of_month;
         
         if(month < 12){
             month++;
-
         } else {
             month = 1;
             year++;
         }
     }
-
     return count_day;
 }
 /**
  * Feature Function
 */
-void System::welcome_screen(){
-    cout << "EEET2482/COSC2082 ASSIGNMENT" << '\n';
-    cout << "MOTORBIKE RENTAL APPLICATION" << '\n';
-    cout << "Instructor: Dr. Ling Huo Chong" << '\n';
-    cout << "Group: Group 1" << '\n';
-    cout << "s3979348, Nguyen Son Tung" << '\n';
-    cout << "s3924993, Nguyen Le Thuc Quynh" << '\n';
-    cout << "s3923010, Nguyen Dinh Minh Chau" << '\n';
-    cout << "s2924729, Ho Quang Huy" << '\n';
-    cout << '\n';
 
-    input_data();
-    main_menu();
+void System::welcome_screen(){
+    system("clear");
+    cout << CYAN
+         << "---------------------------------------------------------\n"
+         << "|              EEET2482/COSC2082 ASSIGNMENT             |\n"
+         << "|              MOTORBIKE RENTAL APPLICATION             |\n"
+         << "|             Instructor: Dr. Ling Huo Chong            |\n"
+         << "|                     GROUP: Group 1                    |\n"
+         << "|               s3979348, Nguyen Son Tung               |\n"
+         << "|             s3924993, Nguyen Le Thuc Quynh            |\n" 
+         << "|             s3923010, Nguyen Dinh Minh Chau           |\n"
+         << "|                 s3924729, Ho Quang Huy                |\n"
+         << "---------------------------------------------------------\n"
+         << RESET;
+
+    login_menu();
 }
 
-void System::main_menu(){
-    cout << "----------------- LOGIN -----------------" << '\n';
-    cout << "1. Guest\t2. Member\t3. Admin\t4. Exit" << '\n'; 
+void System::login_menu(){
+    input_data();
+    input_history_review();
+
+    cout << BLUE
+         << BOLD
+         << "------------------------- LOGIN -------------------------\n"
+         << "| 1. Guest\t2. Member\t3. Admin\t4. EXIT |\n"
+         << "---------------------------------------------------------\n"
+         << RESET;
 
     int choice = choice_selection(1, 4);
     switch(choice){
         case 1:
-            cout << "LOGIN AS GUEST" << '\n';
+            system("clear");
             guest_menu();
             break;
 
         case 2:
-            cout << "LOGIN AS MEMBER" << '\n';
-            login_session();
+            system("clear");
+            cout << GREEN
+                 << BOLD
+                 << "---------------------------------------------------------\n"
+                 << "|                     MEMBER LOGIN                      |\n" 
+                 << "|                  1. Login as Member                   |\n"
+                 << "|                  2. Return to Menu                    |\n"
+                 << "---------------------------------------------------------\n"
+                 << RESET;
+
+            choice = choice_selection(1, 2);
+            switch(choice){
+                case 1: 
+                    login_as_member();
+                    break;
+
+                case 2:
+                    system("clear");
+                    login_menu();
+            }
+
             break;
 
         case 3:
-            cout << "LOGIN AS ADMIN" << '\n';
-            login_session();
+            system("clear");
+            cout << GREEN
+                 << BOLD
+                 << "---------------------------------------------------------\n"
+                 << "|                      ADMIN LOGIN                      |\n" 
+                 << "|                  1. Login as Admin                    |\n"
+                 << "|                  2. Return to Menu                    |\n"
+                 << "---------------------------------------------------------\n"
+                 << RESET;
+
+            choice = choice_selection(1, 2);
+            switch(choice){
+                case 1: 
+                    login_as_admin();
+                    break;
+
+                case 2:
+                    system("clear");
+                    login_menu();
+            }
+
             break;
 
         case 4:
             update_data();
+            cout << CYAN << BOLD
+                 << "~~~~~~~~~~ THANKS FOR COMING TO OUR COMMUNITY ~~~~~~~~~~~\n"
+                 << RESET;
             exit(0);
     }
 }
 
-
-// MEMBER
-void System::login_session(){
+void System::login_as_admin(){
     string username, password;
-    Member* temp_member;
+    int count = 4;
 
     do {
-        cout << "Username: ";
+        cout << MAGENTA << "Enter username: " << RESET;
         getline(cin, username);
+    } while ( username != "admin" );
+
+    do {
+        if(count == 0){
+            cout << RED
+                 << "LOGIN FAILED: Return to login menu." << '\n'
+                 << RESET;
+            login_menu();
+
+        } else if (count != 4){
+            cout << RED
+                 << "ALERT: Wrong password. " 
+                 << BOLD << count << " times left." << '\n'
+                 << RESET;
+        }
+
+        cout << MAGENTA << "Enter password: " << RESET;
+        getline(cin, password);
+        count--;
+    } while ( password != "admin" );
+
+    admin = new Admin();
+    admin_menu();
+}
+
+void System::login_as_member(){
+    string username, password;
+    Member* temp_member;
+    int count = 4;
+
+    do {
+        if(count == 0){
+            cout << RED
+                 << "LOGIN FAILED: Return to login menu" << '\n'
+                 << RESET;
+            login_menu();
+        
+        } else if (count != 4){
+            cout << RED
+                 << "ALERT: "
+                 << BOLD
+                 << count << " times left." << '\n'
+                 << RESET;
+        }
+
+        cout << MAGENTA << "Enter username: " << RESET;
+        getline(cin, username);
+        count--;
     } while ( !validate_login_username(username) );
     
-    if(username == "admin"){
-        int count = 3;
-        do {
-            cout << "Password: ";
-            getline(cin, password);
-            count--;
-
-            if(count == 0){
-                cout << "`Admin` login failed." << '\n';
-                cout << "Return to menu." << '\n';
-
-                main_menu();
-            }
-        } while ( password != "admin" );
-        
-        admin = new Admin();
-        admin_menu();
-    }
-
     for(auto mem : member_vector){
         if(username == mem->username){
             temp_member = mem;
             break;
         }
     }
-    string check = temp_member->password;
-    int count = 4;
+
+    count = 4;
     do {
         if(count == 0){
-            cout << "Login as `Member` failed." << '\n';
-            welcome_screen();
+            cout << RED
+                 << "FAILED: `Member` login error." << '\n'
+                 << RESET;
+            login_menu();
 
         } else if (count != 4){
-            cout << "`Verification` " << count << " times left." << '\n';
+            cout << RED
+                 << "ALERT: Wrong password. " 
+                 << BOLD << count << " times left." << '\n'
+                 << RESET;
         }
 
-        cout << "Password: ";
+        cout << MAGENTA << "Enter password: " << RESET;
         getline(cin, password);
         count--;
 
-    } while ( !validate_login_password(password, check) );
+    } while ( !validate_login_password(password, temp_member->password) );
     
     current_member = temp_member;
     current_bike = current_member->bike;
@@ -680,30 +859,32 @@ void System::login_session(){
     member_menu();
 }
 
+// MEMBER
 void System::member_menu(){
-    cout << "--------- HELLO `" << current_member->fullname << "` ---------" << '\n';
-    cout << "1. View personal information." << '\n';
-    cout << "2. View your motorbike's details." << '\n';
-    cout << "3. Add motorbike's details." << '\n';
-    cout << "4. List motorbike for renting." << '\n';
-    cout << "5. Un-List motorbike from rental." << '\n';
-    cout << "6. Request renting a motorbike." << '\n';
-    cout << "8. Sign out" << '\n';
+    cout << GREEN
+         << BOLD
+         << "--------------------- MEMBER MENU ----------------------\n"
+         << "|              ~ ~ ~ HAVE A NICE DAY ~ ~ ~              |\n" 
+         << "|               1. View personal details                |\n"
+         << "|                2. View your motorbike                 |\n"
+         << "|                3. Add a new motorbike                 |\n"
+         << "|               4. List bike for renting                |\n"
+         << "|              5. Un-List bike for rental               |\n"
+         << "|               6. Request renting a bike               |\n"
+         << "|              7. View requests from others             |\n"
+         << "|                       8. EXIT                         |\n"
+         << "---------------------------------------------------------\n"
+         << RESET;
 
     int choice = choice_selection(1, 8);
     switch(choice){
         case 1:
-            current_member->view_personal_info();
+            member_view_information();
             member_menu();
             break;
 
         case 2:
-            if(current_bike == nullptr){
-                cout << "- You have no bike yet." << '\n';
-            } else {
-                current_bike->view_bike_info(); 
-            }
-            
+            member_view_bike_information();
             member_menu();
             break;
 
@@ -727,73 +908,133 @@ void System::member_menu(){
             member_menu();
             break;
 
+        case 7:
+            member_view_request();
+            member_menu();
+            break;
+
         case 8: 
-            main_menu();
+            system("clear");
+            update_data();
+            input_data();
+
+            login_menu();
+    }
+}
+
+void System::member_view_information(){
+    cout << YELLOW
+         << std::left << std::setw(10) << "ID" 
+         << std::left << std::setw(20) << "FULL_NAME" 
+         << std::left << std::setw(15) << "PHONE" 
+         << std::left << std::setw(15) << "ID_TYPE"
+         << std::left << std::setw(15) << "ID_NUMBER"
+         << std::left << std::setw(15) << "LICENSE_NO"
+         << std::left << std::setw(15) << "EXPIRY_DATE"
+         << std::left << std::setw(15) << "CREDITS"
+         << std::left << std::setw(15) << "LOCATION" << '\n'
+         << RESET;
+        
+        current_member->view_personal_info();
+        cout << '\n';
+}
+
+void System::member_view_bike_information(){
+    if(current_bike == nullptr){
+        cout << RED
+             << "ERROR: `Bike` not found." << '\n'
+             << RESET;
+
+        cout << '\n';
+        return;
+
+    } else {
+        cout << YELLOW
+             << std::left << std::setw(15) << "MODEL" 
+             << std::left << std::setw(15) << "COLOR" 
+             << std::left << std::setw(15) << "ENGINE_SIZE" 
+             << std::left << std::setw(20) << "TRANSMISSION_MODE"
+             << std::left << std::setw(8) << "YEAR"
+             << std::left << std::setw(17) << "LICENSE_PLATE"
+             << std::left << std::setw(15) << "DESCRIPTION" << '\n'
+             << RESET;
+
+        current_bike->view_bike_info();
+        cout << '\n';
     }
 }
 
 void System::member_add_bike(){
-    if(current_member->bike_id != 0){
-        cout << "You already have 1 bike." << '\n';
-        cout << "Do you want to add new one ?" << '\n';
+    if(current_bike != nullptr){
+        cout << RED
+             << "ERROR: `Bike` found." << '\n'
+             << "ALERT: Do you want to add new one ?" << '\n'
+             << RESET;
+        
         string confirm;
         bool is_valid_input;
         do {
-            cout << "> Y/N: ";
+            cout << MAGENTA << "> Y/N: " << RESET;
             getline(cin, confirm);
-            is_valid_input = !(confirm != "Y" && confirm != "y" && confirm != "N" && confirm != "n");
-            // yes
+        
+            is_valid_input = ! (confirm != "Y" && 
+                                confirm != "y" && 
+                                confirm != "N" && 
+                                confirm != "n" );
+
             if(!is_valid_input){
-                cout << "`Input` Y or N only." << '\n';
+                cout << RED << "ERROR: `Input` Y or N only." << '\n' << RESET;
             }
         } while ( !is_valid_input );
 
         if(confirm == "N" || confirm == "n"){
             member_menu();
-        } else {
-            bike_vector.erase(bike_vector.begin() + current_bike->bike_id);
-        }
+        } 
     }
 
     int id, member_id;
     string model, color, engine_size, transmission_mode, license_plate, description;
     string year;
 
-    id = bike_vector.size() + 1;
+    id = current_bike->bike_id;
     member_id = current_member->id;
 
+    cout << GREEN
+         << "----------------- ADDING A NEW MOTORBIKE ----------------\n"
+         << RESET;
+
     do {
-        cout << "- Model: ";
+        cout << MAGENTA << "Enter model: " << RESET;
         getline(cin, model);
     } while ( !validate_model(model) );
 
     do {
-        cout << "- Color: ";
+        cout << MAGENTA << "Enter color: " << RESET;
         getline(cin, color);
     } while ( !no_special_char_check(color) );
 
     do {
-        cout << "- Engine size: ";
+        cout << MAGENTA << "Enter engine size: " << RESET;
         getline(cin, engine_size);
     } while ( !no_special_char_check(engine_size) );
 
     do {
-        cout << "- Transmission mode: ";
+        cout << MAGENTA << "Enter transmission mode: " << RESET;
         getline(cin, transmission_mode);
     } while ( !no_special_char_check(transmission_mode) );
 
     do {
-        cout << "- Year: ";
+        cout << MAGENTA << "Enter year: " << RESET;
         getline(cin, year);
     } while ( !is_integer(year) );
 
     do {
-        cout << "- License plate: ";
+        cout << MAGENTA << "Enter license plate: " << RESET;
         getline(cin, license_plate);
     } while ( !no_special_char_check(license_plate) );
 
     do {
-        cout << "- Description (max 30 characters): ";
+        cout << MAGENTA << "Enter description: " << RESET;
         getline(cin, description);
     } while ( description.length() > 30);
 
@@ -807,7 +1048,8 @@ void System::member_add_bike(){
                                 std::stoi(year),
                                 license_plate,
                                 description );
-    bike_vector.push_back(bike);
+    bike_vector.at(id - 1) = bike;
+    current_bike = bike;
 
     for(auto mem : member_vector){
         if(mem->username == current_member->username){
@@ -818,145 +1060,178 @@ void System::member_add_bike(){
             break;
         }
     }
+    cout << '\n';
+    cout << current_member->bike_id << '\n';
 
     update_data();
-    input_bike_list();
+    input_data();
 }
 
 void System::member_list_rental(){
     if(current_bike == nullptr){
-        cout << "`Bike` need to be addd first." << '\n';
+        cout << RED
+             << "ERROR: `Bike` need to be added first." << '\n'
+             << RESET;
         return;
     }
     
     if(current_bike->status == "AVAILABLE"){
-        cout << "`Bike` is currently AVAILABLE." << '\n';
-        cout << "Un-list first." << '\n';
+        cout << RED
+             << "`Bike` is currently AVAILABLE. Un-list bike first." << '\n'
+             << RESET;
         return;
     }
 
+    cout << GREEN
+         << "-------------- LISTING MOTORBIKE FOR RENTAL -------------\n"
+         << RESET;
+
     string point, rating;
     do {
-        cout << "- Points / day: ";
+        cout << MAGENTA << "Enter points/day: " << RESET;
         getline(cin, point);
     } while ( !is_double(point) );
 
     do {
-        cout << "- Rating: ";
+        cout << MAGENTA << "Minimum rating: " << RESET;
         getline(cin, rating);
         if(std::stod(rating) > 10){
-            cout << "`Rating` max is 10." << '\n';
+            cout << RED
+                 << "ERROR: `Rating` max is 10." << '\n'
+                 << RESET;
         }
-
     } while ( !is_double(rating) || std::stod(rating) > 10);
 
     string start, end;
-    cout << "Renting Period: " << '\n';
+    cout << MAGENTA << "+ Rental Period: " << '\n' << RESET;
     do {
-        cout << "- Start: ";
+        cout << MAGENTA << "Enter start: " << RESET;
         getline(cin, start);
     } while( !validate_date(start) ) ;
 
     int day_count;
     do {
         do {
-            cout << "- End: ";
+            cout << MAGENTA << "Enter end: " << RESET;
             getline(cin, end);
         } while( !validate_date(end) ) ;
 
         day_count = count_day(to_object(start), to_object(end));
         if(day_count <= 0){
-            cout << "`End` is same or earlier than `Start`." << '\n';
+            cout << RED
+                 << "ERROR: `End` is same or earlier than `Start`." << '\n'
+                 << RESET;
         }
 
     } while ( day_count <= 0);
 
     current_bike->add_rental( std::stod(point), std::stod(rating), to_object(start), to_object(end) );
-    rental_list.push_back(current_bike);
+    rental_list.push_back( current_bike );
 
     update_data();
+    input_data();
 }
 
 void System::member_unlist_rental(){
     if(current_bike == nullptr){
-        cout << "`Bike` need to be addd first." << '\n';
+        cout << RED
+             << "ERROR: `Bike` need to be added first." << '\n'
+             << RESET;
         return;
     }
     if(current_bike->status == "NOT_AVAILABLE"){
-        cout << "- `Bike` not found in list." << '\n';
+        cout << RED
+             << "ERROR: `Bike` need to be listed first." << '\n'
+             << RESET;
         return;
     }
-
     for(int i = 0; i < rental_list.size(); i++){
         if(rental_list.at(i)->bike_id == current_bike->bike_id){
             rental_list.at(i)->reset_condition();
-            rental_list.erase(rental_list.begin() + i);
+            rental_list.erase( rental_list.begin() + i );
+
             break;
         }
     }
-
+    cout << GREEN
+         << "---------------- UN-LISTING SUCCESSFULLY ---------------\n"
+         << RESET;
+        
     update_data();
+    input_data();
 }
 
-void System::member_search_rent(){
-    string location = current_member->location;
-    string start, end;
+void System::member_search_rent(const string& location, string& start, string& end){
+    cout << GREEN
+         << "------------------- FILTER FOR REQUEST ------------------\n"
+         << RESET;
 
-    cout << "~~~~~ FILTER ~~~~~" << '\n';
     do {
-        cout << "- Start: ";
+        cout << MAGENTA << "Enter start: " << RESET;
         getline(cin, start);
     } while( !validate_date(start) ) ;
 
     int day_rent;
     do {
         do {
-            cout << "- End: ";
+            cout << MAGENTA << "Enter end: " << RESET;
             getline(cin, end);
         } while( !validate_date(end) ) ;
 
         day_rent = count_day(to_object(start), to_object(end));
         if(day_rent <= 0){
-            cout << "`End` is same or earlier than `Start`." << '\n';
+            cout << RED
+                 << "ERROR: `End` is same or earlier than `Start`." << '\n'
+                 << RESET;
         }
-
     } while ( day_rent <= 0);
 
-    cout << "--- YOUR CURRENT STATUS ---" << '\n';
+    cout << '\n';
+    cout << GREEN
+         << "YOUR CURRENT STATUS\n"
+         << RESET;
+
+    cout << WHITE;
     cout << "Location: " << location << '\n';
     cout << "Points: " << current_member->credit_point
          << std::right << std::setw(15)
          << "Rating: " << current_member->renting_score << '\n';
 
-    // cout << std::left << std::setw(5) 
     cout << "Start: " << to_object(start)->to_string()  << '\n';
 
-    // cout << std::left << std::setw(7) 
     cout << "End: " << to_object(end)->to_string() << '\n';
+    cout << RESET;
 
     member_view_rental_list(location, to_object(start), to_object(end));
 }
 
-void System::member_view_rental_list(string& search_location, Date* start_date, Date* end_date){
-    cout << std::left << std::setw(10) << "BIKE_ID" 
-         << std::left << std::setw(13) << "MODEL" 
-         << std::left << std::setw(15) << "ENGINE_SIZE" 
+void System::member_view_rental_list(const string& search_location, Date* start_date, Date* end_date){
+    cout << YELLOW
+         << std::left << std::setw(10) << "BIKE_ID"
+         << std::left << std::setw(13) << "MODEL"
+         << std::left << std::setw(15) << "ENGINE_SIZE"
          << std::left << std::setw(15) << "POINT / DAY"
          << std::left << std::setw(15) << "MIN_RATING"
          << std::left << std::setw(15) << "START_DATE"
          << std::left << std::setw(15) << "END_DATE"
-         << std::left << std::setw(15) << "DESCRIPTION" << '\n';
+         << std::left << std::setw(20) << "DESCRIPTION"
+         << std::left << std::setw(15) << "REVIEWS" << '\n'
+         << RESET;
 
-    int count = 0;
+    bool is_found = false;
     for(auto rental : rental_list){
-        double total_consuming = count_day(rental->start, rental->end) * rental->point_per_day;
+        double total_consuming = count_day(start_date, end_date) * rental->point_per_day;
+        if(rental->bike_id == current_bike->bike_id){
+            continue;
+        }
+
         if (rental->owner->location != search_location){
             continue;
 
-        } else if ( count_day(start_date, rental->start) == 0){
+        } else if ( count_day(start_date, rental->start) > 0){
             continue;
             
-        } else if ( count_day(end_date, rental->end) == 0){
+        } else if ( count_day(end_date, rental->end) < 0){
             continue;
 
         } else if (current_member->credit_point < total_consuming){
@@ -966,29 +1241,58 @@ void System::member_view_rental_list(string& search_location, Date* start_date, 
             continue;
 
         } else {
-            count++;
-            cout << std::left << std::setw(10) << rental->bike_id
+            is_found = true;
+            cout << YELLOW
+                 << std::left << std::setw(10) << rental->bike_id
                  << std::left << std::setw(13) << rental->model
                  << std::left << std::setw(15) << rental->engine_size
                  << std::left << std::setw(15) << rental->point_per_day
                  << std::left << std::setw(15) << rental->minimum_rating
                  << std::left << std::setw(15) << rental->start->to_string()
                  << std::left << std::setw(15) << rental->end->to_string()
-                 << std::left << std::setw(15) << rental->description << '\n';
+                 << std::left << std::setw(20) << rental->description;
+            
+            if(rental->renter_review.empty()){
+                cout << std::right << std::setw(134) << "None";
 
+            } else {
+                for(int i = 0; i < rental->renter_review.size(); i++){
+                    if(i == 0){
+                        cout << std::left << std::setw(15) << rental->renter_review.at(i)->comment << '\n';
+                    } else {
+                        cout << std::right << std::setw(131) << rental->renter_review.at(i)->comment << '\n';
+                    }
+                }
+            }
+            
             affordable_bike_list.push_back( rental );
-        } 
+        }
     }
+    
+    if( !is_found ){
+        cout << RED
+             << "ERROR: `Motorbike` not found." << '\n'
+             << RESET;
 
-    if(count == 0){
-        cout << "- No motorbike is available for your search." << '\n';
         cout << '\n';
         member_menu();
     }
+
+    cout << '\n';
 }
 
 void System::member_request_rent(){
-    member_search_rent();
+    if(current_member->rented_bike != nullptr){
+        cout << RED
+             << "`Member` can only occupy 1 motorbike." << '\n'
+             << RESET;
+
+        member_menu();
+    }
+
+    string location = current_member->location;
+    string start, end;
+    member_search_rent(location, start, end);
     
     string input;
     Motorbike* found_bike;
@@ -996,40 +1300,129 @@ void System::member_request_rent(){
     auto f = bike_vector.end();
     do {
         do {
-            cout << "Enter `ID` to rent: ";
+            cout << MAGENTA << "Enter `ID` to rent (0 to EXIT): " << RESET;
             getline(cin, input);
         } while ( !is_integer(input) );
+
+        if(input == "0"){
+            member_menu();
+        }
 
         for(auto bike : affordable_bike_list){
             if(bike->bike_id == std::stoi(input)){
                 found_bike = bike;
-                f = std::find(rental_list.begin(), rental_list.end(), found_bike);
-                break;      
+                f = std::find( rental_list.begin(), rental_list.end(), found_bike );
+                break;  
+
             }
         }
-
-        if(f != bike_vector.end()){
-            break;
-
-        } else {
-            cout << "`Motorbike` not found." << '\n';
+        if(f == bike_vector.end()){
+            cout << RED 
+                 << "ERROR: `Motorbike` not found." << '\n'
+                 << RESET;
         }
 
-    } while ( true );
+    } while ( f == bike_vector.end() );
 
-    found_bike->owner->get_request_from( current_member );
-    cout << "`Request` completed" << '\n';
+    Request* request = new Request ( current_member, to_object(start), to_object(end) );
+    found_bike->owner->get_new_request( request );
+
+    cout << YELLOW << "`Request` rent completed" << '\n' << RESET;
 }   
     
+void System::member_view_request(){
+    if(current_member->request_list.size() == 0){
+        cout << RED
+             << "ERROR: There is no `Request`." << '\n'
+             << RESET;
+        return;
+    }
+
+    current_member->view_request();
+    
+    string input;
+    int chosen_id;
+    bool is_found = false;
+    Date* start;
+    Date* end;
+    double total_consuming;
+
+    do {
+        do {
+            cout << MAGENTA << "Enter `id` to accept (0 to EXIT): " << RESET;
+            getline(cin, input);
+
+            if(input == "0"){
+                member_menu();
+            } 
+        } while ( !is_integer(input) );
+
+        chosen_id = std::stoi( input );
+    
+        for(auto request : current_member->request_list){
+            if(chosen_id == request->renter->id){
+                is_found = true;
+
+                if(request->renter->rented_bike != nullptr){
+                    cout << RED
+                         << "ERROR: `Renter` already occupied another bike." << '\n'
+                         << RESET;
+                    is_found = false;
+
+                } else {
+                    start = request->start;
+                    end = request->end;
+                }
+                break;
+            }
+        }
+    } while ( !is_found );
+
+    for(auto mem : member_vector){
+        if(chosen_id == mem->id){
+            mem->rented_bike == current_bike;
+            total_consuming = count_day(start, end) * current_bike->point_per_day;
+
+            mem->use_credit_point( total_consuming );
+            current_member->earn_credit_point( total_consuming) ;
+            break;
+        }
+    }
+    
+    bool is_declined = false;
+    Request* target;
+    for(int i = 0; i < current_member->request_list.size(); i++){
+        target = current_member->request_list.at(i);
+        if(count_day(end, target->start) <= 0 || count_day(target->end, start) <= 0){
+            is_declined = true;
+        }
+
+        if(is_declined){
+            current_member->request_list.erase(current_member->request_list.begin() + i);
+
+        } else {
+            target->get_accepted();
+        }
+    }
+
+    update_data();
+    input_data();
+}
+
+
 // GUEST
 void System::guest_menu(){
-    cout << "----- GUEST MENU -----" << '\n';
-    cout << "1. View all motorbikes" << '\n';
-    cout << "2. Member registration" << '\n';
-    cout << "3. Sign out" << '\n';
+    cout << GREEN
+         << BOLD
+         << "---------------- |WELCOME TO COMMUNITY| -----------------\n"
+         << "|                      GUEST MENU                       |\n" 
+         << "|                1. View all motorbikes                 |\n"
+         << "|                2. Member registration                 |\n"
+         << "|                      3. EXIT                          |\n"
+         << "---------------------------------------------------------\n"
+         << RESET;
 
     int choice = choice_selection(1, 3);
-
     switch(choice){
         case 1:
             guest_view_bike();
@@ -1042,14 +1435,15 @@ void System::guest_menu(){
             break;
 
         case 3:
-            main_menu();
+            system("clear");
+            login_menu();
     }
 
 }
 
 void System::guest_view_bike(){
-    cout << "------INFORMATION------" << '\n';
-    cout << std::left << std::setw(10) << "BIKE_ID" 
+    cout << YELLOW
+         << std::left << std::setw(10) << "BIKE_ID" 
          << std::left << std::setw(20) << "OWNER_NAME" 
          << std::left << std::setw(16) << "MODEL" 
          << std::left << std::setw(15) << "ENGINE_SIZE"
@@ -1057,13 +1451,16 @@ void System::guest_view_bike(){
          << std::left << std::setw(15) << "DESCRIPTION" << '\n';
 
     for(auto bike : bike_vector){
-        cout << std::left << std::setw(10) << bike->bike_id
+        cout << YELLOW
+             << std::left << std::setw(10) << bike->bike_id
              << std::left << std::setw(20) << bike->owner->fullname
              << std::left << std::setw(16) << bike->model
              << std::left << std::setw(15) << bike->engine_size
              << std::left << std::setw(15) << bike->year
-             << std::left << std::setw(15) << bike->description << '\n';
+             << std::left << std::setw(15) << bike->description << '\n' 
+             << RESET;
     }
+    cout << '\n';
 }
 
 void System::guest_registration(){
@@ -1073,102 +1470,116 @@ void System::guest_registration(){
     double credit_point, renting_score;
 
     id = member_vector.size() + 1;
-    
+    cout << GREEN
+         << "------------------ MEMBER REGISTRATION ------------------\n"
+         << RESET;
+
     do {
-        cout << "- Full Name: ";
+        cout << MAGENTA << "Enter your full-name: " << RESET;
         getline(cin, fullname);
-    } while ( !validate_fullname(fullname) );
+    } while ( !validate_fullname( fullname ) );
 
     do {
-        cout << "- Phone: ";
+        cout << MAGENTA << "Enter phone number: " << RESET;
         getline(cin, phone);
-    } while ( !validate_phone(phone) );
+    } while ( !validate_phone( phone ) );
 
     do {
-        cout << "- ID Type (Id/Passport): ";
+        cout << MAGENTA << "ID Type (Id/Passport): " << RESET;
         getline(cin, id_type);
-    } while ( !validate_id_type(id_type) );
+    } while ( !validate_id_type( id_type ) );
     
     do {
-        cout << "- ID Number: ";
+        cout << MAGENTA << "Enter ID number: " << RESET;
         getline(cin, id_number);
-    } while ( !validate_id_license_number(id_number) );
+    } while ( !validate_number( id_number ) );
 
     do {
-        cout << "- License Number: ";
+        cout << MAGENTA << "Enter license number: " << RESET;
         getline(cin, license_number);
-    } while ( !validate_id_license_number(license_number) );
+    } while ( !validate_number( license_number ) );
     
     do {
-        cout << "- Expiry Date: ";
+        cout << MAGENTA << "Enter expiry-date: " << RESET;
         getline(cin, expiry_date);
-    } while ( !validate_date(expiry_date) );
+    } while ( !validate_date( expiry_date ) );
 
     do {
-        cout << "- Usename: ";
+        cout << MAGENTA << "Enter username: " << RESET;
         getline(cin, username);
-    } while ( !validate_username(username) );
+    } while ( !validate_username( username ) );
     
     string confirm {};
     bool is_valid_input;
     do {
         do {
-            cout << "- Password: ";
+            cout << MAGENTA << "Enter password: " << RESET;
             getline(cin, password);
         } while ( !validate_password(password) );
 
         confirm = {};
 
         if( recommend_password(password) ){
-            cout << "\nDo you want to re-enter password ?" << '\n';
+            cout << YELLOW << "Do you want to re-enter password ?" << '\n'
+                 << RESET;
             do {
-                cout << "> Y/N: ";
+                cout << CYAN << BOLD << "> Y/N: " << RESET;
                 getline(cin, confirm);
-                is_valid_input = !(confirm != "Y" && confirm != "y" && confirm != "N" && confirm != "n");
-                // yes
+                is_valid_input = !( confirm != "Y" && 
+                                    confirm != "y" && 
+                                    confirm != "N" && 
+                                    confirm != "n" );
+
                 if(!is_valid_input){
-                    cout << "`Input` Y or N only." << '\n';
+                    cout << RED << "EEROR: `Input` Y or N only." << '\n' 
+                         << RESET;
                 }
             } while ( !is_valid_input );
         }
 
     } while (confirm == "Y" || confirm == "y");
     
-    credit_point = 20;
+    credit_point = INITIAL_CREDITS;
     bike_id = 0;
     renting_score = 0;
 
-    cout << "LOCATION: " << '\n';
-    cout << "1. SAIGON" << '\n';
-    cout << "2. HANOI" << '\n';
-    string place[2] = { "SAIGON", "HANOI" };
+    cout << MAGENTA
+         << "LOCATION:\t1. SAIGON\t2. HANOI" << '\n'
+         << RESET;
+    
     int choice = choice_selection(1, 2);
-    string location = place[choice - 1];
+    string location = LOCATIONS[choice - 1];
 
-    cout << "--------------------------------------------" << '\n';
-    cout << "Confirmation: Member-registration completed." << '\n';
-    cout << "You have 20 credits point." << '\n';
-    cout << "--------------------------------------------" << '\n';
-    cout << '\n';
+    cout << YELLOW
+         << "---------------------------------------------------------\n"
+         << "|                 REGISTRATION COMPLETED !              |\n"
+         << "|            20 points is added to your account         |\n"
+         << "---------------------------------------------------------\n"
+         << RESET;
 
     Member* new_member = new Member(id, fullname, phone, id_type, id_number, license_number, 
                                     to_object(expiry_date), credit_point, username, password, 
                                     bike_id, location, renting_score);
 
-    member_vector.push_back(new_member);
+    member_vector.push_back( new_member );
+    cout << '\n';
 
     update_data();
-    input_member_list();
-    main_menu();
+    input_data();
+
 }
 
 
 // ADMIN
 void System::admin_menu(){
-    cout << "------- ADMIN DASHBOARD -------" << '\n';
-    cout << "1. View all members' information." << '\n';
-    cout << "2. View all motorbikes' information." << '\n';
-    cout << "3. Sign out" << '\n';
+    cout << GREEN
+         << BOLD
+         << "-------------------- ADMIN DASHBOARD --------------------\n"
+         << "|                  1. View all members                  |\n"
+         << "|                2. View all motorbikes                 |\n"
+         << "|                       3. EXIT                         |\n"
+         << "---------------------------------------------------------\n"
+         << RESET;
 
     int choice = choice_selection(1, 3);
     switch(choice){
@@ -1183,50 +1594,41 @@ void System::admin_menu(){
             break;
 
         case 3:
-            main_menu();
+            system("clear");
+            login_menu();
     }
 }
 
 void System::admin_view_all_members(){
-    cout << "--------- MEMBERS' DETAILS ---------" << '\n';
-    cout << std::left << std::setw(10) << "ID" 
+    cout << YELLOW
+         << std::left << std::setw(10) << "ID" 
          << std::left << std::setw(20) << "FULL_NAME" 
          << std::left << std::setw(15) << "PHONE" 
          << std::left << std::setw(15) << "ID_TYPE"
          << std::left << std::setw(15) << "ID_NUMBER"
          << std::left << std::setw(15) << "LICENSE_NO"
          << std::left << std::setw(15) << "EXPIRY_DATE"
-         << std::left << std::setw(15) << "CREDITS" << '\n';
+         << std::left << std::setw(15) << "CREDITS"
+         << std::left << std::setw(15) << "LOCATION"<< '\n'
+         << RESET;
 
     for(auto mem : member_vector){
-        cout << std::left << std::setw(10) << mem->id
-             << std::left << std::setw(20) << mem->fullname
-             << std::left << std::setw(15) << mem->phone
-             << std::left << std::setw(15) << mem->id_type
-             << std::left << std::setw(15) << mem->id_number
-             << std::left << std::setw(15) << mem->license_number
-             << std::left << std::setw(15) << mem->expiry_date->to_string()
-             << std::left << std::setw(15) << mem->credit_point << '\n';
+        mem->view_personal_info();
     }
 }
 
 void System::admin_view_all_bikes(){
-    cout << "--------- MOTORBIKES' DETAILS ---------" << '\n';
-    cout << std::left << std::setw(15) << "MODEL" 
+    cout << YELLOW
+         << std::left << std::setw(15) << "MODEL" 
          << std::left << std::setw(15) << "COLOR" 
          << std::left << std::setw(15) << "ENGINE_SIZE" 
          << std::left << std::setw(20) << "TRANSMISSION_MODE"
          << std::left << std::setw(8) << "YEAR"
          << std::left << std::setw(17) << "LICENSE_PLATE"
-         << std::left << std::setw(15) << "DESCRIPTION" << '\n';
+         << std::left << std::setw(15) << "DESCRIPTION" << '\n'
+         << RESET;
 
     for(auto bike : bike_vector){
-        cout << std::left << std::setw(15) << bike->model
-             << std::left << std::setw(15) << bike->color
-             << std::left << std::setw(15) << bike->engine_size
-             << std::left << std::setw(20) << bike->transmission_mode
-             << std::left << std::setw(8) << bike->year
-             << std::left << std::setw(17) << bike->license_plate
-             << std::left << std::setw(15) << bike->description << '\n';
+        bike->view_bike_info();
     }
 }

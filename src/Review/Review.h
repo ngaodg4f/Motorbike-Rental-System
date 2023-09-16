@@ -1,5 +1,6 @@
 #ifndef REVIEW_H
 #define REVIEW_H
+
 #include <iostream>
 
 class Review {
@@ -13,6 +14,12 @@ class Review {
         double get_score();
 
         void set_score();
+
+        std::string get_comment();
+
+        friend class System;
+        friend class Motorbike;
+        friend class Member;
 };
 
 #endif
