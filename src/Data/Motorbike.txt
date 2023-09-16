@@ -1,4 +1,4 @@
-1;1;Yamaha;Blue;600cc;Manual;2020;ABC123;none
+1;1;Yamaha;Blue;300cc;None;2020;None;none
 2;2;Suzuki;Blue;600cc;Manual;2020;ABC123;xe nhu con cac ay
 3;3;Mercedes;Black;400cc;Manual;2023;ABC123;met moi vl
 4;5;Suzuki;Pink;100cc;Non;2019;ABC123;xe nay mau hong

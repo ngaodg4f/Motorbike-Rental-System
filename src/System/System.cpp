@@ -737,13 +737,9 @@ void System::login_as_admin(){
     } while ( username != "admin" );
 
     do {
-        cout << MAGENTA << "Enter password: " << RESET;
-        getline(cin, password);
-        count--;
-
         if(count == 0){
             cout << RED
-                 << "FAILED: `Admin` login error." << '\n'
+                 << "LOGIN FAILED: Return to login menu." << '\n'
                  << RESET;
             login_menu();
 
@@ -753,6 +749,10 @@ void System::login_as_admin(){
                  << BOLD << count << " times left." << '\n'
                  << RESET;
         }
+
+        cout << MAGENTA << "Enter password: " << RESET;
+        getline(cin, password);
+        count--;
     } while ( password != "admin" );
 
     admin = new Admin();
@@ -949,7 +949,6 @@ void System::member_add_bike(){
         if(confirm == "N" || confirm == "n"){
             member_menu();
         } 
-        // bike_vector.erase(bike_vector.begin() + current_bike->bike_id);
     }
 
     int id, member_id;
@@ -1278,7 +1277,7 @@ void System::member_request_rent(){
 void System::member_view_request(){
     if(current_member->request_list.size() == 0){
         cout << RED
-             << "ERROR: `Request` not found." << '\n'
+             << "ERROR: There is no `Request`." << '\n'
              << RESET;
         return;
     }
