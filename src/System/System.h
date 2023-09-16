@@ -90,7 +90,7 @@ class System {
          * Feature
         */
         void welcome_screen();
-        void main_menu();
+        void login_menu();
         void login_as_member();
         void login_as_admin();
 

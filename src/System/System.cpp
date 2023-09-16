@@ -557,6 +557,7 @@ int System::choice_selection(int a, int b){
         }
     } while( !is_valid );
     cout << '\n';
+
     return choice;
 }
 
@@ -636,10 +637,10 @@ void System::welcome_screen(){
          << "---------------------------------------------------------\n"
          << RESET;
 
-    main_menu();
+    login_menu();
 }
 
-void System::main_menu(){
+void System::login_menu(){
     input_data();
     cout << BLUE
          << BOLD
@@ -673,7 +674,8 @@ void System::main_menu(){
                     break;
 
                 case 2:
-                    main_menu();
+                    system("clear");
+                    login_menu();
             }
 
             break;
@@ -696,7 +698,8 @@ void System::main_menu(){
                     break;
 
                 case 2:
-                    main_menu();
+                    system("clear");
+                    login_menu();
             }
 
             break;
@@ -728,7 +731,7 @@ void System::login_as_admin(){
             cout << RED
                  << "FAILED: `Admin` login error." << '\n'
                  << RESET;
-            main_menu();
+            login_menu();
 
         } else if (count != 3){
             cout << RED
@@ -764,7 +767,7 @@ void System::login_as_member(){
             cout << RED
                  << "FAILED: `Member` login error." << '\n'
                  << RESET;
-            main_menu();
+            login_menu();
 
         } else if (count != 3){
             cout << RED
@@ -840,9 +843,11 @@ void System::member_menu(){
             break;
 
         case 8: 
+            system("clear");
             update_data();
             input_data();
-            main_menu();
+
+            login_menu();
     }
 }
 
@@ -1343,7 +1348,8 @@ void System::guest_menu(){
             break;
 
         case 3:
-            main_menu();
+            system("clear");
+            login_menu();
     }
 
 }
@@ -1498,7 +1504,8 @@ void System::admin_menu(){
             break;
 
         case 3:
-            main_menu();
+            system("clear");
+            login_menu();
     }
 }
 
