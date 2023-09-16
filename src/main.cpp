@@ -2,6 +2,8 @@
 
 #include "./System/System.h"
 
+class System;
+
 int main(){
     System sys;
     sys.welcome_screen();

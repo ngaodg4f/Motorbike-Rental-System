@@ -28,7 +28,7 @@ class Member {
 
         Motorbike* bike = nullptr;
 
-        Motorbike* rented_bike;
+        Motorbike* rented_bike = nullptr;
 
         // Manage renter who rent bike
         // --> get the score in `review` to define renting_score
@@ -63,7 +63,7 @@ class Member {
 
         void add_renter_to_list(Member* renter);
 
-        void get_new_request(Request* request);
+        void add_request(Request* request);
 
         void view_request();
 

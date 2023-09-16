@@ -37,6 +37,7 @@ class System {
         */
         std::vector <Member*> member_vector;
         std::vector <Motorbike*> bike_vector;
+        std::vector <Motorbike*> rental_list;
 
         Member* current_member = nullptr;
         Motorbike* current_bike = nullptr;
@@ -44,8 +45,6 @@ class System {
         Admin* admin;
 
         Motorbike* rent_bike = nullptr;
-
-        std::vector <Motorbike*> rental_list;
         std::vector <Motorbike*> affordable_bike_list;
 
         /**
@@ -59,6 +58,7 @@ class System {
         void link_member_and_bike();
         void input_rental_list();
         void input_history_review();
+        void input_request_list();
 
         void update_member_file();
         void update_bike_file();

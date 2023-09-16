@@ -58,7 +58,7 @@ void Member::add_renter_to_list(Member* renter){
     bike->add_renter_to_list(renter);
 }
 
-void Member::get_new_request(Request* request){
+void Member::add_request(Request* request){
     request_list.push_back( request );
 }
 

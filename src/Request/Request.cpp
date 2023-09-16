@@ -2,10 +2,13 @@
 
 using std::cout, std::string;
 
-Request::Request(){}
-
 Request::Request(Member* renter, Date* start, Date* end)
-: renter(renter), start(start), end(end) {}
+: renter(renter), start(start), end(end) {
+    this->status = "WAITING";
+}
+
+Request::Request(Member* renter, Date* start, Date* end, string status)
+: renter(renter), start(start), end(end), status(status) {}
 
 void Request::view_request(){
     cout << YELLOW

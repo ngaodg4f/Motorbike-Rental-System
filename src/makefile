@@ -23,7 +23,7 @@ else
 endif
 
 $(OUT)$(EXE_EXTENSION): $(OBJS)
-	$(CC) $(OBJS) -o $(OUT)$(EXE_EXTENSION)
+	$(CC) $(OBJS)-o $(OUT)$(EXE_EXTENSION)
 	rm -f $(OBJS)
 
 # $(OUT) : $(OBJS)

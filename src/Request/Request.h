@@ -15,11 +15,11 @@ class Request {
         Date* start;
         Date* end;
 
-        std::string status { "WAITING" };
+        std::string status;
 
     public:
-        Request();
         Request(Member* renter, Date* start, Date* end);
+        Request(Member* renter, Date* start, Date* end, std::string status);
 
         void view_request();
 
