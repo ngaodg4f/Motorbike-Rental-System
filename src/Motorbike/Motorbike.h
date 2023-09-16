@@ -65,6 +65,7 @@ class Motorbike {
         void add_renter_to_list(Member* renter);
 
         friend class System;
+        friend class Member;
 };
 
 #endif

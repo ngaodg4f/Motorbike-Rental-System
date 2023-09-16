@@ -12,6 +12,7 @@
 #define MOTORBIKE_FILE "./Data/Motorbike.txt"
 #define RENTAL_FILE "./Data/Rental.txt"
 #define REQUEST_FILE "./Data/Request.txt"
+#define HISTORY_FILE "./Data/History.txt"
 
 #include <iostream>
 #include <cstdlib>
@@ -64,28 +65,28 @@ class System {
         /**
          * Tool
         */ 
-        bool is_integer(std::string& str);
-        bool is_double(std::string& str);
+        bool is_integer(std::string&);
+        bool is_double(std::string&);
 
-        bool validate_fullname(std::string& str);
-        bool validate_phone(std::string& str);
-        bool validate_id_type(std::string& str);
-        bool validate_number(std::string& str);
-        bool validate_date(std::string& str);
-        bool is_leap_year(int& year);
-        bool validate_username(std::string& str);
-        bool validate_login_username(std::string& str);
-        bool validate_password(std::string& str);
-        bool validate_login_password(std::string& str, std::string& check);
-        bool recommend_password(std::string& str);
-        bool no_special_char_check(std::string& str);
-        bool validate_model(std::string& str);
+        bool validate_fullname(std::string&);
+        bool validate_phone(std::string&);
+        bool validate_id_type(std::string&);
+        bool validate_number(std::string&);
+        bool validate_date(std::string&);
+        bool is_leap_year(int&);
+        bool validate_username(std::string&);
+        bool validate_login_username(std::string&);
+        bool validate_password(std::string&);
+        bool validate_login_password(std::string&, std::string&);
+        bool recommend_password(std::string&);
+        bool no_special_char_check(std::string&);
+        bool validate_model(std::string&);
 
-        std::vector<std::string> splitStr(std::string& str, char ch);
-        std::string trim(std::string& str);
-        Date* to_object(std::string& str);
-        int choice_selection(int a, int b);
-        int count_day(Date* start, Date* end);
+        std::vector<std::string> splitStr(std::string&, char);
+        std::string trim(std::string&);
+        Date* to_object(std::string&);
+        int choice_selection(int, int);
+        int count_day(Date*, Date*);
         /**
          * Feature
         */
@@ -101,8 +102,8 @@ class System {
         void member_add_bike();
         void member_list_rental();
         void member_unlist_rental();
-        void member_search_rent(const std::string& location, std::string& start, std::string& end);
-        void member_view_rental_list(const std::string& search_location, Date* start_date, Date* end_date);
+        void member_search_rent(const std::string&, std::string&, std::string& );
+        void member_view_rental_list(const std::string&, Date*, Date*);
         void member_request_rent();
         void member_view_request();
 

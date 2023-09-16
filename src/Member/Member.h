@@ -26,7 +26,7 @@ class Member {
         int bike_id;
         std::string location;
 
-        Motorbike* bike;
+        Motorbike* bike = nullptr;
 
         Motorbike* rented_bike;
 
@@ -74,6 +74,7 @@ class Member {
         friend class System;
         friend class Admin;
         friend class Request;
+        friend class Motorbike;
 };
 
 #endif

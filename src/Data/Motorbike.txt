@@ -1,3 +1,6 @@
 1;1;Yamaha;Blue;600cc;Manual;2020;ABC123;none
 2;2;Suzuki;Blue;600cc;Manual;2020;ABC123;xe nhu con cac ay
 3;3;Mercedes;Black;400cc;Manual;2023;ABC123;met moi vl
+4;5;Suzuki;Pink;100cc;Non;2019;ABC123;xe nay mau hong
+5;4;Honda;Pink;200cc;Manual;2018;ABC123;xe nay cung~ mau hong a`
+6;6;Yamaha;Pink;100cc;Manual;2020;ABC123098;xe nay van la mau hong :

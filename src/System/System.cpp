@@ -894,7 +894,7 @@ void System::member_view_bike_information(){
 }
 
 void System::member_add_bike(){
-    if(current_member->bike_id != 0){
+    if(current_bike != nullptr){
         cout << RED
              << "ERROR: `Bike` found." << '\n'
              << "ALERT: Do you want to add new one ?" << '\n'
@@ -919,10 +919,11 @@ void System::member_add_bike(){
         if(confirm == "N" || confirm == "n"){
             member_menu();
         } 
+
+        bike_vector.erase(bike_vector.begin() + current_bike->bike_id);
     }
 
-    bike_vector.erase(bike_vector.begin() + current_bike->bike_id);
-
+    
     int id, member_id;
     string model, color, engine_size, transmission_mode, license_plate, description;
     string year;
@@ -980,6 +981,7 @@ void System::member_add_bike(){
                                 license_plate,
                                 description );
     bike_vector.push_back(bike);
+    current_bike = bike;
 
     for(auto mem : member_vector){
         if(mem->username == current_member->username){
@@ -992,6 +994,7 @@ void System::member_add_bike(){
     }
     cout << '\n';
 
+    // link_member_and_bike();
     update_data();
     input_data();
 }
@@ -1065,7 +1068,7 @@ void System::member_list_rental(){
 void System::member_unlist_rental(){
     if(current_bike == nullptr){
         cout << RED
-             << "ERROR: `Bike` need to be addd first." << '\n'
+             << "ERROR: `Bike` need to be added first." << '\n'
              << RESET;
         return;
     }
@@ -1322,6 +1325,7 @@ void System::member_view_request(){
     update_data();
     input_data();
 }
+
 
 // GUEST
 void System::guest_menu(){
