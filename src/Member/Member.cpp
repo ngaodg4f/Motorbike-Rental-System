@@ -37,7 +37,6 @@ Member::Member(
 
 void Member::link_bike(Motorbike* bike){
     this->bike = bike;
-    this->bike_id = bike->bike_id;
 }
 
 void Member::view_personal_info(){

@@ -127,8 +127,22 @@ void System::update_member_file(){
         std::cerr << "Error: Can't update " << ACCOUNT_FILE << '\n';
         return;
     }
-
+    
     for(auto mem : member_vector){
+        cout << mem->id << ";"
+                    << mem->fullname << ";"
+                    << mem->phone << ";"
+                    << mem->id_type << ";"
+                    << mem->id_number << ";"
+                    << mem->license_number << ";"
+                    << mem->expiry_date->to_string() << ";"
+                    << mem->credit_point << ";"
+                    << mem->username << ";"
+                    << mem->password << ";"
+                    << mem->bike_id << ";"
+                    << mem->location << ";"
+                    << mem->renting_score << '\n';
+
         update_file << mem->id << ";"
                     << mem->fullname << ";"
                     << mem->phone << ";"
@@ -715,7 +729,7 @@ void System::login_menu(){
 
 void System::login_as_admin(){
     string username, password;
-    int count = 3;
+    int count = 4;
 
     do {
         cout << MAGENTA << "Enter username: " << RESET;
@@ -733,7 +747,7 @@ void System::login_as_admin(){
                  << RESET;
             login_menu();
 
-        } else if (count != 3){
+        } else if (count != 4){
             cout << RED
                  << "ALERT: Wrong password. " 
                  << BOLD << count << " times left." << '\n'
@@ -748,11 +762,26 @@ void System::login_as_admin(){
 void System::login_as_member(){
     string username, password;
     Member* temp_member;
-    int count = 3;
+    int count = 4;
 
     do {
+        if(count == 0){
+            cout << RED
+                 << "LOGIN FAILED: Return to login menu" << '\n'
+                 << RESET;
+            login_menu();
+        
+        } else if (count != 4){
+            cout << RED
+                 << "ALERT: "
+                 << BOLD
+                 << count << " times left." << '\n'
+                 << RESET;
+        }
+
         cout << MAGENTA << "Enter username: " << RESET;
         getline(cin, username);
+        count--;
     } while ( !validate_login_username(username) );
     
     for(auto mem : member_vector){
@@ -762,6 +791,7 @@ void System::login_as_member(){
         }
     }
 
+    count = 4;
     do {
         if(count == 0){
             cout << RED
@@ -769,7 +799,7 @@ void System::login_as_member(){
                  << RESET;
             login_menu();
 
-        } else if (count != 3){
+        } else if (count != 4){
             cout << RED
                  << "ALERT: Wrong password. " 
                  << BOLD << count << " times left." << '\n'
@@ -919,16 +949,14 @@ void System::member_add_bike(){
         if(confirm == "N" || confirm == "n"){
             member_menu();
         } 
-
-        bike_vector.erase(bike_vector.begin() + current_bike->bike_id);
+        // bike_vector.erase(bike_vector.begin() + current_bike->bike_id);
     }
 
-    
     int id, member_id;
     string model, color, engine_size, transmission_mode, license_plate, description;
     string year;
 
-    id = bike_vector.size() + 1;
+    id = current_bike->bike_id;
     member_id = current_member->id;
 
     cout << GREEN
@@ -980,7 +1008,7 @@ void System::member_add_bike(){
                                 std::stoi(year),
                                 license_plate,
                                 description );
-    bike_vector.push_back(bike);
+    bike_vector.at(id - 1) = bike;
     current_bike = bike;
 
     for(auto mem : member_vector){
@@ -993,8 +1021,8 @@ void System::member_add_bike(){
         }
     }
     cout << '\n';
+    cout << current_member->bike_id << '\n';
 
-    // link_member_and_bike();
     update_data();
     input_data();
 }
