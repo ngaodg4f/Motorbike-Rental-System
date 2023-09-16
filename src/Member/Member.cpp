@@ -84,3 +84,7 @@ void Member::use_credit_point(double point){
 void Member::earn_credit_point(double point){
     credit_point += point;
 }
+
+void Member::set_new_renting_score(double score){
+    renting_score = (renting_score * (owner_review.size() - 1) + score ) / owner_review.size();
+}

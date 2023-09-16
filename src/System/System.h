@@ -6,6 +6,7 @@
 #include "../Admin/Admin.h"
 #include "../Request/Request.h"
 #include "../define.h"
+#include "../Review/Review.h"
 
 // define file_name
 #define ACCOUNT_FILE "./Data/Account.txt"
@@ -57,6 +58,7 @@ class System {
         void input_bike_list();
         void link_member_and_bike();
         void input_rental_list();
+        void input_history_review();
 
         void update_member_file();
         void update_bike_file();

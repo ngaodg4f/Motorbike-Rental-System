@@ -12,6 +12,8 @@
 #include <fstream>
 #include <iomanip>
 
+class Review;
+
 class Member;
 
 class Motorbike {
@@ -28,7 +30,7 @@ class Motorbike {
 
         Member* owner;
 
-        std::string status { "NOT_AVAILABLE "};
+        std::string status { "NOT_AVAILABLE"};
 
         Date* start = nullptr;
         Date* end = nullptr;
@@ -66,6 +68,7 @@ class Motorbike {
 
         friend class System;
         friend class Member;
+        friend class Review;
 };
 
 #endif

@@ -121,6 +121,45 @@ void System::input_rental_list(){
     rental_file.close();
 }
 
+void System::input_history_review(){
+    std::ifstream history (HISTORY_FILE);
+    if(!history.is_open()){
+        std::cerr << "Error: Can't open " << HISTORY_FILE << '\n';
+        return;
+    }
+    for(auto mem : member_vector){
+            mem->renting_score = 0;
+    }
+    
+    string str;
+    Review* review;
+    while( getline(history, str) ){
+        std::vector<string> tokens;
+        tokens = splitStr(str, ';');
+        
+        for(auto bike : bike_vector){
+            if(std::stoi(tokens.at(0)) == bike->member_id){
+                review = new Review (std::stod(tokens.at(2)), tokens.at(4));
+                bike->renter_review.push_back( review );
+
+                for(auto mem : member_vector){
+                    if(std::stoi(tokens.at(1)) == mem->id){
+                        review = new Review (std::stod(tokens.at(3)), "");
+                        mem->owner_review.push_back( review );
+                        mem->set_new_renting_score( review->score );
+                    }
+                }
+            }
+        }
+    }
+
+    for(auto mem : member_vector){
+        cout << mem->id << ";"
+             << mem->renting_score << '\n';
+    }
+    history.close();
+}
+
 void System::update_member_file(){
     std::ofstream update_file (ACCOUNT_FILE);
     if(!update_file.is_open()){
@@ -129,19 +168,19 @@ void System::update_member_file(){
     }
     
     for(auto mem : member_vector){
-        cout << mem->id << ";"
-                    << mem->fullname << ";"
-                    << mem->phone << ";"
-                    << mem->id_type << ";"
-                    << mem->id_number << ";"
-                    << mem->license_number << ";"
-                    << mem->expiry_date->to_string() << ";"
-                    << mem->credit_point << ";"
-                    << mem->username << ";"
-                    << mem->password << ";"
-                    << mem->bike_id << ";"
-                    << mem->location << ";"
-                    << mem->renting_score << '\n';
+        // cout << mem->id << ";"
+        //     << mem->fullname << ";"
+        //     << mem->phone << ";"
+        //     << mem->id_type << ";"
+        //     << mem->id_number << ";"
+        //     << mem->license_number << ";"
+        //     << mem->expiry_date->to_string() << ";"
+        //     << mem->credit_point << ";"
+        //     << mem->username << ";"
+        //     << mem->password << ";"
+        //     << mem->bike_id << ";"
+        //     << mem->location << ";"
+        //     << mem->renting_score << '\n';
 
         update_file << mem->id << ";"
                     << mem->fullname << ";"
@@ -656,6 +695,8 @@ void System::welcome_screen(){
 
 void System::login_menu(){
     input_data();
+    input_history_review();
+
     cout << BLUE
          << BOLD
          << "------------------------- LOGIN -------------------------\n"
@@ -1062,8 +1103,7 @@ void System::member_list_rental(){
     } while ( !is_double(rating) || std::stod(rating) > 10);
 
     string start, end;
-    cout << "Renting Period: " << '\n';
-    cout << MAGENTA << "Rental Period: " << RESET;
+    cout << MAGENTA << "+ Rental Period: " << '\n' << RESET;
     do {
         cout << MAGENTA << "Enter start: " << RESET;
         getline(cin, start);
@@ -1174,12 +1214,16 @@ void System::member_view_rental_list(const string& search_location, Date* start_
          << std::left << std::setw(15) << "MIN_RATING"
          << std::left << std::setw(15) << "START_DATE"
          << std::left << std::setw(15) << "END_DATE"
-         << std::left << std::setw(15) << "DESCRIPTION" << '\n'
+         << std::left << std::setw(20) << "DESCRIPTION"
+         << std::left << std::setw(15) << "REVIEWS" << '\n'
          << RESET;
 
     bool is_found = false;
     for(auto rental : rental_list){
         double total_consuming = count_day(start_date, end_date) * rental->point_per_day;
+        if(rental->bike_id == current_bike->bike_id){
+            continue;
+        }
 
         if (rental->owner->location != search_location){
             continue;
@@ -1206,9 +1250,21 @@ void System::member_view_rental_list(const string& search_location, Date* start_
                  << std::left << std::setw(15) << rental->minimum_rating
                  << std::left << std::setw(15) << rental->start->to_string()
                  << std::left << std::setw(15) << rental->end->to_string()
-                 << std::left << std::setw(15) << rental->description << '\n'
-                 << RESET;
+                 << std::left << std::setw(20) << rental->description;
+            
+            if(rental->renter_review.empty()){
+                cout << std::right << std::setw(134) << "None";
 
+            } else {
+                for(int i = 0; i < rental->renter_review.size(); i++){
+                    if(i == 0){
+                        cout << std::left << std::setw(15) << rental->renter_review.at(i)->comment << '\n';
+                    } else {
+                        cout << std::right << std::setw(131) << rental->renter_review.at(i)->comment << '\n';
+                    }
+                }
+            }
+            
             affordable_bike_list.push_back( rental );
         }
     }

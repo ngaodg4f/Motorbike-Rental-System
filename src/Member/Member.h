@@ -34,8 +34,8 @@ class Member {
         // --> get the score in `review` to define renting_score
         // (owner rates the renters)
         std::vector<Member*> renter_list;
-        double renting_score;
-        std::vector <Review*> review_for_renter;
+        double renting_score = 0;
+        std::vector <Review*> owner_review;
 
         std::vector <Request*> request_list;
 
@@ -70,6 +70,8 @@ class Member {
         void use_credit_point(double point);
 
         void earn_credit_point(double point);
+
+        void set_new_renting_score(double score);
 
         friend class System;
         friend class Admin;
