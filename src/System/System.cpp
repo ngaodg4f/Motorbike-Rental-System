@@ -1287,10 +1287,12 @@ void System::member_view_rental_list(const string& search_location, Date* start_
 
     bool is_found = false;
     for(auto rental : rental_list){
+
         double total_consuming = count_day(start_date, end_date) * rental->point_per_day;
-        if(rental->bike_id == current_bike->bike_id){
-            continue;
-        }
+
+        // if(rental->bike_id == current_bike->bike_id && current_bike != nullptr){
+        //     continue;
+        // }
 
         if (rental->owner->location != search_location){
             continue;
