@@ -54,7 +54,21 @@ class Member {
             std::string username,
             std::string password,
             int bike_id,
-            std::string location,
+            std::string location);
+
+        Member(
+            int id,
+            std::string fullname,
+            std::string phone,
+            std::string id_type,
+            std::string id_number,
+            std::string license_number,
+            Date* expiry_date,
+            double credit_point,
+            std::string username,
+            std::string password,
+            int bike_id,
+            std::string location, 
             double renting_score);
 
         void link_bike(Motorbike* bike);
@@ -71,7 +85,11 @@ class Member {
 
         void earn_credit_point(double point);
 
-        void set_new_renting_score(double score);
+        void add_review(Review* review);
+
+        double get_new_renting_score(double score);
+
+        void reset_review();
 
         friend class System;
         friend class Admin;

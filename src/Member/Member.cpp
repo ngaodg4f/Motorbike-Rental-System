@@ -9,15 +9,41 @@ Member::Member(string username = " ", string password = " ")
 
 Member::Member(
             int id,
-            std::string fullname,
-            std::string phone,
+            string fullname,
+            string phone,
             string id_type,
             string id_number,
-            std::string license_number,
+            string license_number,
             Date* expiry_date,
             double credit_point,
-            std::string username,
-            std::string password,
+            string username,
+            string password,
+            int bike_id,
+            string location): 
+        id(id),
+        fullname(fullname),
+        phone(phone),
+        id_type(id_type),
+        id_number(id_number),
+        license_number(license_number),
+        expiry_date(expiry_date),
+        credit_point(credit_point),
+        username(username),
+        password(password),
+        bike_id(bike_id),
+        location(location) {}
+
+Member::Member(
+            int id,
+            string fullname,
+            string phone,
+            string id_type,
+            string id_number,
+            string license_number,
+            Date* expiry_date,
+            double credit_point,
+            string username,
+            string password,
             int bike_id,
             string location,
             double renting_score): 
@@ -87,6 +113,16 @@ void Member::earn_credit_point(double point){
     credit_point += point;
 }
 
-void Member::set_new_renting_score(double score){
-    renting_score = (renting_score * (owner_review.size() - 1) + score ) / owner_review.size();
+void Member::add_review(Review* review){
+    owner_review.push_back(review);
+    renting_score = get_new_renting_score(review->score);
+}
+
+double Member::get_new_renting_score(double score){
+    return (renting_score * (owner_review.size() - 1) + score ) / owner_review.size();
+}
+
+void Member::reset_review(){
+    owner_review.clear();
+    renting_score = 0;
 }

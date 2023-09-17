@@ -7,6 +7,7 @@ class System;
 int main(){
     System sys;
     system("clear");
+    // sys.input_data();
     sys.welcome_screen();
 
     return 0;

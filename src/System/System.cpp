@@ -168,15 +168,17 @@ void System::input_request_list(){
 }
 
 void System::input_history_review(){
+    for(auto mem : member_vector){
+            mem->reset_review();
+            
+            if(mem->bike != nullptr){
+                mem->bike->reset_review();
+            }
+    }
     std::ifstream history (HISTORY_FILE);
     if(!history.is_open()){
         std::cerr << "Error: Can't open " << HISTORY_FILE << '\n';
         return;
-    }
-    for(auto mem : member_vector){
-            mem->owner_review.clear();
-            mem->renting_score = 0;
-            mem->bike->motorbike_score = 0;
     }
 
     string str;
@@ -184,28 +186,54 @@ void System::input_history_review(){
     while( getline(history, str) ){
         std::vector<string> tokens;
         tokens = splitStr(str, ';');
-        
-        for(auto bike : bike_vector){
-            if(std::stoi(tokens.at(0)) == bike->member_id){
-                review = new Review (std::stod(tokens.at(3)), tokens.at(4));
-                bike->renter_review.push_back( review );
-                bike->set_new_bike_score( review->score );
+        //owner_id;renter_id;renter_rating; bike_rating;comment
+        //1;2;10;9
+        int owner_id = std::stoi(tokens.at(0));
+        int renter_id = std::stoi(tokens.at(1));
 
-                for(auto mem : member_vector){
-                    if(std::stoi(tokens.at(1)) == mem->id){
-                        review = new Review (std::stod(tokens.at(2)), "");
-                        mem->owner_review.push_back( review );
-                        mem->set_new_renting_score( review->score );
-                    }
-                }
+        double renter_rating = std::stod(tokens.at(2));
+        double bike_rating = std::stod(tokens.at(3));
+        string comment = tokens.at(4);
+
+        for(auto bike : bike_vector){
+            //found bike to add review
+            if(owner_id == bike->member_id){
+                review = new Review (bike_rating, comment);
+                bike->add_review(review);
+                break;
             }
         }
+
+        for(auto renter : member_vector){
+            if(renter_id == renter->id){
+                delete review;
+                review = new Review (renter_rating, "None");
+
+                renter->add_review(review);
+                break;
+            }
+        }
+
+        // for(auto bike : bike_vector){
+        //     if(owner_id == bike->member_id){
+        //         review = new Review (std::stod(tokens.at(3)), tokens.at(4));
+        //         bike->renter_review.push_back( review );
+        //         bike->set_new_bike_score( review->score );
+        //     }
+        // }
+        // for(auto mem : member_vector){
+        //     if(renter_id == mem->id){
+        //         review = new Review (std::stod(tokens.at(2)), "");
+        //         mem->owner_review.push_back( review );
+        //         mem->set_new_renting_score( review->score );
+        //     }
+        // }
     }
 
-    // for(auto mem : member_vector){
-    //     cout << mem->id << ";"
-    //          << mem->renting_score << '\n';
-    // }
+    for(auto mem : member_vector){
+        cout << mem->id << ";"
+             << mem->renting_score << '\n';
+    }
     history.close();
 }
 
@@ -1649,7 +1677,7 @@ void System::guest_registration(){
     
     credit_point = INITIAL_CREDITS;
     bike_id = 0;
-    renting_score = 0;
+    // renting_score = 0;
 
     cout << MAGENTA
          << "LOCATION:\t1. SAIGON\t2. HANOI" << '\n'
@@ -1667,7 +1695,7 @@ void System::guest_registration(){
 
     Member* new_member = new Member(id, fullname, phone, id_type, id_number, license_number, 
                                     to_object(expiry_date), credit_point, username, password, 
-                                    bike_id, location, renting_score);
+                                    bike_id, location);
 
     member_vector.push_back( new_member );
     cout << '\n';

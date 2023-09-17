@@ -66,8 +66,11 @@ class Motorbike {
 
         void add_renter_to_list(Member* renter);
 
-        void set_new_bike_score(double score);
+        void add_review(Review* reviews);
 
+        double get_new_bike_score(double score);
+
+        void reset_review();
         friend class System;
         friend class Member;
         friend class Review;
