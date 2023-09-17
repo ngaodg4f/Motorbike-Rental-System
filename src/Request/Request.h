@@ -10,6 +10,7 @@
 
 class Request {
     private:
+        int request_id;
         Member* renter;
 
         Date* start;
@@ -20,6 +21,8 @@ class Request {
     public:
         Request(Member* renter, Date* start, Date* end);
         Request(Member* renter, Date* start, Date* end, std::string status);
+
+        void set_request_id(int id);
 
         void view_request();
 

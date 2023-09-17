@@ -64,12 +64,14 @@ void Member::add_request(Request* request){
 
 void Member::view_request(){
     cout << YELLOW
-         << std::left << std::setw(10) << "ID" 
+         << std::left << std::setw(15) << "CHOICE"
+         << std::left << std::setw(15) << "RENTER_ID" 
          << std::left << std::setw(20) << "FULL_NAME" 
          << std::left << std::setw(15) << "CREDIT" 
          << std::left << std::setw(15) << "START_DATE"
          << std::left << std::setw(15) << "END_DATE"
-         << std::left << std::setw(15) << "RATING" << '\n'
+         << std::left << std::setw(15) << "RATING"
+         << std::left << std::setw(15) << "STATUS" << '\n'
          << RESET;
 
     for(auto request : request_list){

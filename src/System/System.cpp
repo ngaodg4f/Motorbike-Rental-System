@@ -136,30 +136,34 @@ void System::input_request_list(){
     
     string str;
     Request* request;
+    int count = 0;
     while( getline(request_file, str) ){
+        count++;
         std::vector<string> tokens;
         tokens = splitStr(str, ';');
 
-        int owner_id = std::stoi(tokens.at(0));
-        int renter_id = std::stoi(tokens.at(1));
+        int owner_id = std::stoi(tokens.at(1));
+        int renter_id = std::stoi(tokens.at(2));
 
         for(auto owner : member_vector){
             if(owner_id == owner->id){
                 request = new Request ( member_vector.at(renter_id - 1),
-                                        to_object(tokens.at(2)),
                                         to_object(tokens.at(3)),
-                                        tokens.at(4) );
+                                        to_object(tokens.at(4)),
+                                        tokens.at(5) );
+                
+                request->set_request_id(count);
                 owner->add_request(request);
                 break;
             }
         }
     }
-    for(auto mem : member_vector){
-        if(!mem->request_list.empty()){
-            mem->view_personal_info();
-            mem->view_request();
-        }
-    }
+    // for(auto mem : member_vector){
+    //     if(!mem->request_list.empty()){
+    //         mem->view_personal_info();
+    //         mem->view_request();
+    //     }
+    // }
     request_file.close();
 }
 
@@ -172,6 +176,7 @@ void System::input_history_review(){
     for(auto mem : member_vector){
             mem->owner_review.clear();
             mem->renting_score = 0;
+            mem->bike->motorbike_score = 0;
     }
 
     string str;
@@ -182,12 +187,13 @@ void System::input_history_review(){
         
         for(auto bike : bike_vector){
             if(std::stoi(tokens.at(0)) == bike->member_id){
-                review = new Review (std::stod(tokens.at(2)), tokens.at(4));
+                review = new Review (std::stod(tokens.at(3)), tokens.at(4));
                 bike->renter_review.push_back( review );
+                bike->set_new_bike_score( review->score );
 
                 for(auto mem : member_vector){
                     if(std::stoi(tokens.at(1)) == mem->id){
-                        review = new Review (std::stod(tokens.at(3)), "");
+                        review = new Review (std::stod(tokens.at(2)), "");
                         mem->owner_review.push_back( review );
                         mem->set_new_renting_score( review->score );
                     }
@@ -293,9 +299,12 @@ void System::update_request_to_file(){
         std::cerr << "Error: Can't update " << REQUEST_FILE << '\n';
         return;
     }
+    int count = 0;
     for(auto owner : member_vector){
         for(auto request : owner->request_list){
-            update_file << owner->id << ";"
+            count++;
+            update_file << count << ";"
+                        << owner->id << ";"
                         << request->renter->id << ";"
                         << request->start->to_string() << ";"
                         << request->end->to_string() << ";"
@@ -724,7 +733,6 @@ int System::count_day(Date* start, Date* end){
 */
 
 void System::welcome_screen(){
-    system("clear");
     cout << CYAN
          << "---------------------------------------------------------\n"
          << "|              EEET2482/COSC2082 ASSIGNMENT             |\n"
@@ -1262,7 +1270,7 @@ void System::member_view_rental_list(const string& search_location, Date* start_
          << std::left << std::setw(15) << "MIN_RATING"
          << std::left << std::setw(15) << "START_DATE"
          << std::left << std::setw(15) << "END_DATE"
-         << std::left << std::setw(20) << "DESCRIPTION"
+         << std::left << std::setw(12) << "SCORE"
          << std::left << std::setw(15) << "REVIEWS" << '\n'
          << RESET;
 
@@ -1298,13 +1306,13 @@ void System::member_view_rental_list(const string& search_location, Date* start_
                  << std::left << std::setw(15) << rental->minimum_rating
                  << std::left << std::setw(15) << rental->start->to_string()
                  << std::left << std::setw(15) << rental->end->to_string()
-                 << std::left << std::setw(20) << rental->description;
+                 << std::left << std::setw(12) << rental->motorbike_score;
         
             for(int i = 0; i < rental->renter_review.size(); i++){
                 if(i == 0){
                     cout << std::left << std::setw(15) << rental->renter_review.at(i)->comment << '\n';
                 } else {
-                    cout << std::setw(118) << " "                              
+                    cout << std::setw(110) << " "                              
                          << rental->renter_review.at(i)->comment << '\n';
                 }
             }
@@ -1373,7 +1381,7 @@ void System::member_request_rent(){
     
     affordable_bike_list.clear();
     cout << YELLOW << "`Request` rent completed." << '\n' << RESET;
-
+    
     update_data();
     input_data();
 }   
@@ -1397,7 +1405,7 @@ void System::member_view_request(){
     std::vector<Request*> tmp;
     do {
         do {
-            cout << MAGENTA << "Enter `id` to accept (0 to EXIT): " << RESET;
+            cout << MAGENTA << "Enter `request_id` to accept (0 to EXIT): " << RESET;
             getline(cin, input);
 
             if(input == "0"){
@@ -1408,74 +1416,104 @@ void System::member_view_request(){
         chosen_id = std::stoi( input );
     
         for(auto request : current_member->request_list){
-            if(chosen_id == request->renter->id){
+            if(chosen_id == request->request_id){
                 is_found = true;
-
+                
                 if(request->renter->rented_bike != nullptr){
                     cout << RED
                          << "ERROR: `Renter` already occupied another bike." << '\n'
                          << RESET;
                     is_found = false;
 
+                } else if (request->status == "ACCEPTED") {
+                    cout << RED
+                         << "ERROR: You have accepted this request." << '\n'
+                         << RESET;
+                    is_found = false;
+
                 } else {
                     start = request->start;
                     end = request->end;
-                    tmp.push_back(request);
+
+                    for(auto target : current_member->request_list){
+                        if(target->status == "ACCEPTED"){
+                            if(count_day(target->start, start) >= 0 && count_day(end, target->end) >= 0){
+                                is_found = false;
+                            }
+                            if( count_day(target->start, start) >= 0 && 
+                                count_day(target->end, end) >= 0 &&
+                                count_day(start, target->end) >= 0){
+                                is_found = false;
+                            }
+                            if( count_day(start, target->start) >= 0 && 
+                                count_day(target->start, end) >= 0 &&
+                                count_day(end, target->end) >= 0 ){
+                                is_found = false;
+                            }
+                            if( count_day(start, target->start) >= 0 && count_day(target->end, end) >= 0){
+                                is_found = false;
+                            }
+                        }
+                    }
+                    if(!is_found){
+                        cout << RED
+                             << "ERROR: `Bike` is being rented at this period." << '\n'
+                             << RESET;
+                        is_found = false;
+                        current_member->request_list.erase(current_member->request_list.begin() + chosen_id - 1);
+                        update_data();
+
+                    } else {
+                        request->get_accepted();
+                        tmp.push_back(request);
+                    }
                 }
                 break;
             }
         }
     } while ( !is_found );
 
-    // for(auto mem : member_vector){
-    //     if(chosen_id == mem->id){
-    //         mem->rented_bike == current_bike;
-    //         total_consuming = count_day(start, end) * current_bike->point_per_day;
+    for(auto mem : member_vector){
+        if(chosen_id == mem->id){
+            mem->rented_bike == current_bike;
+            total_consuming = count_day(start, end) * current_bike->point_per_day;
 
-    //         mem->use_credit_point( total_consuming );
-    //         current_member->earn_credit_point( total_consuming) ;
-    //         break;
-    //     }
-    // }
+            mem->use_credit_point( total_consuming );
+            current_member->earn_credit_point( total_consuming) ;
+            break;
+        }
+    }
     
     bool is_declined;
     Request* target;
-    
-    int declined_total = 0;
 
     for(int i = 0; i < current_member->request_list.size(); i++){
-        current_member->request_list.at(i - declined_total)->view_request();
         is_declined = false;
         target = current_member->request_list.at(i);
 
-        if( count_day(start, target->end) > 0 || count_day(target->start, end) > 0){
+        if(count_day(target->start, start) >= 0 && count_day(end, target->end) >= 0){
             is_declined = true;
-
+        }
+        if( count_day(target->start, start) >= 0 && 
+            count_day(target->end, end) >= 0 &&
+            count_day(start, target->end) >= 0){
+            is_declined = true;
+        }
+        if( count_day(start, target->start) >= 0 && 
+            count_day(target->start, end) >= 0 &&
+            count_day(end, target->end) >= 0 ){
+            is_declined = true;
+        }
+        if( count_day(start, target->start) >= 0 && count_day(target->end, end) >= 0){
+            is_declined = true;
         }
 
         if(!is_declined){
             tmp.push_back(target);
-        }  
+        }
     }
     current_member->request_list.clear();
     current_member->request_list = tmp;
-    
-    // for(int i = 0; i < current_member->request_list.size(); i++){
-    //     is_declined = false;
-
-    //     target = current_member->request_list.at(i);
-    //     if(count_day(target->start, end) > 0 || count_day(start, target->end) > 0){
-    //         is_declined = true;
-
-    //     //                start  tar_end     tar_start  end
-
-    //     //   02 - 05
-    //     //    30 - 03
-    //     } else if (chosen_id == target->renter->id){
-    //         tmp.push_back( target );
-    //     }
-    //     current_member->request_list = tmp;
-    // }
 
     update_data();
     input_data();

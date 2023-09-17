@@ -58,3 +58,7 @@ void Motorbike::reset_condition(){
 void Motorbike::add_renter_to_list(Member* renter){
     renter_list.push_back(renter);
 }
+
+void Motorbike::set_new_bike_score(double score){
+    motorbike_score = (motorbike_score * (renter_review.size() - 1) + score) / renter_review.size();
+}
