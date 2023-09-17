@@ -158,12 +158,6 @@ void System::input_request_list(){
             }
         }
     }
-    // for(auto mem : member_vector){
-    //     if(!mem->request_list.empty()){
-    //         mem->view_personal_info();
-    //         mem->view_request();
-    //     }
-    // }
     request_file.close();
 }
 
@@ -305,6 +299,7 @@ void System::update_rental_file(){
 }
 
 void System::update_request_to_file(){
+    
     std::ofstream update_file (REQUEST_FILE);
     if(!update_file.is_open()){
         std::cerr << "Error: Can't update " << REQUEST_FILE << '\n';
@@ -1062,7 +1057,12 @@ void System::member_add_bike(){
     string model, color, engine_size, transmission_mode, license_plate, description;
     string year;
 
-    id = current_bike->bike_id;
+    if(current_bike == nullptr){
+        id = bike_vector.size() + 1;
+    } else {
+        id = current_bike->bike_id;
+    }
+
     member_id = current_member->id;
 
     cout << GREEN
@@ -1114,7 +1114,13 @@ void System::member_add_bike(){
                                 std::stoi(year),
                                 license_plate,
                                 description );
-    bike_vector.at(id - 1) = bike;
+
+    if(current_bike == nullptr){
+        bike_vector.push_back(bike);
+    } else {
+        bike_vector.at(id - 1) = bike;
+    }
+
     current_bike = bike;
 
     for(auto mem : member_vector){
@@ -1287,12 +1293,11 @@ void System::member_view_rental_list(const string& search_location, Date* start_
 
     bool is_found = false;
     for(auto rental : rental_list){
-
         double total_consuming = count_day(start_date, end_date) * rental->point_per_day;
 
-        // if(rental->bike_id == current_bike->bike_id && current_bike != nullptr){
-        //     continue;
-        // }
+        if(rental->bike_id == current_bike->bike_id){
+            continue;
+        }
 
         if (rental->owner->location != search_location){
             continue;
@@ -1447,24 +1452,29 @@ void System::member_view_request(){
                 } else {
                     start = request->start;
                     end = request->end;
-
+                
                     for(auto target : current_member->request_list){
                         if(target->status == "ACCEPTED"){
                             if(count_day(target->start, start) >= 0 && count_day(end, target->end) >= 0){
                                 is_found = false;
+                                break;
                             }
                             if( count_day(target->start, start) >= 0 && 
                                 count_day(target->end, end) >= 0 &&
                                 count_day(start, target->end) >= 0){
                                 is_found = false;
+                                break;
+
                             }
                             if( count_day(start, target->start) >= 0 && 
                                 count_day(target->start, end) >= 0 &&
                                 count_day(end, target->end) >= 0 ){
                                 is_found = false;
+                                break;
                             }
                             if( count_day(start, target->start) >= 0 && count_day(target->end, end) >= 0){
                                 is_found = false;
+                                break;
                             }
                         }
                     }
@@ -1472,7 +1482,7 @@ void System::member_view_request(){
                         cout << RED
                              << "ERROR: `Bike` is being rented at this period." << '\n'
                              << RESET;
-                        is_found = false;
+                        // is_found = false;
                         current_member->request_list.erase(current_member->request_list.begin() + chosen_id - 1);
                         update_data();
 
@@ -1486,16 +1496,16 @@ void System::member_view_request(){
         }
     } while ( !is_found );
 
-    for(auto mem : member_vector){
-        if(chosen_id == mem->id){
-            mem->rented_bike == current_bike;
-            total_consuming = count_day(start, end) * current_bike->point_per_day;
+    // for(auto mem : member_vector){
+    //     if(chosen_id == mem->id){
+    //         mem->rented_bike == current_bike;
+    //         total_consuming = count_day(start, end) * current_bike->point_per_day;
 
-            mem->use_credit_point( total_consuming );
-            current_member->earn_credit_point( total_consuming) ;
-            break;
-        }
-    }
+    //         mem->use_credit_point( total_consuming );
+    //         current_member->earn_credit_point( total_consuming) ;
+    //         break;
+    //     }
+    // }
     
     bool is_declined;
     Request* target;
@@ -1527,7 +1537,7 @@ void System::member_view_request(){
     }
     current_member->request_list.clear();
     current_member->request_list = tmp;
-
+    
     update_data();
     input_data();
 }
