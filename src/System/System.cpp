@@ -206,28 +206,11 @@ void System::input_history_review(){
 
         for(auto renter : member_vector){
             if(renter_id == renter->id){
-                delete review;
                 review = new Review (renter_rating, "None");
-
                 renter->add_review(review);
                 break;
             }
         }
-
-        // for(auto bike : bike_vector){
-        //     if(owner_id == bike->member_id){
-        //         review = new Review (std::stod(tokens.at(3)), tokens.at(4));
-        //         bike->renter_review.push_back( review );
-        //         bike->set_new_bike_score( review->score );
-        //     }
-        // }
-        // for(auto mem : member_vector){
-        //     if(renter_id == mem->id){
-        //         review = new Review (std::stod(tokens.at(2)), "");
-        //         mem->owner_review.push_back( review );
-        //         mem->set_new_renting_score( review->score );
-        //     }
-        // }
     }
 
     for(auto mem : member_vector){
