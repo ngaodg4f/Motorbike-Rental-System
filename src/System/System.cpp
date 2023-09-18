@@ -725,7 +725,7 @@ int System::count_day(Date* start, Date* end){
         }
         
         if(month == end->month && year == end->year){
-            count_day += end->day;
+            count_day += end->day - start->day;
             break;
         }
         count_day == 0 ? count_day += (day_of_month - start->day + 1) : count_day += day_of_month;
@@ -1031,7 +1031,9 @@ void System::member_view_bike_information(){
 }
 
 void System::member_add_bike(){
+    int id, member_id;
     if(current_bike != nullptr){
+        id = current_bike->bike_id;
         cout << RED
              << "ERROR: `Bike` found." << '\n'
              << "ALERT: Do you want to add new one ?" << '\n'
@@ -1056,13 +1058,13 @@ void System::member_add_bike(){
         if(confirm == "N" || confirm == "n"){
             member_menu();
         } 
+    } else {
+        id = bike_vector.size() + 1;
     }
 
-    int id, member_id;
     string model, color, engine_size, transmission_mode, license_plate, description;
     string year;
 
-    id = current_bike->bike_id;
     member_id = current_member->id;
 
     cout << GREEN
@@ -1114,7 +1116,12 @@ void System::member_add_bike(){
                                 std::stoi(year),
                                 license_plate,
                                 description );
-    bike_vector.at(id - 1) = bike;
+    if (current_bike != nullptr) {
+        bike_vector.at(id - 1) = bike;
+    } else {
+        bike_vector.push_back(bike);
+    }
+    
     current_bike = bike;
 
     for(auto mem : member_vector){
@@ -1287,13 +1294,14 @@ void System::member_view_rental_list(const string& search_location, Date* start_
 
     bool is_found = false;
     for(auto rental : rental_list){
-
         double total_consuming = count_day(start_date, end_date) * rental->point_per_day;
 
-        // if(rental->bike_id == current_bike->bike_id && current_bike != nullptr){
-        //     continue;
-        // }
-
+        if (current_bike != nullptr) {
+            if(rental->bike_id == current_bike->bike_id){
+                continue;
+            }
+        }
+       
         if (rental->owner->location != search_location){
             continue;
 
@@ -1329,7 +1337,6 @@ void System::member_view_rental_list(const string& search_location, Date* start_
                          << rental->renter_review.at(i)->comment << '\n';
                 }
             }
-            
             affordable_bike_list.push_back( rental );
         }
     }
