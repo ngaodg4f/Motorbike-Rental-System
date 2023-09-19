@@ -311,10 +311,11 @@ void System::update_request_to_file(){
         return;
     }
     int count = 0;
-    for(auto owner : member_vector){
+
+    for(Member *owner : member_vector){
         for(auto request : owner->request_list){
-            count++;
-            update_file << count << ";"
+            request->set_request_id(++count);
+            update_file << request->request_id << ";"
                         << owner->id << ";"
                         << request->renter->id << ";"
                         << request->start->to_string() << ";"
@@ -976,7 +977,7 @@ void System::member_menu(){
 
         case 7:
             member_view_request();
-            member_menu();
+            // member_view_re();
             break;
 
         case 8: 
@@ -1407,6 +1408,7 @@ void System::member_request_rent(){
 }   
     
 void System::member_view_request(){
+    
     if(current_member->request_list.size() == 0){
         cout << RED
              << "ERROR: There is no `Request`." << '\n'
@@ -1423,6 +1425,8 @@ void System::member_view_request(){
     Date* end;
     double total_consuming;
     std::vector<Request*> tmp;
+    int count {};
+
     do {
         do {
             cout << MAGENTA << "Enter `request_id` to accept (0 to EXIT): " << RESET;
@@ -1434,6 +1438,10 @@ void System::member_view_request(){
         } while ( !is_integer(input) );
 
         chosen_id = std::stoi( input );
+
+        // for (auto request : current_member->request_list) {
+        //     cout << request->request_id << '\n';
+        // }
     
         for(auto request : current_member->request_list){
             if(chosen_id == request->request_id){
@@ -1481,10 +1489,10 @@ void System::member_view_request(){
                              << RESET;
                         is_found = false;
                         current_member->request_list.erase(current_member->request_list.begin() + chosen_id - 1);
-                        update_data();
-
                     } else {
                         request->get_accepted();
+                        update_data();
+                        // request->view_request();
                         tmp.push_back(request);
                     }
                 }
@@ -1536,7 +1544,9 @@ void System::member_view_request(){
     current_member->request_list = tmp;
 
     update_data();
-    input_data();
+    // input_data();
+
+    member_view_request();
 }
 
 
