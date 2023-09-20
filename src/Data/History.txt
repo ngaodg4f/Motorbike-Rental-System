@@ -1,7 +1,6 @@
 1;2;10;9;Good bike
 3;1;8;7.5;Xe nay chay nhanh vl
 4;5;7.5;8;xe nay hoi ngu 
-4;6;8;8;xe nay ngu vl
 2;4;7.5;9.5;xe tot cho 9.5 diem
 1;3;7;8.5;xe tot ma chu? xau chai
 1;4;8;8;xe nay ok

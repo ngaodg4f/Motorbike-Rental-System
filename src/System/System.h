@@ -14,6 +14,7 @@
 #define RENTAL_FILE "./Data/Rental.txt"
 #define REQUEST_FILE "./Data/Request.txt"
 #define HISTORY_FILE "./Data/History.txt"
+#define CODE_FILE "./Data/Code.txt"
 
 #include <iostream>
 #include <cstdlib>
@@ -38,6 +39,7 @@ class System {
         std::vector <Member*> member_vector;
         std::vector <Motorbike*> bike_vector;
         std::vector <Motorbike*> rental_list;
+        std::unordered_map <std::string, int> code_list;
 
         Member* current_member = nullptr;
         Motorbike* current_bike = nullptr;
@@ -59,11 +61,13 @@ class System {
         void input_rental_list();
         void input_history_review();
         void input_request_list();
+        void input_code_list();
 
         void update_member_file();
         void update_bike_file();
         void update_rental_file();
         void update_request_to_file();
+        void update_code_to_file();
         /**
          * Tool
         */ 
@@ -108,6 +112,7 @@ class System {
         void member_view_rental_list(const std::string&, Date*, Date*);
         void member_request_rent();
         void member_view_request();
+        void member_top_up();
 
         // Guest
         void guest_menu();
@@ -118,6 +123,7 @@ class System {
         void admin_menu();
         void admin_view_all_members();
         void admin_view_all_bikes();
+        void admin_generate_code();
 };
 
 #endif
