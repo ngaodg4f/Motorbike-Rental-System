@@ -2,7 +2,7 @@
 
 using std::cout, std::string;
 
-Motorbike::Motorbike(
+Motorbike::Motorbike( //Constructor
         int bike_id, 
         int member_id,
         string model,

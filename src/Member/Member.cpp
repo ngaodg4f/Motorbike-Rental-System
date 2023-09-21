@@ -4,7 +4,8 @@ using std::cout, std::string;
     No Exception Handling 
     No Getter
 */
-Member::Member(string username = " ", string password = " ")
+
+Member::Member(string username = " ", string password = " ") //usually used for login task
 : username(username), password(password) {}
 
 Member::Member(
@@ -65,7 +66,7 @@ void Member::link_bike(Motorbike* bike){
     this->bike = bike;
 }
 
-void Member::view_personal_info(){
+void Member::view_personal_info(){ //A user can view his/her account info
     cout << YELLOW
          << std::left << std::setw(10) << id
          << std::left << std::setw(20) << fullname
@@ -88,7 +89,7 @@ void Member::add_request(Request* request){
     request_list.push_back( request );
 }
 
-void Member::view_request(){
+void Member::view_request(){ //An owner can view the requests for his/her motorbikes
     cout << YELLOW
          << std::left << std::setw(15) << "CHOICE"
          << std::left << std::setw(15) << "RENTER_ID" 
@@ -105,15 +106,15 @@ void Member::view_request(){
     }
 }
 
-void Member::use_credit_point(double point){
+void Member::use_credit_point(double point){ //use the num of points for renting 
     credit_point -= point;
 }
 
-void Member::earn_credit_point(double point){
+void Member::earn_credit_point(double point){ 
     credit_point += point;
 }
 
-void Member::add_review(Review* review){
+void Member::add_review(Review* review){ 
     owner_review.push_back(review);
     renting_score = get_new_renting_score(review->score);
 }

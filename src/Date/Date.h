@@ -10,9 +10,9 @@ class Date {
         int year;
 
     public:
-        Date();
+        Date(); //Default constructor
 
-        Date(int day, int month, int year);
+        Date(int day, int month, int year); //Constructor
 
         void set_date(int Date, int month, int year);
 

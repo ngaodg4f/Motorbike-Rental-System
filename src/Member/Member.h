@@ -33,13 +33,15 @@ class Member {
         // Manage renter who rent bike
         // --> get the score in `review` to define renting_score
         // (owner rates the renters)
-        std::vector<Member*> renter_list;
+        std::vector<Member*> renter_list; //store data of renters
         double renting_score = 0;
-        std::vector <Review*> owner_review;
+        std::vector <Review*> owner_review; 
 
-        std::vector <Request*> request_list;
+        std::vector <Request*> request_list; //store requests for the motorbikes
 
     public:
+
+    /* Constructors */
         Member(std::string , std::string);
 
         Member(

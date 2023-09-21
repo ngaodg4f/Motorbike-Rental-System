@@ -7,9 +7,10 @@
 
 class Admin {
     public:
-        Admin();
+        Admin(); //Constructor
 
-        std::unordered_map<std::string, int> code_generator(int value, int amount);
+    /* Function for the admin to generate top-up codes for users */
+        std::unordered_map<std::string, int> code_generator(int value, int amount); 
 
         friend class System;
 };
