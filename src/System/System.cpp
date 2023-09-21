@@ -89,7 +89,7 @@ void System::link_member_and_bike(){
     for(auto mem : member_vector){
         for(auto bike : bike_vector){
             if(mem->bike_id == bike->bike_id){
-                mem->link_bike(bike);
+                mem->link_bike(bike); //Input & add link (link bike to member)
                 bike->link_owner(mem);
                 break;
 
@@ -126,7 +126,8 @@ void System::input_rental_list(){
     rental_file.close();
 }
 
-void System::input_request_list(){
+/* input cai request list cua moi member khi xe duoc request de rent && input lai nhung request duoc accept -> set rented bike cho nhung member duoc accept */
+void System::input_request_list(){ 
     for(auto mem : member_vector){
         mem->request_list.clear();
     }
@@ -180,7 +181,7 @@ void System::input_request_list(){
     request_file.close();
 }
 
-void System::input_history_review(){
+void System::input_history_review(){ //diem cua nguoi rent, comment, diem cho xe 
     for(auto mem : member_vector){
             mem->reset_review();
             
@@ -252,7 +253,7 @@ void System::input_code_list() {
     code_file.close();
 }
 
-void System::update_member_file(){
+void System::update_member_file(){ 
     std::ofstream update_file (ACCOUNT_FILE);
     if(!update_file.is_open()){
         std::cerr << "Error: Can't update " << ACCOUNT_FILE << '\n';
@@ -312,7 +313,7 @@ void System::update_bike_file(){
     update_file.close();
 }
 
-void System::update_rental_file(){
+void System::update_rental_file(){ //update nhung cai duoc list recently 
     std::ofstream update_file (RENTAL_FILE);
     if(!update_file.is_open()){
         std::cerr << "Error: Can't update " << RENTAL_FILE << '\n';
@@ -364,6 +365,7 @@ void System::update_request_to_file(){
 
 void System::update_code_to_file() {
     std::ofstream code_file (CODE_FILE);
+
     if(!code_file.is_open()){
         std::cerr << "Error: Can't open " << CODE_FILE << '\n';
         return;
@@ -378,6 +380,8 @@ void System::update_code_to_file() {
 /**
  * Tool Function
 */
+
+//validate value is int
 bool System::is_integer(string& str){
     std::regex reg { "^[-+]?[0-9]+$" };
     
@@ -469,6 +473,7 @@ bool System::validate_number(string& str){
     return true;
 }
 
+//validate date duoc nhap theo format dd/mm/yyyy ex: 01/01/2023
 bool System::validate_date(string& str){
     if(str.empty()){
         cout << RED
@@ -514,6 +519,7 @@ bool System::is_leap_year(int& year){
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
 
+//validate username input when register with condition 
 bool System::validate_username(string& str){
     if(str.empty()){
         cout << RED
@@ -535,7 +541,7 @@ bool System::validate_username(string& str){
 
     if (!std::regex_match(str, reg2)){
         cout << RED
-             << "`Username` contains more than 1 '.' or '@'." << '\n'
+             << "ERROR: `Username` contains more than 1 '.' or '@'." << '\n'
              << RESET;
         return false;
     }
@@ -552,6 +558,7 @@ bool System::validate_username(string& str){
     return true;
 }
 
+//va bao send out message
 bool System::validate_login_username(string& str){
     if(str.empty()){
         cout << RED
@@ -576,7 +583,7 @@ bool System::validate_login_username(string& str){
     return is_found;
 }
 
-bool System::validate_password(string& str){
+bool System::validate_password(string& str){ //with condition
     if(str.empty()){
         cout << RED
              << "ERROR: `Password` is empty." << '\n'
@@ -637,7 +644,7 @@ bool System::recommend_password(string& str){
     return true;
 }
 
-bool System::validate_model(string& str){
+bool System::validate_model(string& str){ //ex: honda-1-2
     if(str.empty()){
         cout << RED
              << "ERROR: `Model` is empty." << '\n'
@@ -702,7 +709,7 @@ Date* System::to_object(string& str){
     return converted_date;
 }
 
-int System::choice_selection(int a, int b){
+int System::choice_selection(int a, int b){ //validate input for choice from user
     string input_choice;
     int choice;
     bool is_valid = false;
