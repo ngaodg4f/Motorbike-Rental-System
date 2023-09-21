@@ -247,7 +247,10 @@ void System::input_code_list() {
 
     int count {};
     while (getline(code_file, str)) {
-        code_file >> key >> value;
+        std::vector<string> tokens;
+        tokens = splitStr(str, ':');
+        key = tokens.at(0);
+        value = stoi(tokens.at(1));
         code_list.insert({key, value});
     }    
     code_file.close();
@@ -1634,12 +1637,15 @@ void System::member_top_up() {
     for (auto code : code_list) {
         if (code_input == code.first) {
             // cout << code.second;
+            cout << code.first << ":" << code.second << '\n';
             current_member->earn_credit_point(code.second);
             code_list.erase(code.first);
+            
             update_data();
+            input_data();
             break;
         }
-        // cout << code.first << ":" << code.second << '\n';
+        
     }
     cin.ignore(1, '\n');
 }
@@ -1880,7 +1886,11 @@ void System::admin_generate_code() {
          << "Enter code amount you want to generate: "
          << RESET;
     cin >> amount;
-    code_list = admin->code_generator(value, amount);
+
+    std::unordered_map<string, int> generated;
+    generated = this->admin->code_generator(value, amount);
+    code_list.insert(generated.begin(), generated.end());
+
     update_data();
     input_data();
     cin.ignore(1, '\n');
