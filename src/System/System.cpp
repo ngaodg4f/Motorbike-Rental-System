@@ -13,7 +13,7 @@ void System::input_data(){
     input_rental_list();
     input_request_list();
     input_history_review();
-    // input_code_list();
+    input_code_list();
 }
 
 void System::update_data(){
@@ -21,7 +21,7 @@ void System::update_data(){
     update_bike_file();
     update_rental_file();
     update_request_to_file();
-    // update_code_to_file();
+    update_code_to_file();
 }
 
 void System::input_member_list(){
@@ -146,7 +146,7 @@ void System::input_request_list(){
         int owner_id = std::stoi(tokens.at(1));
         int renter_id = std::stoi(tokens.at(2));
 
-        Motorbike *bike = nullptr;
+        // Motorbike *bike = nullptr;
 
         for(auto owner : member_vector){
             if(owner_id == owner->id){
@@ -158,14 +158,15 @@ void System::input_request_list(){
                 request->set_request_id(owner->request_list.size() + 1);
                 owner->add_request(request);
                 if (tokens.at(5) == "ACCEPTED") {
-                    bike = owner->bike;
-                }
-                for (auto renter : member_vector) {
-                    if (renter->id == renter_id) {
-                        renter->rented_bike = bike;
-                        break;
+                    for (auto renter : member_vector) {
+                        if (renter->id == renter_id) {
+                            renter->rented_bike = owner->bike;
+                            break;
+                        }
                     }
+                    // bike = owner->bike;
                 }
+
                 break;
             }
         }
@@ -235,8 +236,8 @@ void System::input_history_review(){
 void System::input_code_list() {
     Admin *admin;
     string str;
-    string key;
-    int value;
+    string key {};
+    int value {};
     std::ifstream code_file (CODE_FILE);
     if(!code_file.is_open()){
         std::cerr << "Error: Can't open " << CODE_FILE << '\n';
@@ -244,7 +245,7 @@ void System::input_code_list() {
     }
 
     int count {};
-    while (!code_file.eof()) {
+    while (getline(code_file, str)) {
         code_file >> key >> value;
         code_list.insert({key, value});
     }    
@@ -352,6 +353,10 @@ void System::update_request_to_file(){
                         << request->start->to_string() << ";"
                         << request->end->to_string() << ";"
                         << request->status << '\n';
+            // if (request->status == "ACCEPTED") {
+            //     request->renter->rented_bike = current_bike;
+            //     // cout << request->renter->rented_bike->get_bike_id() << '\n';
+            // }
         }
     }
     update_file.close();
@@ -1263,7 +1268,8 @@ void System::member_list_rental(){
     rental_list.push_back( current_bike );
 
     update_data();
-    input_data();
+    // input_data();
+    input_rental_list();
 }
 
 void System::member_unlist_rental(){
@@ -1468,7 +1474,6 @@ void System::member_request_rent(){
 }   
     
 void System::member_view_request(){
-  
     if(current_member->request_list.size() == 0){
         cout << RED
              << "ERROR: There is no `Request`." << '\n'
@@ -1480,7 +1485,7 @@ void System::member_view_request(){
     
     string input;
     int chosen_id;
-    bool is_found = false;
+    bool is_found {false};
     Date* start;
     Date* end;
     double total_consuming;
@@ -1551,9 +1556,8 @@ void System::member_view_request(){
                         current_member->request_list.erase(current_member->request_list.begin() + chosen_id - 1);
                     } else {
                         request->get_accepted();
-                        // current_member.
+
                         update_data();
-                        // request->view_request();
                         tmp.push_back(request);
                     }
                 }
@@ -1561,18 +1565,9 @@ void System::member_view_request(){
             }
         }
     } while ( !is_found );
-
-    for(auto mem : member_vector){
-        if(chosen_id == mem->id){
-            mem->rented_bike = current_bike;
-            total_consuming = count_day(start, end) * current_bike->point_per_day;
-
-            mem->use_credit_point( total_consuming );
-            current_member->earn_credit_point( total_consuming) ;
-            break;
-        }
-    }
     
+
+
     bool is_declined;
     Request* target;
 
@@ -1604,10 +1599,22 @@ void System::member_view_request(){
     current_member->request_list.clear();
     current_member->request_list = tmp;
 
-    update_data();
-    // input_data();
+    for (auto request : current_member->request_list) {
+        if(chosen_id == request->request_id){
+            request->renter->rented_bike = current_bike;
+            cout << request->renter->rented_bike->get_bike_id() << '\n';
+            total_consuming = count_day(start, end) * current_bike->point_per_day;
+            request->renter->use_credit_point( total_consuming );
+            current_member->earn_credit_point( total_consuming) ;
+            break;
+        } 
+    }
 
-    // member_view_request();
+    update_data();  
+    input_request_list();
+
+    member_view_request();
+
 }
 
 void System::member_top_up() {
@@ -1858,13 +1865,16 @@ void System::admin_generate_code() {
     int value {}, amount {};
     cout << MAGENTA
          << BOLD 
-         << "Enter code value: ";
+         << "Enter code value: "
+         << RESET;
     cin >> value;
     cout << MAGENTA
          << BOLD 
-         << "Enter code amount you want to generate: "; 
+         << "Enter code amount you want to generate: "
+         << RESET;
     cin >> amount;
     code_list = admin->code_generator(value, amount);
     update_data();
+    input_data();
     cin.ignore(1, '\n');
 }

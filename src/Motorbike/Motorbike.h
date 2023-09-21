@@ -56,6 +56,10 @@ class Motorbike {
             std::string license_plate, 
             std::string description);
 
+        void set_bike_id(int id);
+
+        int get_bike_id();
+
         void link_owner(Member* owner);
 
         void view_bike_info();

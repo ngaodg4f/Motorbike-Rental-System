@@ -22,6 +22,14 @@ Motorbike::Motorbike(
     license_plate(license_plate),
     description(description){}
 
+void Motorbike::set_bike_id(int id) {
+    this->bike_id = id;
+}
+
+int Motorbike::get_bike_id() {
+    return this->bike_id;
+}
+
 void Motorbike::link_owner(Member* owner){
     this->owner = owner;
 }

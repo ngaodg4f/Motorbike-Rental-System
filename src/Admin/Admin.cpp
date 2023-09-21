@@ -24,9 +24,9 @@ std::unordered_map<string, int> Admin::code_generator(int value, int code_amount
         key_code.insert({code, value});
         // cout << code << '\n';
     }    
-    // for (auto key : key_code) {
-    //     cout << key.first << " : " << key.second << '\n';
-    // }
+    for (auto key : key_code) {
+        cout << key.first << '\n';
+    }
     return key_code; 
     
 }
