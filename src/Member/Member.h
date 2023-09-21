@@ -38,7 +38,8 @@ class Member {
         std::vector <Review*> owner_review; 
 
         std::vector <Request*> request_list; //store requests for the motorbikes
-
+        
+        // std::vector <Review*> un-reviewed;
     public:
 
     /* Constructors */
@@ -88,6 +89,8 @@ class Member {
         void earn_credit_point(double point);
 
         void add_review(Review* review);
+
+        // void add_unreviewed(Review*)
 
         double get_new_renting_score(double score);
 

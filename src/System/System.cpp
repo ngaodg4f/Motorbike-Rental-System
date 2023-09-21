@@ -13,7 +13,7 @@ void System::input_data(){
     input_rental_list();
     input_request_list();
     input_history_review();
-    input_code_list();
+    // input_code_list();
 }
 
 void System::update_data(){
@@ -21,7 +21,7 @@ void System::update_data(){
     update_bike_file();
     update_rental_file();
     update_request_to_file();
-    update_code_to_file();
+    // update_code_to_file();
 }
 
 void System::input_member_list(){
@@ -1010,6 +1010,9 @@ void System::member_menu(){
          << "|                       9. EXIT                         |\n"
          << "---------------------------------------------------------\n"
          << RESET;
+    /**
+     * Review bike and member in the past
+    */
 
     int choice = choice_selection(1, 9);
     switch(choice){
