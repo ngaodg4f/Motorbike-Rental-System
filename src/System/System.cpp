@@ -4,9 +4,12 @@ using std::cout, std::cin, std::string;
 System::System(){}
 
 /**
- * Function to input data into attributes
-*/
-void System::input_data(){
+ * function input data will read all data from data files ../Data/.
+ * it will clear all the vectors currently in the system (except for code file) and read them again in files if the files can be opened
+ * all the data will be read as a string data type and assign to the attribute using type casting if needed 
+ * vector<string> tokens are used to separate string of line of a file when approach the character comma ';' 
+ */
+void System::input_data(){ 
     input_member_list();
     input_bike_list();
     link_member_and_bike();
@@ -16,6 +19,10 @@ void System::input_data(){
     input_code_list();
 }
 
+/**
+ * function update data will update all data from system into data files ../Data/.
+ * it will empty the files and update them again from the local system vector if the files can be opened
+ */
 void System::update_data(){
     update_member_file();
     update_bike_file();
@@ -24,7 +31,7 @@ void System::update_data(){
     update_code_to_file();
 }
 
-void System::input_member_list(){
+void System::input_member_list(){ // read all accounts from account file
     member_vector.clear();
 
     std::ifstream member_file (ACCOUNT_FILE);
@@ -35,8 +42,8 @@ void System::input_member_list(){
 
     string str;
     while( getline(member_file, str) ){
-        std::vector<string> tokens;
-        tokens = splitStr(str, ';');
+        std::vector<string> tokens; 
+        tokens = splitStr(str, ';'); // split line into multiple string tokens
 
         Member* member = new Member(
                                 stoi(tokens.at(0)),
@@ -52,13 +59,12 @@ void System::input_member_list(){
                                 stoi(tokens.at(10)),
                                 tokens.at(11),
                                 stod(tokens.at(12)) );
-
         member_vector.push_back(member);
     }
     member_file.close();
 }
 
-void System::input_bike_list(){
+void System::input_bike_list(){ // read all bikes from bike files
     bike_vector.clear();
     std::ifstream bike_file (MOTORBIKE_FILE);
     if(!bike_file.is_open()){
@@ -68,7 +74,7 @@ void System::input_bike_list(){
 
     string str;
     while( getline(bike_file, str) ){
-        std::vector<string> tokens;
+        std::vector<string> tokens; // split line into multiple string tokens
         tokens = splitStr(str, ';');
 
         Motorbike* bike = new Motorbike(
@@ -86,20 +92,19 @@ void System::input_bike_list(){
     bike_file.close();
 }
 
-void System::link_member_and_bike(){
+void System::link_member_and_bike(){ // connect member and bike through bike_id
     for(auto mem : member_vector){
         for(auto bike : bike_vector){
             if(mem->bike_id == bike->bike_id){
                 mem->link_bike(bike);
                 bike->link_owner(mem);
-
                 break;
             }
         }
     }
 }
 
-void System::input_rental_list(){
+void System::input_rental_list(){ // read all bikes that are currently available for renting
     rental_list.clear();
     std::ifstream rental_file (RENTAL_FILE);
     if(!rental_file.is_open()){
@@ -110,7 +115,7 @@ void System::input_rental_list(){
     string str;
     while( getline(rental_file, str) ){
         std::vector<string> tokens;
-        tokens = splitStr(str, ';');
+        tokens = splitStr(str, ';'); // split line into multiple string tokens
 
         for(auto bike : bike_vector){
             if(stoi(tokens.at(0)) == bike->bike_id){
@@ -127,8 +132,7 @@ void System::input_rental_list(){
     rental_file.close();
 }
 
-/* input cai request list cua moi member khi xe duoc request de rent && input lai nhung request duoc accept -> set rented bike cho nhung member duoc accept */
-void System::input_request_list(){ 
+void System::input_request_list(){ // read all requests related data for renting bikes 
     for(auto mem : member_vector){
         mem->request_list.clear();
     }
@@ -138,18 +142,16 @@ void System::input_request_list(){
         std::cerr << "Error: Can't open " << REQUEST_FILE << '\n';
         return;
     }
-    // int count = 0;
+
     string str;
     Request* request;
     while( getline(request_file, str) ){
-        // count++;
         std::vector<string> tokens;
-        tokens = splitStr(str, ';');
+        tokens = splitStr(str, ';'); // split line into multiple string tokens
         
         int owner_id = stoi(tokens.at(1));
         int renter_id = stoi(tokens.at(2));
         string status = tokens.at(5);
-        // Motorbike *bike = nullptr;
 
         for(auto owner : member_vector){
             if(owner_id == owner->id){
@@ -157,13 +159,15 @@ void System::input_request_list(){
                                         to_object(tokens.at(3)),
                                         to_object(tokens.at(4)),
                                         status );
-                
-                request->set_request_id(owner->request_list.size() + 1);
+
+                // assign new request id for request(s) based on the request list
+                request->set_request_id(owner->request_list.size() + 1); 
                 owner->add_request(request);
 
                 if (status == "ACCEPTED") {
                     for (auto renter : member_vector) {
-                        if (renter->id == renter_id) { renter->rented_bike = owner->bike; }
+                        if (renter->id == renter_id) 
+                            renter->rented_bike = owner->bike; 
                     }
                 }
 
@@ -172,15 +176,10 @@ void System::input_request_list(){
         }
     }
     request_file.close();
-    // for(auto mem : member_vector){
-    //     if(!mem->request_list.empty()){
-    //         mem->view_personal_info();
-    //         mem->view_request();
-    //     }
-    // }
 }
 
-void System::input_history_review(){ //diem cua nguoi rent, comment, diem cho xe 
+// read all reviews data (bike owner id, bike renter id, score for renter, score for bike) from history files
+void System::input_history_review(){ 
     for(auto mem : member_vector){
         mem->reset_review();
         if(mem->bike != nullptr){ mem->bike->reset_review(); }
@@ -224,14 +223,10 @@ void System::input_history_review(){ //diem cua nguoi rent, comment, diem cho xe
         }
     }
     history.close();
-    // for(auto mem : member_vector){
-    //     cout << mem->id << ";"
-    //          << mem->renting_score << '\n';
-    // }
 }
 
-void System::input_code_list() {
-    Admin *admin;
+void System::input_code_list() { // read all codes from the code file
+    code_list.empty(); // empty unordered map handle key code 
     string str;
     string key {};
     int value {};
@@ -242,41 +237,23 @@ void System::input_code_list() {
         return;
     }
 
-    int count {};
     while (getline(code_file, str)) {
         std::vector<string> tokens;
-        tokens = splitStr(str, ';');
+        tokens = splitStr(str, ';'); // split line into multiple string tokens
 
         code_list.insert({ tokens.at(0), stoi(tokens.at(1)) });
-        // key = tokens.at(0);
-        // value = stoi(tokens.at(1));
-        // code_list.insert({key, value});
     }    
     code_file.close();
 }
 
-void System::update_member_file(){ 
+void System::update_member_file(){ // update member vector into account file
     std::ofstream update_file (ACCOUNT_FILE);
     if(!update_file.is_open()){
         std::cerr << "Error: Can't update to " << ACCOUNT_FILE << '\n';
         return;
     }
     
-    for(auto mem : member_vector){
-        // cout << mem->id << ";"
-        //     << mem->fullname << ";"
-        //     << mem->phone << ";"
-        //     << mem->id_type << ";"
-        //     << mem->id_number << ";"
-        //     << mem->license_number << ";"
-        //     << mem->expiry_date->to_string() << ";"
-        //     << mem->credit_point << ";"
-        //     << mem->username << ";"
-        //     << mem->password << ";"
-        //     << mem->bike_id << ";"
-        //     << mem->location << ";"
-        //     << mem->renting_score << '\n';
-
+    for(auto mem : member_vector) {
         update_file << mem->id << ";"
                     << mem->fullname << ";"
                     << mem->phone << ";"
@@ -294,7 +271,7 @@ void System::update_member_file(){
     update_file.close();
 }
 
-void System::update_bike_file(){
+void System::update_bike_file(){ // update bike vector into bike file
     std::ofstream update_file (MOTORBIKE_FILE);
     if(!update_file.is_open()){
         std::cerr << "Error: Can't update to " << MOTORBIKE_FILE << '\n';
@@ -315,14 +292,14 @@ void System::update_bike_file(){
     update_file.close();
 }
 
-void System::update_rental_file(){ //update nhung cai duoc list recently 
+void System::update_rental_file(){ // update rental vector (bikes that are currently listed for rental) into rental file 
     std::ofstream update_file (RENTAL_FILE);
     if(!update_file.is_open()){
         std::cerr << "Error: Can't update to " << RENTAL_FILE << '\n';
         return;
     }
 
-    for(auto bike : rental_list){
+    for(auto bike : rental_list) { 
         update_file << bike->bike_id << ";"
                     << bike->point_per_day << ";"
                     << bike->minimum_rating << ";"
@@ -332,7 +309,7 @@ void System::update_rental_file(){ //update nhung cai duoc list recently
     update_file.close();
 }
 
-void System::update_request_to_file(){
+void System::update_request_to_file(){ // update request vector of each member into request file
     std::ofstream update_file (REQUEST_FILE);
     if(!update_file.is_open()){
         std::cerr << "Error: Can't update to " << REQUEST_FILE << '\n';
@@ -340,9 +317,9 @@ void System::update_request_to_file(){
     }
 
     for(Member* owner : member_vector){
-        int counter = 0;
-        for(auto request : owner->request_list){
-            request->set_request_id(++counter);
+        int counter = 0; // id counter since this id will changed when the vector is modified
+        for(auto request : owner->request_list){ // for every request in request list 
+            request->set_request_id(++counter); // add counter by 1 and set it to be the request id
 
             update_file << request->request_id << ";"
                         << owner->id << ";"
@@ -355,7 +332,7 @@ void System::update_request_to_file(){
     update_file.close();
 }
 
-void System::update_code_to_file() {
+void System::update_code_to_file() { // update all key codes to code file 
     std::ofstream code_file (CODE_FILE);
     if(!code_file.is_open()){
         std::cerr << "Error: Can't update to " << CODE_FILE << '\n';
@@ -369,19 +346,16 @@ void System::update_code_to_file() {
 }
 
 /**
- * Tool Function
+ * System Tool Function
 */
 
-//validate value is int
-bool System::is_integer(string& str){
+bool System::is_integer(string& str){ // validate if value is int
     std::regex reg { "^[-+]?[0-9]+$" };
-
     return std::regex_match(str, reg);
 }
 
-bool System::is_double(string& str){
+bool System::is_double(string& str){ // validate if value is double
     std::regex reg { "^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$" };
-
     return std::regex_match(str, reg);
 }
 
