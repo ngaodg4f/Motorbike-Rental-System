@@ -1927,20 +1927,30 @@ void System::admin_view_all_bikes(){
 }
 
 void System::admin_generate_code() {
-    int value {}, amount {};
-    cout << MAGENTA
-         << BOLD 
-         << "Enter code value: "
-         << RESET;
-    cin >> value;
-    cout << MAGENTA
-         << BOLD 
-         << "Enter code amount: "
-         << RESET;
-    cin >> amount;
+    string code_value, number_of_code;
+    do {
+        cout << MAGENTA << "Enter code value: " << RESET;
+        getline(cin, code_value);
+        if( !is_integer(code_value) ){
+            cout << RED
+                 << "ERROR: `Value` is integer." << '\n'
+                 << RESET;
+        } else { break; }
+
+    } while (true);
+
+    do {
+        cout << MAGENTA << "Amount of code: " << RESET;
+        getline(cin , number_of_code);
+        if( !is_integer(number_of_code) ){
+            cout << RED
+                 << "ERROR: `Value` is integer." << '\n'
+                 << RESET;
+        } else { break; }
+    } while ( true );
 
     std::unordered_map<string, int> generated;
-    generated = this->admin->code_generator(value, amount);
+    generated = this->admin->code_generator(stoi(code_value), stoi(number_of_code));
     code_list.insert(generated.begin(), generated.end());
 
     update_data();
