@@ -1093,6 +1093,15 @@ void System::member_view_bike_information(){
 }
 
 void System::member_add_bike(){
+    for(auto rental : rental_list){
+        if(rental->bike_id == current_bike->bike_id){
+            cout << RED
+                 << "ERROR: Your bike is on rental list." << '\n'
+                 << "Press [5] to unlist before override." << '\n'
+                 << RESET;
+            return;
+        }
+    }
     int id, member_id;
     if(current_bike != nullptr){
         id = current_bike->bike_id;
