@@ -1,0 +1,15 @@
+1;2;10;9.2;Good bike
+1;3;8.3;9;bike broken a bit
+1;4;10;9.5;good bike
+1;3;7;8.5;im handsome
+1;4;8;8;ok bike
+1;6;7;7;ok
+2;4;7.5;9.5;good bike good bike
+2;3;9.1;7.1;bike owner talk sht
+3;1;8;7.5;fast bike
+3;2;9;5.5;i like this bike
+4;5;7.5;8;not like
+5;2;9;10;ok
+5;1;10;8;ok fine
+6;3;9;9;tam.
+6;1;9;9;no idea

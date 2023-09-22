@@ -1,0 +1,6 @@
+1;1;Yamaha;Blue;300cc;None;2020;None;none
+2;2;Suzuki;Blue;600cc;Manual;2020;ABC123;haha
+3;3;Mercedes;Black;400cc;Manual;2023;ABC123;i dont know what to say
+4;4;Suzuki;Pink;100cc;Non;2019;ABC123;pink car
+5;5;Honda;Pink;123cc;None;2000;None;still a pink car
+6;6;Honda;Black;222cc;None;2011;None;this car is good
