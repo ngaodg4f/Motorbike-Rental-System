@@ -35,9 +35,9 @@ make
 | username  | password | role    | point  | location
 |-----------|----------|---------|--------|----------
 | admin     | admin    | ADMIN   | -      | -
-| acc1      | acc1     | MEMBER  | 100    | SAIGON
-| acc2      | acc2     | MEMBER  | 100    | HANOI
-| acc3      | acc3     | MEMBER  | 100    | SAIGON
-| acc4      | acc4     | MEMBER  | 100    | HANOI
-| acc5      | acc5     | MEMBER  | 100    | SAIGON
-| acc6      | acc6     | MEMBER  | 100    | HANOI
+| acc1      | acc1     | Member  | 100    | SAIGON
+| acc2      | acc2     | Member  | 100    | HANOI
+| acc3      | acc3     | Member  | 100    | SAIGON
+| acc4      | acc4     | Member  | 100    | HANOI
+| acc5      | acc5     | Member  | 100    | SAIGON
+| acc6      | acc6     | Member  | 100    | HANOI
