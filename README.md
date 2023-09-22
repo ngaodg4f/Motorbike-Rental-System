@@ -19,10 +19,10 @@ git clone https://github.com/ngaodg4f/Motorbike-Rental-System.git
 Then, the project is ready to run with command in terminal:
 - For MacOs:
 ```
-./Group1_Program.out
-        or
 make
-``` 
+
+./Group1_Program.out
+```
 
 - For, Window:
 ```
