@@ -359,7 +359,8 @@ bool System::is_double(string& str){ // validate if value is double
     return std::regex_match(str, reg);
 }
 
-bool System::validate_fullname(string& str){
+// validate if fullname only contains alnum, at least 5 char and at most 20 chars
+bool System::validate_fullname(string& str){ 
     if(str.empty()){
         cout << RED 
              << "ERROR: `Full name` is empty." << '\n'
@@ -376,11 +377,10 @@ bool System::validate_fullname(string& str){
              << RESET;
         return false;
     }
-
     return true;
 }
  
-bool System::validate_phone(string& str){
+bool System::validate_phone(string& str){ // validate phone number
     if(str.empty()){
         cout << RED
              << "ERROR: `Phone` is empty." << '\n'
@@ -388,7 +388,7 @@ bool System::validate_phone(string& str){
         return false;
     }
 
-    std::regex reg { "^(0|84)[0-9]{9}$" };
+    std::regex reg { "^(0|84)[0-9]{9}$" }; // leading zeros or 84 only with 10 digits
     string trim_string = trim(str);
   
     if(!std::regex_match(trim_string, reg)){
@@ -401,27 +401,27 @@ bool System::validate_phone(string& str){
     return true;
 }
 
-bool System::validate_id_type(string& str){
+bool System::validate_id_type(string& str){ // id type can only be 'id' or 'password'
     if(str.empty()){
         cout << RED
              << "ERROR: `ID TYPE` is empty." << '\n';
         return false;
     }
 
-    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-    if(str != "id" && str != "passport"){
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower); //lowercase the input 
+    if(str != "id" && str != "passport"){ //check if the input id type is in the correct format "id" or "passport"
         cout << RED 
-             << "ERROR: Invalid format. Input `Id` or `Passport` only." << '\n'
+             << "ERROR: Invalid format. Input `Id` or `Passport` only." << '\n' //warning if the input is not suitable
              << RESET;
         return false;
     }
 
-    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+    std::transform(str.begin(), str.end(), str.begin(), ::toupper); //uppercase the entered id type if it pass the validate step
     return true;
 }
 
-bool System::validate_number(string& str){
-    if(str.empty()){
+bool System::validate_number(string& str){ //check if an input is numerical
+    if(str.empty()){ //print out the error when the input is empty
         cout << RED
              << "ERROR: `Number` is empty." << '\n'
              << RESET;
@@ -429,19 +429,19 @@ bool System::validate_number(string& str){
     }
 
     std::regex reg { "^[a-zA-Z0-9]*$" };
-    if(!std::regex_match(str, reg)){
+    if(!std::regex_match(str, reg)){ //print out the error when the input contains non-numerical characters or blank space
         cout << RED
              << "ERROR: `Number` must contain no special character including `blank_space`." << '\n'
              << RESET;
         return false;
     }
 
-    return true;
+    return true; //return true when it is a numerical value
 }
 
-//validate date duoc nhap theo format dd/mm/yyyy ex: 01/01/2023
-bool System::validate_date(string& str){
-    if(str.empty()){
+
+bool System::validate_date(string& str){ //examine an entered date if it is in the correct format
+    if(str.empty()){ //user has entered nothing
         cout << RED
              << "ERROR: `Date` is empty." << '\n'
              << RESET;
@@ -449,7 +449,7 @@ bool System::validate_date(string& str){
     }
 
     std::regex reg { "^([0-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/([0-9]{4})$" };
-    if(!std::regex_match(str, reg)){
+    if(!std::regex_match(str, reg)){ //check if the input follows the format dd/mm/yyyy (ex: 01/01/2023)
         cout << RED 
              << "ERROR: Invalid format." << '\n'
              << RESET;
@@ -457,23 +457,23 @@ bool System::validate_date(string& str){
     }
 
     int day, month, year;
-    sscanf(str.c_str(), "%d/%d/%d", &day, &month, &year);
+    sscanf(str.c_str(), "%d/%d/%d", &day, &month, &year); //read and assign associated value from the user's input to day, month and year attribute
 
-    if((month == 4 || month == 6 || month == 9 || month == 11) && (day > 30)){
+    if((month == 4 || month == 6 || month == 9 || month == 11) && (day > 30)){ //announce when the day value of apr, june... is greater than 30
         cout << RED << "ERROR: Invalid `date` input." << '\n' << RESET;
         return false;
 
-    } else if (month == 2){
-        if( (is_leap_year(year)) && (day > 29) ){
+    } else if (month == 2){ 
+        if( (is_leap_year(year)) && (day > 29) ){ //announce when the day value of Feb is greater than 29 (in case the year is a leap year)
             cout << RED << "ERROR: Invalid `date` input." << '\n' << RESET;
             return false;
 
-        } else if ( (!is_leap_year(year)) && (day > 28) ){
+        } else if ( (!is_leap_year(year)) && (day > 28) ){ //announce when the day value of Feb is greater than 29 (in case the year is NOT a leap year)
             cout << RED << "ERROR: Invalid `date` input." << '\n' << RESET;
             return false;
         }
 
-    } else if (day > 31){
+    } else if (day > 31){ //day value cannot exceed 31
         cout << RED << "ERROR: Invalid `date` input." << '\n' << RESET;
         return false;
     }
@@ -486,7 +486,7 @@ bool System::is_leap_year(int& year){
 }
 
 //validate username input when register with condition 
-bool System::validate_username(string& str){
+bool System::validate_username(string& str){ 
     if(str.empty()){
         cout << RED
              << "ERROR: `Username` is empty." << '\n'
@@ -497,7 +497,8 @@ bool System::validate_username(string& str){
     std::regex reg1 { "^[a-zA-Z0-9@.]{4,18}$" };
     std::regex reg2 { "^([^@.]*[@.]?[^@.]*)$" };
 
-    if(!std::regex_match(str, reg1)){
+    //a username can have either one . or one @
+    if(!std::regex_match(str, reg1)){ 
         cout << RED
              << "ERROR: `Username` must contain 4 - 18 characters. No special characters." << '\n'
              << "       `Username` is only available for . and @." << '\n'
@@ -512,7 +513,7 @@ bool System::validate_username(string& str){
         return false;
     }
 
-    for(auto mem : member_vector){
+    for(auto mem : member_vector){ //every username must be unique
         if(str == mem->username){
             cout << RED
                  << "FAILED: `Username` is already taken." << '\n'
@@ -524,7 +525,7 @@ bool System::validate_username(string& str){
     return true;
 }
 
-//va bao send out message
+//validate username input when signing in with condition 
 bool System::validate_login_username(string& str){
     if(str.empty()){
         cout << RED
@@ -533,7 +534,7 @@ bool System::validate_login_username(string& str){
         return false;
     }
 
-    for(auto mem : member_vector){
+    for(auto mem : member_vector){ //wrong username
         if(str == mem->username){ return true; }
     }
 
@@ -544,7 +545,8 @@ bool System::validate_login_username(string& str){
     return false;
 }
 
-bool System::validate_password(string& str){ //with condition
+//validate the created password in the registration step with condition
+bool System::validate_password(string& str){ 
     if(str.empty()){
         cout << RED
              << "ERROR: `Password` is empty." << '\n'
@@ -562,7 +564,8 @@ bool System::validate_password(string& str){ //with condition
     return true;
 }
 
-bool System::validate_login_password(string& str, string& check){
+//validate the entered password for loging in
+bool System::validate_login_password(string& str, string& check){ 
     if(str.empty()){
         cout << RED
              << "ERROR: `Password` is empty." << '\n'
@@ -573,6 +576,10 @@ bool System::validate_login_password(string& str, string& check){
     return str == check;
 }
 
+/*
+    * Used for registration
+    * Send out recommendations if the created password is missing any characteristic to become a strong password
+*/
 bool System::recommend_password(string& str){
     cout << YELLOW
          << "RECOMMENDATION FOR PASSWORD: " << '\n';
@@ -599,7 +606,8 @@ bool System::recommend_password(string& str){
     return true;
 }
 
-bool System::validate_model(string& str){ //ex: honda-1-2
+
+bool System::validate_model(string& str){ //validate input motorbike models
     if(str.empty()){
         cout << RED
              << "ERROR: `Model` is empty." << '\n'
@@ -607,7 +615,7 @@ bool System::validate_model(string& str){ //ex: honda-1-2
         return false;
     }
 
-    std::regex reg { "^[a-zA-Z0-9-]{2,10}$" };
+    std::regex reg { "^[a-zA-Z0-9-]{2,10}$" }; //model can contain letters, numbers and "-"
     if(!std::regex_match(str, reg)){
         cout << RED
              << "ERROR: `Model` must contain 2-10 characters. No special characters." << '\n'
@@ -619,7 +627,7 @@ bool System::validate_model(string& str){ //ex: honda-1-2
     return true;
 }
 
-bool System::no_special_char_check(string& str){
+bool System::no_special_char_check(string& str){ 
     std::regex reg { "^[a-zA-Z0-9]+$" };
     if(str.empty() || !std::regex_match(str, reg)){
         cout << RED
@@ -631,7 +639,7 @@ bool System::no_special_char_check(string& str){
     return true;
 }
 
-std::vector<string> System::splitStr(string& str, char ch){
+std::vector<string> System::splitStr(string& str, char ch){ //split a string into multiple string by a specific character
     std::vector<string> tokens;
     std::stringstream ss { str };
     string line;
@@ -644,7 +652,7 @@ std::vector<string> System::splitStr(string& str, char ch){
     return tokens;
 }
 
-string System::trim(string& str){
+string System::trim(string& str){ //remove space at the beginning and end a of a string
     string trim_string;
 
     for(auto ch : str){
@@ -654,7 +662,7 @@ string System::trim(string& str){
     return trim_string;
 }
 
-Date* System::to_object(string& str){
+Date* System::to_object(string& str){ //convert a string to an object of type Date*
     std::vector<string> tokens = splitStr(str, '/');
     Date* converted_date = new Date(
                                 stoi(tokens.at(0)), 
@@ -691,14 +699,14 @@ int System::choice_selection(int a, int b){ //validate input for choice from use
     } while( true );
 }
 
-int System::count_day(Date* start, Date* end){
+int System::count_day(Date* start, Date* end){ //parameters are an initial time and a final time
     int day = start->day;
     int month = start->month;
     int year = start->year;
     int day_count = 0;
     int day_of_month;
 
-    if(year > end->year){
+    if(year > end->year){ 
         return -1; 
 
     } else if (year == end->year){
@@ -715,59 +723,36 @@ int System::count_day(Date* start, Date* end){
         }
     }
 
-    while(year <= end->year){
+    while(year <= end->year){ 
         switch(month){
-            case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+            case 1: case 3: case 5: case 7: case 8: case 10: case 12: //months that have 31 days
                 day_of_month = 31;
                 break;
             
-            case 4: case 6: case 9: case 11:
+            case 4: case 6: case 9: case 11: //months that have 30 days
                 day_of_month = 30;
                 break;
 
             case 2:
                 is_leap_year(year) ? day_of_month = 29 : day_of_month = 28;
-                // if( is_leap_year(year) ){
-                //     day_of_month = 29;
-                // } else {
-                //     day_of_month = 28;
-                // }
+             
                 break;
         }
         
-        if(month == end->month && year == end->year){
-            day_count == 0 ? (day_count += end->day - start->day + 1) : (day_count += end->day);
-            // if (day_count == 0) {
-            //     day_count += end->day - start->day + 1;
-            // } else {
-            //     day_count += end->day;
-            // }
+        //Calculate the number of days from starting day to ending day
+        if(month == end->month && year == end->year){ //in the same year and the same months
+            day_count == 0 ? (day_count += end->day - start->day + 1) : (day_count += end->day); 
             break;
 
-        } else if (month != end->month) {
+        } else if (month != end->month) {  //in different months
             day_count == 0 ? (day_count += (day_of_month - start->day + 1)) : (day_count += day_of_month);
         }
 
         month < 12 ? month++ : month = 1, year++;
 
-        // if (month != end->month){
-        //     day_count == 0 ? (day_count += (day_of_month - start->day + 1)) : (day_count += day_of_month);
-        //     // if (day_count == 0) {
-        //     //     day_count += (day_of_month - start->day + 1);
-        //     // } else {
-        //     //     day_count += day_of_month;
-        //     // }
-        // }
-
-        // if(month < 12) { 
-        //     month++; 
-        // } else {
-        //     month = 1;
-        //     year++;
-        // }
     }
     
-    return day_count;
+    return day_count; 
 }
 /**
  * Feature Function
@@ -790,7 +775,7 @@ void System::welcome_screen(){
     login_menu();
 }
 
-void System::login_menu(){
+void System::login_menu(){ //display login menu
     input_data();
 
     cout << BLUE
@@ -800,14 +785,14 @@ void System::login_menu(){
          << "---------------------------------------------------------\n"
          << RESET;
 
-    int choice = choice_selection(1, 4);
+    int choice = choice_selection(1, 4); //validate user's choice
     switch(choice){
-        case 1:
+        case 1: //access as a guest
             system("clear");
             guest_menu();
             break;
 
-        case 2:
+        case 2: //access as a member
             system("clear");
             cout << GREEN
                  << BOLD
@@ -830,7 +815,7 @@ void System::login_menu(){
             }
             break;
 
-        case 3:
+        case 3: //access as an admin
             system("clear");
             cout << GREEN
                  << BOLD
@@ -853,7 +838,7 @@ void System::login_menu(){
             }
             break;
 
-        case 4:
+        case 4: //exit the program
             update_data();
             cout << CYAN << BOLD
                  << "~~~~~~~~~~ THANKS FOR COMING TO OUR COMMUNITY ~~~~~~~~~~~\n"
@@ -862,7 +847,7 @@ void System::login_menu(){
     }
 }
 
-void System::login_as_admin(){
+void System::login_as_admin(){ //access as an admin
     string username, password;
     int count = 4;
 
@@ -917,7 +902,7 @@ void System::login_as_admin(){
     admin_menu();
 }
 
-void System::login_as_member(){
+void System::login_as_member(){ //access as a member
     string username, password;
     int count = 4;
 
@@ -934,7 +919,7 @@ void System::login_as_member(){
             cout << RED
                  << "ALERT: "
                  << BOLD
-                 << count << " times left." << '\n'
+                 << count << " times left." << '\n' //wrong input for 4 times
                  << RESET;
         }
 
@@ -982,7 +967,7 @@ void System::login_as_member(){
 }
 
 // MEMBER
-void System::member_menu(){
+void System::member_menu(){ // show member menu
     cout << GREEN
          << BOLD
          << "Welcome, " << current_member->fullname << " !\n"
@@ -1051,7 +1036,7 @@ void System::member_menu(){
     }
 }
 
-void System::member_view_information(){
+void System::member_view_information(){ // view all information of current member
     cout << YELLOW
          << std::left << std::setw(10) << "ID" 
          << std::left << std::setw(20) << "FULL_NAME" 
@@ -1068,7 +1053,7 @@ void System::member_view_information(){
         current_member->view_personal_info();
 }
 
-void System::member_view_bike_information(){
+void System::member_view_bike_information(){ // view current member's bike info
     if(current_bike == nullptr){
         cout << RED
              << "ERROR: `Bike` not found.\n"
@@ -1092,7 +1077,7 @@ void System::member_view_bike_information(){
     }
 }
 
-void System::member_add_bike(){
+void System::member_add_bike(){ // add bike of that member
     int id, member_id;
     if(current_bike != nullptr){
         id = current_bike->bike_id;
@@ -1201,7 +1186,7 @@ void System::member_add_bike(){
     input_data();
 }
 
-void System::member_list_rental(){
+void System::member_list_rental(){ // list bike available for other to rent
     if(current_bike == nullptr){
         cout << RED
              << "ERROR: `Bike` need to be added first." << '\n'
@@ -1277,7 +1262,7 @@ void System::member_list_rental(){
     input_rental_list();
 }
 
-void System::member_unlist_rental(){
+void System::member_unlist_rental(){ // unlist the listed bike, block if not have any bikes or a bike is being rented
     if(current_bike == nullptr){
         cout << RED
              << "ERROR: `Bike` need to be added first." << '\n'
@@ -1313,6 +1298,7 @@ void System::member_unlist_rental(){
     input_data();
 }
 
+// search for renting by date and location filter
 void System::member_search_rent(const string& location, string& start, string& end){
     cout << GREEN
          << BOLD
@@ -1359,6 +1345,7 @@ void System::member_search_rent(const string& location, string& start, string& e
     member_view_rental_list(location, to_object(start), to_object(end));
 }
 
+// view bikes that can be rented at the provided period
 void System::member_view_rental_list(const string& search_location, Date* start_date, Date* end_date){
     cout << YELLOW
          << std::left << std::setw(10) << "BIKE_ID"
@@ -1376,7 +1363,8 @@ void System::member_view_rental_list(const string& search_location, Date* start_
     for(auto rental : rental_list){
         double total_consuming = count_day(start_date, end_date) * rental->point_per_day;
 
-        if (current_bike != nullptr) {
+        // filter all bikes not valid
+        if (current_bike != nullptr) { 
             if(rental->bike_id == current_bike->bike_id){
                 continue;
             }
@@ -1396,6 +1384,7 @@ void System::member_view_rental_list(const string& search_location, Date* start_
         } else if (current_member->renting_score < rental->minimum_rating){
             continue;
 
+        // if not meet any condition above
         } else {
             is_found = true;
             cout << YELLOW
@@ -1430,7 +1419,7 @@ void System::member_view_rental_list(const string& search_location, Date* start_
     cout << '\n';
 }
 
-void System::member_request_rent(){
+void System::member_request_rent(){ // send request to rent bike 
     if(current_member->rented_bike != nullptr){
         cout << RED
              << "ERROR: `Member` can only occupy 1 motorbike." << '\n'
@@ -1485,8 +1474,8 @@ void System::member_request_rent(){
     input_data();
 }   
     
-void System::member_view_request(){
-    if(current_member->request_list.size() == 0){
+void System::member_view_request(){ // view all requests of current member's bike 
+    if(current_member->request_list.size() == 0){ // if no request
         cout << RED
              << "ERROR: There is no `Request` for your bike." << '\n'
              << RESET;
@@ -1645,12 +1634,12 @@ void System::member_view_request(){
     member_view_request();
 }
 
-void System::member_top_up() {
+void System::member_top_up() { // top up to member account
     string amount, code_input;
     string data;
 
     do {
-        cout << "Enter amount: " << '\n';
+        cout << MAGENTA << "Enter value: " << RESET;
         getline(cin, amount);
     } while ( !is_double(amount) );
     
@@ -1704,7 +1693,7 @@ void System::guest_menu(){
          << "---------------------------------------------------------\n"
          << RESET;
 
-    int choice = choice_selection(1, 3);
+    int choice = choice_selection(1, 3); // option from 1 - 3, if not in range, print out error message
     switch(choice){
         case 1:
             guest_view_bike();
@@ -1722,7 +1711,7 @@ void System::guest_menu(){
     }
 }
 
-void System::guest_view_bike(){
+void System::guest_view_bike(){ // guest can view all bikes info except for their reviews
     cout << YELLOW
          << std::left << std::setw(10) << "BIKE_ID" 
          << std::left << std::setw(20) << "OWNER_NAME" 
@@ -1744,7 +1733,7 @@ void System::guest_view_bike(){
     cout << '\n';
 }
 
-void System::guest_registration(){
+void System::guest_registration(){ // register to be a member of the system
     int id, bike_id;
     string username, fullname, phone;
     string id_type, id_number, license_number, expiry_date, password;
@@ -1797,9 +1786,9 @@ void System::guest_registration(){
         do {
             cout << MAGENTA << "Enter password: " << RESET;
             getline(cin, password);
-        } while ( !validate_password(password) );
+        } while ( !validate_password(password) ); 
 
-        if( recommend_password(password) ){
+        if( recommend_password(password) ){ 
             cout << YELLOW << "Do you want to re-enter password ?" << '\n'
                  << RESET;
             do {
@@ -1828,7 +1817,7 @@ void System::guest_registration(){
          << RESET;
     
     int choice = choice_selection(1, 2);
-    string location = LOCATIONS[choice - 1];
+    string location = LOCATIONS[choice - 1]; // index = choice - 1
 
     cout << YELLOW
          << BOLD
@@ -1842,11 +1831,11 @@ void System::guest_registration(){
                                     to_object(expiry_date), credit_point, username, password, 
                                     bike_id, location);
 
-    member_vector.push_back( new_member );
+    member_vector.push_back( new_member ); // add new member to the member list of system
     cout << '\n';
 
-    update_member_file();
-    input_data();
+    update_member_file(); // update member vector to file
+    input_data(); // read all data 
 }
 
 // ADMIN
@@ -1864,17 +1853,17 @@ void System::admin_menu(){
     int choice = choice_selection(1, 4);
     switch(choice){
         case 1:
-            admin_view_all_members();
+            admin_view_all_members(); // call view all members function of admin
             admin_menu();
             break;
 
         case 2:
-            admin_view_all_bikes();
+            admin_view_all_bikes(); // call view all bikes function of admin
             admin_menu();
             break;
 
         case 3:
-            admin_generate_code();
+            admin_generate_code(); // call auto generated code of admin
             admin_menu();
             break;
 
@@ -1884,7 +1873,7 @@ void System::admin_menu(){
     }
 }
 
-void System::admin_view_all_members(){
+void System::admin_view_all_members(){ // view all member in the system
     cout << YELLOW
          << std::left << std::setw(10) << "ID" 
          << std::left << std::setw(20) << "FULL_NAME" 
@@ -1902,7 +1891,7 @@ void System::admin_view_all_members(){
     }
 }
 
-void System::admin_view_all_bikes(){
+void System::admin_view_all_bikes(){ // view all bike info in the system
     cout << YELLOW
          << std::left << std::setw(15) << "MODEL" 
          << std::left << std::setw(15) << "COLOR" 
@@ -1918,8 +1907,10 @@ void System::admin_view_all_bikes(){
     }
 }
 
-void System::admin_generate_code() {
+void System::admin_generate_code() { // code generating by admin
     string code_value, number_of_code;
+
+    // handle code value input
     do {
         cout << MAGENTA << "Enter code value: " << RESET;
         getline(cin, code_value);
@@ -1931,10 +1922,11 @@ void System::admin_generate_code() {
 
     } while (true);
 
+    // handle number of code generated
     do {
         cout << MAGENTA << "Amount of code: " << RESET;
         getline(cin , number_of_code);
-        if( !is_integer(number_of_code) ){
+        if( !is_integer(number_of_code) || stoi(number_of_code) >= 1){
             cout << RED
                  << "ERROR: `Value` is integer." << '\n'
                  << RESET;
