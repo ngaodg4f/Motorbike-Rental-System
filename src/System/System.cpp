@@ -993,17 +993,17 @@ void System::login_as_member(){
 void System::member_menu(){
     cout << GREEN
          << BOLD
-         << "--------------------- MEMBER MENU ----------------------\n"
-         << "|              ~ ~ ~ HAVE A NICE DAY ~ ~ ~              |\n" 
-         << "|               1. View personal details                |\n"
-         << "|                2. View your motorbike                 |\n"
-         << "|                3. Add a new motorbike                 |\n"
-         << "|               4. List bike for renting                |\n"
-         << "|              5. Un-List bike for rental               |\n"
-         << "|               6. Request renting a bike               |\n"
-         << "|              7. View requests from others             |\n"
-         << "|                      8. Top up                        |\n"
-         << "|                       9. EXIT                         |\n"
+         << "Welcome, " << current_member->fullname << " !\n"
+         << "--- MEMBER MENU -----------------------------------------\n"
+         << "| [1] View personal details                             |\n"
+         << "| [2] View your motorbike                               |\n"
+         << "| [3] Add a new motorbike                               |\n"
+         << "| [4] List bike for renting                             |\n"
+         << "| [5] Un-List bike for rental                           |\n"
+         << "| [6] Request renting a bike                            |\n"
+         << "| [7] View requests from others                         |\n"
+         << "| [8] Top up                                            |\n"
+         << "| [9] Log out                                           |\n"
          << "---------------------------------------------------------\n"
          << RESET;
 
@@ -1048,11 +1048,13 @@ void System::member_menu(){
             member_top_up();
             member_menu();
             break;
-        case 9: 
-            system("clear");
+
+        case 9:
             current_member = nullptr;
             current_bike = nullptr;
             affordable_bike_list.clear();
+
+            system("clear");
             login_menu();
     }
 }
@@ -1077,10 +1079,9 @@ void System::member_view_information(){
 void System::member_view_bike_information(){
     if(current_bike == nullptr){
         cout << RED
-             << "ERROR: `Bike` not found." << '\n'
+             << "ERROR: `Bike` not found.\n"
+             << "       `Bike` need to be added first." << '\n'
              << RESET;
-
-        cout << '\n';
         return;
 
     } else {
@@ -1114,22 +1115,21 @@ void System::member_add_bike(){
             cout << MAGENTA << "> Y/N: " << RESET;
             getline(cin, confirm);
         
-            is_valid_input = ! (confirm != "Y" && 
+            is_valid_input =  !(confirm != "Y" && 
                                 confirm != "y" && 
                                 confirm != "N" && 
                                 confirm != "n" );
-
             if(!is_valid_input){
                 cout << RED << "ERROR: `Input` Y or N only." << '\n' << RESET;
             }
         } while ( !is_valid_input );
 
         if(confirm == "N" || confirm == "n"){
+            system("clear");
             member_menu();
         } 
-    } else {
-        id = bike_vector.size() + 1;
-    }
+
+    } else { id = bike_vector.size() + 1; }
 
     string model, color, engine_size, transmission_mode, license_plate, description;
     string year;
@@ -1137,7 +1137,8 @@ void System::member_add_bike(){
     member_id = current_member->id;
 
     cout << GREEN
-         << "----------------- ADDING A NEW MOTORBIKE ----------------\n"
+         << BOLD
+         << "--- ADDING NEW BIKE ------------------------------\n"
          << RESET;
 
     do {
@@ -1185,12 +1186,12 @@ void System::member_add_bike(){
                                 stoi(year),
                                 license_plate,
                                 description );
+                                
     if (current_bike != nullptr) {
         bike_vector.at(id - 1) = bike;
     } else {
         bike_vector.push_back(bike);
     }
-    
     current_bike = bike;
 
     for(auto mem : member_vector){
@@ -1203,7 +1204,6 @@ void System::member_add_bike(){
         }
     }
     cout << '\n';
-    // cout << current_member->bike_id << '\n';
 
     update_data();
     input_data();
@@ -1213,19 +1213,22 @@ void System::member_list_rental(){
     if(current_bike == nullptr){
         cout << RED
              << "ERROR: `Bike` need to be added first." << '\n'
+             << "Press [3] to add bike." << '\n'
              << RESET;
         return;
     }
     
     if(current_bike->status == "AVAILABLE"){
         cout << RED
-             << "`Bike` is currently AVAILABLE. Un-list bike first." << '\n'
+             << "ERROR: `Bike` is currently AVAILABLE." << '\n'
+             << "Press [5] to un-list." << '\n'
              << RESET;
         return;
     }
 
     cout << GREEN
-         << "-------------- LISTING MOTORBIKE FOR RENTAL -------------\n"
+         << BOLD
+         << "--- LISTING MOTORBIKE FOR RENTAL ------------------------\n"
          << RESET;
 
     string point, rating;
@@ -1237,9 +1240,10 @@ void System::member_list_rental(){
     do {
         cout << MAGENTA << "Minimum rating: " << RESET;
         getline(cin, rating);
+
         if(stod(rating) > 10){
             cout << RED
-                 << "ERROR: `Rating` max is 10." << '\n'
+                 << "ERROR: `Rating` is between 0 - 10." << '\n'
                  << RESET;
         }
     } while ( !is_double(rating) || stod(rating) > 10);
@@ -1247,14 +1251,14 @@ void System::member_list_rental(){
     string start, end;
     cout << MAGENTA << "+ Rental Period: " << '\n' << RESET;
     do {
-        cout << MAGENTA << "Enter start: " << RESET;
+        cout << MAGENTA << "Enter start (dd/mm/yyyy): " << RESET;
         getline(cin, start);
     } while( !validate_date(start) ) ;
 
     int day_count;
     do {
         do {
-            cout << MAGENTA << "Enter end: " << RESET;
+            cout << MAGENTA << "Enter end (dd/mm/yyyy): " << RESET;
             getline(cin, end);
         } while( !validate_date(end) ) ;
 
@@ -1270,8 +1274,14 @@ void System::member_list_rental(){
     current_bike->add_rental( stod(point), stod(rating), to_object(start), to_object(end) );
     rental_list.push_back( current_bike );
 
+    cout << BLUE
+         << BOLD
+         << "---------------------------------------------------------\n"
+         << "|                    LIST SUCCESSFULLY                  |\n"
+         << "---------------------------------------------------------\n"
+         << RESET;
+
     update_data();
-    // input_data();
     input_rental_list();
 }
 
@@ -1279,15 +1289,18 @@ void System::member_unlist_rental(){
     if(current_bike == nullptr){
         cout << RED
              << "ERROR: `Bike` need to be added first." << '\n'
+             << "Press [3] to add bike." << '\n'
              << RESET;
         return;
     }
     if(current_bike->status == "NOT_AVAILABLE"){
         cout << RED
              << "ERROR: `Bike` need to be listed first." << '\n'
+             << "Press [4] to list bike." << '\n'
              << RESET;
         return;
     }
+
     for(int i = 0; i < rental_list.size(); i++){
         if(rental_list.at(i)->bike_id == current_bike->bike_id){
             rental_list.at(i)->reset_condition();
@@ -1296,9 +1309,12 @@ void System::member_unlist_rental(){
             break;
         }
     }
-    
+
     cout << BLUE
-         << "---------------- UN-LISTING SUCCESSFULLY ---------------\n"
+         << BOLD
+         << "---------------------------------------------------------\n"
+         << "|                  UN-LIST SUCCESSFULLY                 |\n"
+         << "---------------------------------------------------------\n"
          << RESET;
         
     update_data();
@@ -1307,18 +1323,19 @@ void System::member_unlist_rental(){
 
 void System::member_search_rent(const string& location, string& start, string& end){
     cout << GREEN
-         << "------------------- FILTER FOR REQUEST ------------------\n"
+         << BOLD
+         << "--- REQUEST FILTER --------------------------------------\n"
          << RESET;
 
     do {
-        cout << MAGENTA << "Enter start: " << RESET;
+        cout << MAGENTA << "Enter start (dd/mm/yyyy): " << RESET;
         getline(cin, start);
     } while( !validate_date(start) ) ;
 
     int day_rent;
     do {
         do {
-            cout << MAGENTA << "Enter end: " << RESET;
+            cout << MAGENTA << "Enter end (dd/mm/yyyy): " << RESET;
             getline(cin, end);
         } while( !validate_date(end) ) ;
 
@@ -1332,7 +1349,8 @@ void System::member_search_rent(const string& location, string& start, string& e
 
     cout << '\n';
     cout << GREEN
-         << "YOUR CURRENT STATUS\n"
+         << BOLD
+         << "YOUR CURRENT STATUS" << '\n'
          << RESET;
 
     cout << WHITE;
@@ -1371,7 +1389,6 @@ void System::member_view_rental_list(const string& search_location, Date* start_
                 continue;
             }
         }
-       
         if (rental->owner->location != search_location){
             continue;
 
@@ -1413,20 +1430,18 @@ void System::member_view_rental_list(const string& search_location, Date* start_
     
     if( !is_found ){
         cout << RED
-             << "ERROR: `Motorbike` not found." << '\n'
+             << "ERROR: No `Motorbike` is available with filter." << '\n'
              << RESET;
 
-        cout << '\n';
         member_menu();
     }
-
     cout << '\n';
 }
 
 void System::member_request_rent(){
     if(current_member->rented_bike != nullptr){
         cout << RED
-             << "`Member` can only occupy 1 motorbike." << '\n'
+             << "ERROR: `Member` can only occupy 1 motorbike." << '\n'
              << RESET;
 
         member_menu();
@@ -1455,7 +1470,6 @@ void System::member_request_rent(){
                 found_bike = bike;
                 is_found = true;
                 break;
-
             }
         }
         if( !is_found ){
@@ -1463,15 +1477,18 @@ void System::member_request_rent(){
                  << "ERROR: `Motorbike` not found." << '\n'
                  << RESET;
         }
-
     } while ( !is_found );
 
-    // Request* request = new Request ( current_member, to_object(start), to_object(end) );
     found_bike->owner->add_request( new Request ( current_member, to_object(start), to_object(end) ));
-    
     affordable_bike_list.clear();
-    cout << YELLOW << "`Request` rent completed." << '\n' << RESET;
     
+    cout << YELLOW
+         << BOLD
+         << "---------------------------------------------------------\n"
+         << "|                    REQUEST COMPLETED                  |\n"
+         << "---------------------------------------------------------\n"
+         << RESET;
+         
     update_data();
     input_data();
 }   
@@ -1479,25 +1496,30 @@ void System::member_request_rent(){
 void System::member_view_request(){
     if(current_member->request_list.size() == 0){
         cout << RED
-             << "ERROR: There is no `Request`." << '\n'
+             << "ERROR: There is no `Request` for your bike." << '\n'
              << RESET;
         return;
+
+    } else {
+        cout << GREEN
+             << BOLD
+             << "--- CURRENT REQUESTS ------------------------------------\n"
+             << RESET;
+        current_member->view_request();
     }
 
-    current_member->view_request();
-    
     string input;
     int chosen_id;
-    bool is_found {false};
+    bool is_found { false };
     Date* start;
     Date* end;
-    double total_consuming;
+    double total;
     std::vector<Request*> tmp;
     int count {};
 
     do {
         do {
-            cout << MAGENTA << "Enter `request_id` to accept (0 to EXIT): " << RESET;
+            cout << MAGENTA << "Enter choice to accept (0 to EXIT): " << RESET;
             getline(cin, input);
 
             if(input == "0"){
@@ -1506,10 +1528,6 @@ void System::member_view_request(){
         } while ( !is_integer(input) );
 
         chosen_id = stoi( input );
-
-        // for (auto request : current_member->request_list) {
-        //     cout << request->request_id << '\n';
-        // }
     
         for(auto request : current_member->request_list){
             if(chosen_id == request->request_id){
@@ -1522,11 +1540,21 @@ void System::member_view_request(){
                     is_found = false;
 
                 } else if (request->renter->rented_bike != nullptr){
+                    if(request->renter->rented_bike == current_bike){
+                        cout << RED
+                             << "ERROR: `Renter` already rented your bike." << '\n'
+                             << RESET;
+                    } else {
+                        cout << RED
+                             << "ERROR: `Renter` already occupied another bike." << '\n'
+                             << RESET;
+                    }
                     cout << RED
-                         << "ERROR: `Renter` already occupied another bike." << '\n'
+                         << "You have to wait until the rental finished to accept this." << '\n'
                          << RESET;
-                    is_found = false;
 
+                    is_found = false;
+                    
                 } else {
                     start = request->start;
                     end = request->end;
@@ -1557,6 +1585,13 @@ void System::member_view_request(){
                              << RESET;
                         is_found = false;
                         current_member->request_list.erase(current_member->request_list.begin() + chosen_id - 1);
+
+                        cout << GREEN
+                             << BOLD
+                             << "--- CURRENT REQUESTS ------------------------------------\n"
+                             << RESET;
+                        current_member->view_request();
+
                     } else {
                         request->get_accepted();
 
@@ -1569,7 +1604,6 @@ void System::member_view_request(){
         }
     } while ( !is_found );
     
-
 
     bool is_declined;
     Request* target;
@@ -1605,10 +1639,10 @@ void System::member_view_request(){
     for (auto request : current_member->request_list) {
         if(chosen_id == request->request_id){
             request->renter->rented_bike = current_bike;
-            cout << request->renter->rented_bike->get_bike_id() << '\n';
-            total_consuming = count_day(start, end) * current_bike->point_per_day;
-            request->renter->use_credit_point( total_consuming );
-            current_member->earn_credit_point( total_consuming) ;
+            total = count_day(start, end) * current_bike->point_per_day;
+
+            request->renter->use_credit_point( total );
+            current_member->earn_credit_point( total ) ;
             break;
         } 
     }
@@ -1617,7 +1651,6 @@ void System::member_view_request(){
     input_request_list();
 
     member_view_request();
-
 }
 
 void System::member_top_up() {
@@ -1775,15 +1808,16 @@ void System::guest_registration(){
     // renting_score = 0;
 
     cout << MAGENTA
-         << "LOCATION:\t1. SAIGON\t2. HANOI" << '\n'
+         << "LOCATION:  [1] SAIGON   [2] HANOI" << '\n'
          << RESET;
     
     int choice = choice_selection(1, 2);
     string location = LOCATIONS[choice - 1];
 
     cout << YELLOW
+         << BOLD
          << "---------------------------------------------------------\n"
-         << "|                 REGISTRATION COMPLETED !              |\n"
+         << "|                 REGISTRATION COMPLETED                |\n"
          << "|            20 points is added to your account         |\n"
          << "---------------------------------------------------------\n"
          << RESET;
@@ -1795,7 +1829,7 @@ void System::guest_registration(){
     member_vector.push_back( new_member );
     cout << '\n';
 
-    update_data();
+    update_member_file();
     input_data();
 }
 
