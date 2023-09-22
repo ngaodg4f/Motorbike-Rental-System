@@ -20,11 +20,9 @@ Then, the project is ready to run with command in terminal:
 - For MacOs:
 ```
 ./Group1_Program.out
-```
-    or 
-```
+        or
 make
-```
+``` 
 
 - For, Window:
 ```
