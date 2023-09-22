@@ -226,7 +226,7 @@ void System::input_history_review(){
 }
 
 void System::input_code_list() { // read all codes from the code file
-    code_list.empty(); // empty unordered map handle key code 
+    code_list.clear(); // empty unordered map handle key code 
     string str;
     string key {};
     int value {};

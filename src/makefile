@@ -7,7 +7,7 @@
 # When you want to use g++, use $(OUT).
 CC = g++
 OBJS = main.o Motorbike/Motorbike.o Member/Member.o Date/Date.o Review/Review.o Admin/Admin.o Request/Request.o System/System.o 
-OUT = a
+OUT = Group1_Program
 
 # The syntax rule format is as follows: 
 # target : pre-requisites
