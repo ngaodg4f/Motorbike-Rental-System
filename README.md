@@ -1,8 +1,43 @@
-# Motorbike-Renting-System
- This is a course project from RMIT University Vietnam
+# Software Engineering Design project
+ Name: Motorbike-Rental-System  
+ Description: This is a course project from RMIT University Vietnam.
 
-# Link to run the application
+## Getting started
 
-g++ ../Motorbike/Motorbike.cpp ../Member/Member.cpp ../Date/Date.cpp ../Review/Review.cpp ../Admin/Admin.cpp System.cpp -o a.out
+### Prerequisite
+- C++ Standard > 11
 
-g++ ./Motorbike/Motorbike.cpp ./Member/Member.cpp ./Date/Date.cpp ./Review/Review.cpp ./Admin/Admin.cpp ./Request/Request.cpp ./System/System.cpp main.cpp -o a.out
+### Repository
+ Get a clone repository with your terminal
+HTTPS: https://github.com/ngaodg4f/Motorbike-Rental-System.git
+SSH: git@github.com:ngaodg4f/Motorbike-Rental-System.git
+
+```
+git clone https://github.com/ngaodg4f/Motorbike-Rental-System.git
+```
+
+Then, the project is ready to run with command in terminal:
+- For MacOs:
+```
+make
+
+./Group1_Program.out
+```
+
+- For, Window:
+```
+./Group1_Program.exe
+```
+
+### Details
+ There are the provided account in `Data/Account.txt`. Their credentials are as below:
+
+| username  | password | role    | point  | location
+|-----------|----------|---------|--------|----------
+| admin     | admin    | ADMIN   | -      | -
+| acc1      | acc1     | Member  | 100    | SAIGON
+| acc2      | acc2     | Member  | 100    | HANOI
+| acc3      | acc3     | Member  | 100    | SAIGON
+| acc4      | acc4     | Member  | 100    | HANOI
+| acc5      | acc5     | Member  | 100    | SAIGON
+| acc6      | acc6     | Member  | 100    | HANOI

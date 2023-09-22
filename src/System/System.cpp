@@ -226,7 +226,7 @@ void System::input_history_review(){
 }
 
 void System::input_code_list() { // read all codes from the code file
-    code_list.empty(); // empty unordered map handle key code 
+    code_list.clear(); // empty unordered map handle key code 
     string str;
     string key {};
     int value {};
@@ -1077,7 +1077,17 @@ void System::member_view_bike_information(){ // view current member's bike info
     }
 }
 
-void System::member_add_bike(){ // add bike of that member
+void System::member_add_bike(){
+    for(auto rental : rental_list){
+        if(rental->bike_id == current_bike->bike_id){
+            cout << RED
+                 << "ERROR: Your bike is on rental list." << '\n'
+                 << "Press [5] to unlist before override." << '\n'
+                 << RESET;
+            return;
+        }
+    }
+  
     int id, member_id;
     if(current_bike != nullptr){
         id = current_bike->bike_id;
