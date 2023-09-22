@@ -76,7 +76,9 @@ void Member::view_personal_info(){ //A user can view his/her account info
          << std::left << std::setw(15) << license_number
          << std::left << std::setw(15) << expiry_date->to_string()
          << std::left << std::setw(15) << credit_point
-         << std::left << std::setw(15) << location << '\n'
+         << std::left << std::setw(15) << location
+         << std::left << std::setw(15) << renting_score << '\n'
+
          << RESET;
 }
 

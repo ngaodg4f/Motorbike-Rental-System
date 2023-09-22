@@ -42,6 +42,7 @@ void Motorbike::view_bike_info(){
          << std::left << std::setw(20) << transmission_mode
          << std::left << std::setw(8) << year
          << std::left << std::setw(17) << license_plate
+         << std::left << std::setw(10) << motorbike_score
          << std::left << std::setw(15) << description << '\n'
          << RESET;
 }
