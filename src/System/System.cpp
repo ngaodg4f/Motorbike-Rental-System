@@ -867,10 +867,28 @@ void System::login_as_admin(){
     int count = 4;
 
     do {
+        if(count == 0){
+            cout << RED
+                 << "LOGIN FAILED: Return to login menu." << '\n'
+                 << RESET;
+
+            system("clear");
+            login_menu();
+
+        } else if (count != 4){
+            cout << RED
+                 << "ALERT: Wrong password. " 
+                 << BOLD << count << " times left." << '\n'
+                 << RESET;
+        }
+
         cout << MAGENTA << "Enter username: " << RESET;
         getline(cin, username);
+        count--;
+        
     } while ( username != "admin" );
 
+    count = 4;
     do {
         if(count == 0){
             cout << RED
@@ -1054,7 +1072,7 @@ void System::member_view_bike_information(){
     if(current_bike == nullptr){
         cout << RED
              << "ERROR: `Bike` not found.\n"
-             << "       `Bike` need to be added first." << '\n'
+             << "Press [3] to add bike." << '\n'
              << RESET;
         return;
 
@@ -1929,5 +1947,4 @@ void System::admin_generate_code() {
 
     update_data();
     input_data();
-    cin.ignore(1, '\n');
 }
