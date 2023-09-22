@@ -1654,26 +1654,50 @@ void System::member_view_request(){
 }
 
 void System::member_top_up() {
-    string code_input {};
-    cout << MAGENTA
-         << BOLD
-         << "Enter your code: ";
-    cin >> code_input;
+    string amount, code_input;
+    string data;
 
-    for (auto code : code_list) {
-        if (code_input == code.first) {
-            // cout << code.second;
-            cout << code.first << ":" << code.second << '\n';
-            current_member->earn_credit_point(code.second);
-            code_list.erase(code.first);
-            
-            update_data();
-            input_data();
+    do {
+        cout << "Enter amount: " << '\n';
+        getline(cin, amount);
+    } while ( !is_double(amount) );
+    
+    for(auto code : code_list){
+        if(stod(amount) == code.second){
+            data = code.first;
             break;
         }
-        
     }
-    cin.ignore(1, '\n');
+
+    cout << GREEN
+         << BOLD
+         << "YOUR CODE: " << data << '\n'
+         << RESET;
+
+    bool is_valid;
+    do {
+        cout << MAGENTA << "Enter code to top-up: " << RESET;
+        getline(cin, code_input);
+        is_valid = (code_input == data);
+
+        if( !is_valid ){
+            cout << RED
+                 << "ERROR: Invalid input." << '\n'
+                 << RESET;
+        }
+
+    } while ( !is_valid );
+
+    for (auto code : code_list) {
+        if (data == code.first) {
+            // cout << code.first << ";" << code.second << '\n';
+            current_member->earn_credit_point(code.second);
+            code_list.erase(code.first);
+            break;
+        }
+    }
+    update_data();
+    input_data();
 }
 
 // GUEST
@@ -1911,7 +1935,7 @@ void System::admin_generate_code() {
     cin >> value;
     cout << MAGENTA
          << BOLD 
-         << "Enter code amount you want to generate: "
+         << "Enter code amount: "
          << RESET;
     cin >> amount;
 
