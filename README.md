@@ -8,9 +8,9 @@
 - C++ Standard > 11
 
 ### Repository
- Get a clone repository with your terminal
-HTTPS: https://github.com/ngaodg4f/Motorbike-Rental-System.git
-SSH: git@github.com:ngaodg4f/Motorbike-Rental-System.git
+ Get repository with: 
+- HTTPS: https://github.com/ngaodg4f/Motorbike-Rental-System.git
+- SSH: git@github.com:ngaodg4f/Motorbike-Rental-System.git
 
 ```
 git clone https://github.com/ngaodg4f/Motorbike-Rental-System.git
