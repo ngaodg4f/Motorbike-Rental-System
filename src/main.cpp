@@ -12,7 +12,6 @@ int main(){
     // Date *day1 = new Date {28,2,2000};
     // Date *day2 = new Date {5,3,2000};
     // std::cout << sys.count_day(day1, day2);
-
     return 0;
 }
 
